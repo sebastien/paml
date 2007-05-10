@@ -1,0 +1,16 @@
+# Pamela single and multi-line elements hint information
+<document
+
+  <single:This is a single line element, text only
+
+  <single:This is a single line element, <span:with additional element>
+  <single:This is a single line element with <span:more> <span:than> <span:one> element
+  <multi:This is a single line element that
+    actually spans more than one line so it should be rendered as multi-line
+
+  <single:
+    This single line element has en empty first line, so it will be single-line anyway
+
+  <multi
+    this is a multi-line element, only if it has a single line
+# EOF

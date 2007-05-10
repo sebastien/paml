@@ -1,0 +1,32 @@
+# Pamela: Simple document example
+<html
+  <head
+    <title:Simple Pamela document
+  <body
+    <h1:Lorem ipsum
+    <p
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante
+      leo, suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
+      consequat aliquam tempor, nibh nisl porta augue, in condimentum nunc sem sed
+      nunc. Duis a justo. Integer tincidunt, nisi lacinia pretium sollicitudin,
+      dui sapien pharetra urna, in viverra augue quam vel eros. Nulla risus.
+      Praesent nec orci eget lectus imperdiet posuere. Mauris bibendum blandit
+
+    <p
+      turpis. Quisque urna. Donec enim quam, ultricies at, dictum tempus, molestie
+      quis, urna. Maecenas pretium dignissim massa. Quisque nisi.  Mauris nec
+      dolor. Morbi viverra nunc quis enim. Vestibulum lobortis nunc dictum dolor.
+      Etiam sodales volutpat dolor. Aliquam fermentum eros sit amet sem. Phasellus
+      orci erat, pretium nec, imperdiet in, pharetra sed, diam. Proin blandit
+      tempor enim. Suspendisse vitae est quis odio mattis interdum. Donec in mi.
+
+    <h1
+      Dolor sit amet
+    <p
+      Aliquam rutrum ultricies eros. Duis condimentum. Ut justo diam, semper
+      euismod, molestie eu, posuere in, sem. Lorem ipsum dolor sit amet,
+      consectetuer adipiscing elit. Praesent ultrices nulla. Nulla facilisi. In
+      sollicitudin. Vivamus in magna vel leo facilisis tempor. Nullam orci.
+      Curabitur tincidunt, mi quis tempus eleifend, mauris purus porttitor arcu,
+      nec ornare ligula ipsum ut augue. Sed purus.
+# EOF

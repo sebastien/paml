@@ -1,0 +1,38 @@
+== Pamela Roadmap
+
+Version 0.9::
+
+	[ ] Python interface to load libraries
+	[ ] Hooks to process data
+
+Version 0.8::
+
+	[ ] CSS validation support
+	[ ] JavaScript validation support
+	[ ] Sugar validation support
+
+Version 0.7::
+
+	[ ] Namespace support (XML)
+	[ ] Quirks support (HTML like empty-divs, etc)
+	[ ] HTML tidy integration
+
+Version 0.6
+
+	[ ] Rendering hints
+	[ ] Include files support
+
+Version 0.5::
+
+	[ ] Command-line interface
+	[ ] Declarations suppport
+
+Version 0.4::
+
+	[ ] Single and multi-line properly represented
+
+Version 0.3::
+
+	[ ] Ids classes and attributes
+
+

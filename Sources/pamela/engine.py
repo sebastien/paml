@@ -77,34 +77,40 @@ class Writer:
 			self.content = content
 		def asXML(self,pretty=False):
 			return self.content
-		def asList(self):
+		def asList(self,inSingleLine=False):
 			return self.content
 
 	class Element:
-		"""Reprensents an element within the HTML document."""
-		def __init__(self, name, attributes=None,isInline=False):
+		"""Represents an element within the HTML document."""
+		def __init__(self, name, attributes=None,isSingleLine=False):
 			self.name=name
 			self.attributes=attributes or []
 			self.content=[]
-			self.isInline=False
+			self.isSingleLine=isSingleLine
 		def append(self,n):
 			self.content.append(n)
 		def asXML(self,pretty=False):
 			content = "".join(c.asXML(pretty) for c in self.content)
 			return "<%s>%s</%s>" % (content)
-		def asList(self):
-			# FIXME: Support div and spans
+		def asList(self,inSingleLine=False):
+			"""Formats this element as a list, taking into account the
+			'isSingleLine' hint and the 'inSingleLine' rendering attribute."""
 			if not self.content:
-				if self.isInline:
+				if self.isSingleLine or inSingleLine:
 					return "<%s />" % (self.name)
 				else:
 					return ["<%s />" % (self.name)]
 			else:
-				return [
-					"<%s>" % (self.name),
-					list(c.asList() for c in self.content),
-					"</%s>" % (self.name)
-				]
+				if self.isSingleLine or inSingleLine:
+					return "<%s>" % (self.name) \
+					+ "".join(c.asList(inSingleLine=True) for c in self.content) \
+					+ "</%s>" % (self.name)
+				else:
+					return [
+						"<%s>" % (self.name),
+						list(c.asList() for c in self.content),
+						"</%s>" % (self.name)
+					]
 
 	class Declaration(Element):
 		def __init__(self, name, attributes=None):
@@ -127,11 +133,26 @@ class Writer:
 		#comment = ET.Comment(line)
 		#self._node().append(comment)
 
-	def onTextAdd( self, text ):
+	def onTextAdd( self, text, onSameLine=False ):
+		"""Adds the given text fragment to the current element. When
+		'onSameLine', it means that the text fragment was on the same line as
+		the element, like this:
+
+		>    <title:Here is my title
+
+		as opposed to
+
+		>    <title
+		>       Here is my title
+
+		this will trigger (or not) a rendering hint that will tell the current
+		element to render as multi or single line."""
+		if not onSameLine:
+			self._node().isSingleLine = False
 		self._node().append(self.Text(text))
 
-	def onElementStart( self, name, attributes=None ):
-		element = self.Element(name)
+	def onElementStart( self, name, attributes=None,isSingleLine=False ):
+		element = self.Element(name,isSingleLine=isSingleLine)
 		self._node().append(element)
 		self._nodeStack.append(element)
 
@@ -200,8 +221,16 @@ class Parser:
 		is_element = RE_ELEMENT.match(line)
 		if is_element:
 			self._elementStack.append(indent)
+			group  = is_element.group()
 			groups = is_element.groups()
-			self._writer.onElementStart(groups[0])
+			rest   = line[len(is_element.group()):]
+			# Element is a single line if it ends with ':'
+			if group[-1] == ":": is_single_line = True
+			else: is_single_line = False
+			print groups, rest
+			self._writer.onElementStart(groups[0], isSingleLine=is_single_line)
+			if rest:
+				self._writer.onTextAdd(rest.replace("\n", " "), onSameLine=True)
 			return
 		# Otherwise it's data
 		self._writer.onTextAdd(line.replace("\n", " "))
@@ -232,10 +261,22 @@ class Parser:
 		else:
 			return 0, line
 
+# -----------------------------------------------------------------------------
+#
+# Command-line interface
+#
+# -----------------------------------------------------------------------------
+
 def run( arguments ):
 	input_file = arguments[0]
 	parser = Parser()
 	print parser.parseFile(input_file)
+
+# -----------------------------------------------------------------------------
+#
+# Main
+#
+# -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	run(sys.argv[1:])
