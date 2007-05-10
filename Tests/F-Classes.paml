@@ -1,0 +1,17 @@
+#!/bin/env pamela -p 
+# Pamela: Classes test case
+<html
+	<body.body
+		# Single class
+		<div.content:Lorem ipsum
+		# Two classes
+		<div.content.main:Lorem ipsum
+		# Id
+		<div#content:Lorem ipsum
+		# Id and single class
+		<div#content.main:Lorem ipsum
+		# Id and single two classes
+		<div#content.main.content:Lorem ipsum
+		# Additional classes attributes
+		<div#content.main.content(class=main2 content2):Lorem ipsum
+#EOF

@@ -1,0 +1,23 @@
+#!/bin/env pamela -p 
+# Pamela: Attributes test case
+<html
+	<meta
+		# This is an element with multiple attributes
+		<link(rel=alternate)
+		<link(rel=alternate,type=application/rss+xml)
+		<link(rel=alternate,type=application/rss+xml,title=RSS)
+		# This is an element with multiple attributes
+		<link(rel=alternate,type=application/rss+xml,title=RSS,href="http://blog.netvibes.com/rss.php")
+	# This is an element with a single attribute, where the string is double
+	# quoted
+	<body(onload="javascript:doThis()")
+		# This is an element with a single attribute, where the string is single
+		# quoted
+		<div(onclick='javascript:doThat("hello")')
+		# This is an element with multiple attributes, quoted in different ways
+		<div(a=1,b='2',c="3")
+		# This is an element with an id and attributes
+		<div#id(a=1,b='2',c="3")
+		# This is an element with an id, classes and attributes
+		<div#id.classA.classB(a=1,b='2',c="3")
+#EOF

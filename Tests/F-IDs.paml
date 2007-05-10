@@ -1,0 +1,9 @@
+#!/bin/env pamela -p 
+# Pamela: IDs test case
+<html
+	<body#mainBody
+		# We define an element with an IDj
+		<div#main_body
+		# And redefine it
+		<div#main_body
+#EOF

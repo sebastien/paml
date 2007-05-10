@@ -20,12 +20,13 @@ PAMELA_VERSION = "0.1"
 
 SYMBOL_NAME    = "[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
-SYMBOL_ATTR    = "%s(=[^),]+)?" % (SYMBOL_NAME)
-SYMBOL_ATTRS   = "\(%s(,%s)+\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
+SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
+SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
+RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
 RE_COMMENT     = re.compile("^#.*$")
 RE_EMPTY       = re.compile("^\s*$")
 RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
-RE_ELEMENT     = re.compile("^\<((%s)(%s)?|(%s))(%s)?\:?" % (
+RE_ELEMENT     = re.compile("^\<(%s(%s)?|%s)(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
 	SYMBOL_ID_CLS,
@@ -75,8 +76,6 @@ class Writer:
 		"""Reprensents a text fragment within the HTML document."""
 		def __init__(self, content):
 			self.content = content
-		def asXML(self,pretty=False):
-			return self.content
 		def asList(self,inSingleLine=False):
 			return self.content
 
@@ -89,25 +88,39 @@ class Writer:
 			self.isSingleLine=isSingleLine
 		def append(self,n):
 			self.content.append(n)
-		def asXML(self,pretty=False):
-			content = "".join(c.asXML(pretty) for c in self.content)
-			return "<%s>%s</%s>" % (content)
+		def _attributesAsHTML(self):
+			"""Returns the attributes as HTML"""
+			r = []
+			def escape(v):
+				if   v.find('"') == -1: v = '"%s"' % (v)
+				elif v.find("'") == -1: v = "'%s'" % (v)
+				else: v = '"%s"' % (v.replace('"', '\\"'))
+				return v
+			for name, value in self.attributes:
+				if value is None:
+					r.append("%s" % (name))
+				else:
+					r.append("%s=%s" % (name,escape(value)))
+			r = " ".join(r)
+			if r: r= " "+r
+			return r
 		def asList(self,inSingleLine=False):
 			"""Formats this element as a list, taking into account the
 			'isSingleLine' hint and the 'inSingleLine' rendering attribute."""
+			attributes = self._attributesAsHTML()
 			if not self.content:
 				if self.isSingleLine or inSingleLine:
-					return "<%s />" % (self.name)
+					return "<%s%s />" % (attributes, self.name)
 				else:
-					return ["<%s />" % (self.name)]
+					return ["<%s%s />" % (attributes, self.name)]
 			else:
 				if self.isSingleLine or inSingleLine:
-					return "<%s>" % (self.name) \
+					return "<%s%s>" % (self.name, attributes) \
 					+ "".join(c.asList(inSingleLine=True) for c in self.content) \
 					+ "</%s>" % (self.name)
 				else:
 					return [
-						"<%s>" % (self.name),
+						"<%s%s>" % (self.name, attributes),
 						list(c.asList() for c in self.content),
 						"</%s>" % (self.name)
 					]
@@ -152,7 +165,7 @@ class Writer:
 		self._node().append(self.Text(text))
 
 	def onElementStart( self, name, attributes=None,isSingleLine=False ):
-		element = self.Element(name,isSingleLine=isSingleLine)
+		element = self.Element(name,attributes=attributes,isSingleLine=isSingleLine)
 		self._node().append(element)
 		self._nodeStack.append(element)
 
@@ -221,14 +234,13 @@ class Parser:
 		is_element = RE_ELEMENT.match(line)
 		if is_element:
 			self._elementStack.append(indent)
-			group  = is_element.group()
-			groups = is_element.groups()
+			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
 			# Element is a single line if it ends with ':'
 			if group[-1] == ":": is_single_line = True
 			else: is_single_line = False
-			print groups, rest
-			self._writer.onElementStart(groups[0], isSingleLine=is_single_line)
+			name,attributes,hints=self.parsePamelaElement(group)
+			self._writer.onElementStart(name, attributes, isSingleLine=is_single_line)
 			if rest:
 				self._writer.onTextAdd(rest.replace("\n", " "), onSameLine=True)
 			return
@@ -238,6 +250,67 @@ class Parser:
 	def parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
 		content.""" 
+
+	def parsePamelaElement( self, element ):
+		"""Parses the declaration of a Pamela element, which is like that
+
+		>	(#ID | NAME #ID?) .CLASS* ATTRIBUTES? |HINTS? :?
+
+		where attributes is a command-separated sequence of this, surrounded by
+		parens:
+
+		>	NAME=(VALUE|'VALUE'|"VALUE")
+
+		This function returns a tuple (name, id, classes, attributes, hints)
+		representing this parsed element."""
+		original = element
+		if element[-1] == ":": element = element[:-1]
+		# We look for the attributes list
+		parens_start = element.find("(")
+		if parens_start != -1:
+			attributes_list = element[parens_start+1:]
+			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
+			attributes = self.parsePamelaAttributes(attributes_list)
+			element = element[:parens_start]
+		else:
+			attributes = []
+		# We look for the classes
+		classes = element.split(".")
+		if len(classes) > 1:
+			element = classes[0]
+			classes = classes[1:]
+			classes = " ".join( classes)
+			attributes.append(["class", classes])
+		else:
+			element = classes[0]
+		eid = element.split("#")
+		# FIXME: If attributes or ids are already defined, we should look for it
+		# and do something appropriate
+		if len(eid) > 1:
+			assert len(eid) == 2, "More than one id given: %s" % (original)
+			attributes.append(["id", eid[1]])
+			element = eid[0]
+		else:
+			element = eid[0]
+		return (element, attributes, [])
+
+	def parsePamelaAttributes( self, attributes ):
+		result = []
+		original = attributes
+		while attributes:
+			match  = RE_ATTRIBUTE.match(attributes)
+			assert match, "Given attributes are malformed: %s" % (attributes)
+			name  = match.group(1)
+			value = match.group(3)
+			if value and value[0] == value[-1] and value[0] in ("'", '"'):
+				value = value[1:-1]
+			result.append([name, value])
+			attributes = attributes[match.end():]
+			if attributes:
+				assert attributes[0] == ",", "Attributes must be comma-separated: %s" % (attributes)
+				attributes = attributes[1:]
+				assert attributes, "Trailing comma with no remaining attributes: %s" % (original)
+		return result
 
 	def _gotoParentElement( self, currentIndent ):
 		while self._elementStack and self._elementStack[-1] >= currentIndent:

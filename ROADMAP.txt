@@ -1,5 +1,10 @@
 == Pamela Roadmap
 
+Version 1.0::
+
+	[ ] Cleanup, review
+	[ ] Proper error reporting
+
 Version 0.9::
 
 	[ ] Python interface to load libraries
@@ -10,6 +15,7 @@ Version 0.8::
 	[ ] CSS validation support
 	[ ] JavaScript validation support
 	[ ] Sugar validation support
+	[ ] Kiwi processing of text
 
 Version 0.7::
 
@@ -34,5 +40,4 @@ Version 0.4::
 Version 0.3::
 
 	[ ] Ids classes and attributes
-
-
+	[X] Basic test cases
