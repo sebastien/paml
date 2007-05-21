@@ -23,7 +23,7 @@ Version 0.7::
 	[ ] Quirks support (HTML like empty-divs, etc)
 	[ ] HTML tidy integration
 
-Version 0.6
+Version 0.6::
 
 	[ ] Rendering hints
 	[ ] Include files support
@@ -36,6 +36,8 @@ Version 0.5::
 Version 0.4::
 
 	[ ] Single and multi-line properly represented
+	[ ] Proper emptyline/whitespace strategy
+	[ ] Pretty-printing that behaves as expected
 
 Version 0.3::
 

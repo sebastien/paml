@@ -1,11 +1,11 @@
 # Juicy Skeleton
 
-# HTML BODY
+# HTML HEAD
 # ============================================================================
 
 @head:
 	<style=@style
-	<meta(name="keywords"):juicy,wiki,prototype,templaet
+	<meta(name="keywords"):juicy,wiki,prototype,template
 
 @style:[css|
 	html, body {

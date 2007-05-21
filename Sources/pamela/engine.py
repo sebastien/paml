@@ -8,13 +8,12 @@
 # License           :   Lesser Gnu Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   10-May-2007
+# Last mod.         :   21-May-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
-from xml.etree import cElementTree as ET
 
-PAMELA_VERSION = "0.1"
+PAMELA_VERSION = "0.2.5"
 
 # PAMELA GRAMMAR ______________________________________________________________
 
@@ -37,28 +36,123 @@ RE_LEADING_SPC = re.compile("[ ]*")
 
 # -----------------------------------------------------------------------------
 #
+# Object Model
+#
+# -----------------------------------------------------------------------------
+
+FORMAT_INDENT = "i"
+FORMAT_SINGLE_LINE = "sl"
+FORMAT_PRESERVE = "p"
+FORMAT_NORMALIZE = "n"
+FORMAT_STRIP = "s"
+FORMAT_COMPACT = "c"
+
+class Text:
+	"""Reprensents a text fragment within the HTML document."""
+	def __init__(self, content):
+		self.content = content
+
+class Element:
+	"""Represents an element within the HTML document."""
+	def __init__(self, name, attributes=None,isSingleLine=False):
+		self.name=name
+		self.attributes=attributes or []
+		self.content=[]
+		self.isSingleLine=isSingleLine
+		self.formatOptions = []
+	def append(self,n):
+		self.content.append(n)
+	def _attributesAsHTML(self):
+		"""Returns the attributes as HTML"""
+		r = []
+		def escape(v):
+			if   v.find('"') == -1: v = '"%s"' % (v)
+			elif v.find("'") == -1: v = "'%s'" % (v)
+			else: v = '"%s"' % (v.replace('"', '\\"'))
+			return v
+		for name, value in self.attributes:
+			if value is None:
+				r.append("%s" % (name))
+			else:
+				r.append("%s=%s" % (name,escape(value)))
+		r = " ".join(r)
+		if r: r= " "+r
+		return r
+
+class Declaration(Element):
+	def __init__(self, name, attributes=None):
+		Writer.Element.__init__(self,name,attributes)
+
+# -----------------------------------------------------------------------------
+#
 # Formatting function (borrowed from LambdaFactory modelwriter module)
 #
 # -----------------------------------------------------------------------------
 
-FORMAT_PREFIX = "\t"
-def _format( value, level=-1 ):
-	"""Format helper operation. See @format."""
-	if type(value) in (list, tuple):
-		res = []
-		for v in value:
-			if v is None: continue
-			res.extend(_format(v, level+1))
-		return res
-	else:
-		if value is None: return ""
-		assert type(value) in (str, unicode), "Unsupported type: %s" % (value)
-		return ["\n".join((level*FORMAT_PREFIX)+v for v in value.split("\n"))]
+class Formatter:
+	"""Formats the elements of the Pamela object model."""
 
-def format( *values ):
-	"""Formats a combination of string ang tuples. Strings are joined by
-	newlines, and the content of the inner tuples gets indented."""
-	return "\n".join(_format(values))
+	def __init__( self ):
+		pass
+
+	def formatContent( self, element ):
+		"""Returns a string representing the formatting of the given 'element'
+		content."""
+		result = []
+		for e in element.content:
+			if isinstance(e, Element):
+				result.append(self.formatElement(e))
+			elif isinstance(e, Text):
+				result.append(self.formatText(e))
+			else:
+				raise Exception("Unsupported content type: %s" % (e))
+		return "\n".join(result)
+
+	def formatElement( self, element ):
+		"""Returns the given element (and its content) as a string formatted
+		according to this formatter configuration."""
+		attributes = element._attributesAsHTML()
+		if element.content:
+			start   = "<%s%s>" % (element.name, attributes)
+			end     = "</%s>" % (element.name)
+			content = self.formatContent(element)
+			content = self.indent(content, 2)
+			return start + "\n" + content + end
+		else:
+			return "<%s%s />" % (attributes, self.name)
+
+	def formatText( self, element ):
+		"""Returns the given text element properly formatted according to
+		this formatted configuration."""
+		return element.content
+
+	def indent( self, text, indent, start=True, end=True ):
+		"""Indents the given 'text' with the given 'value' (which will be
+		converted to either spaces or tabs, depending on the formatter
+		parameters.
+
+		If 'start' is True, then the start line will be indented as well,
+		otherwise it won't. When 'end' is True, a newline is inserted at
+		the end of the resulting text, otherwise not."""
+		first_line = True
+		result     = []
+		prefix     = self.indentToText(indent)
+		for line in text.split("\n"):
+			if first_line and not start:
+				result.append(line)
+			else:
+				result.append(prefix + line)
+			first_line = False
+		result = "\n".join(result)
+		if end: result += "\n"
+		return result
+
+	def indentToText( self, indent ):
+		"""Converts the 'indent' value to a string filled with spaces or tabs
+		depending on the formatter parameters."""
+		return " " * int(indent)
+
+
 
 # -----------------------------------------------------------------------------
 #
@@ -72,74 +166,16 @@ class Writer:
 	Pamela as slightly differnt information than what SAX offers, which requires
 	specific methods."""
 
-	class Text:
-		"""Reprensents a text fragment within the HTML document."""
-		def __init__(self, content):
-			self.content = content
-		def asList(self,inSingleLine=False):
-			return self.content
-
-	class Element:
-		"""Represents an element within the HTML document."""
-		def __init__(self, name, attributes=None,isSingleLine=False):
-			self.name=name
-			self.attributes=attributes or []
-			self.content=[]
-			self.isSingleLine=isSingleLine
-		def append(self,n):
-			self.content.append(n)
-		def _attributesAsHTML(self):
-			"""Returns the attributes as HTML"""
-			r = []
-			def escape(v):
-				if   v.find('"') == -1: v = '"%s"' % (v)
-				elif v.find("'") == -1: v = "'%s'" % (v)
-				else: v = '"%s"' % (v.replace('"', '\\"'))
-				return v
-			for name, value in self.attributes:
-				if value is None:
-					r.append("%s" % (name))
-				else:
-					r.append("%s=%s" % (name,escape(value)))
-			r = " ".join(r)
-			if r: r= " "+r
-			return r
-		def asList(self,inSingleLine=False):
-			"""Formats this element as a list, taking into account the
-			'isSingleLine' hint and the 'inSingleLine' rendering attribute."""
-			attributes = self._attributesAsHTML()
-			if not self.content:
-				if self.isSingleLine or inSingleLine:
-					return "<%s%s />" % (attributes, self.name)
-				else:
-					return ["<%s%s />" % (attributes, self.name)]
-			else:
-				if self.isSingleLine or inSingleLine:
-					return "<%s%s>" % (self.name, attributes) \
-					+ "".join(c.asList(inSingleLine=True) for c in self.content) \
-					+ "</%s>" % (self.name)
-				else:
-					return [
-						"<%s%s>" % (self.name, attributes),
-						list(c.asList() for c in self.content),
-						"</%s>" % (self.name)
-					]
-
-	class Declaration(Element):
-		def __init__(self, name, attributes=None):
-			Writer.Element.__init__(self,name,attributes)
-
 	def __init__( self ):
 		pass
 
 	def onDocumentStart( self ):
 		self._content   = []
 		self._nodeStack = []
-		self._document = self.Element("document")
+		self._document  = Element("document")
 
 	def onDocumentEnd( self ):
-		r = "".join(format(c.asList()) for c in self._document.content)
-		return r
+		return self._document
 
 	def onComment( self, line ):
 		line = line.replace("\n", " ").strip()
@@ -162,10 +198,10 @@ class Writer:
 		element to render as multi or single line."""
 		if not onSameLine:
 			self._node().isSingleLine = False
-		self._node().append(self.Text(text))
+		self._node().append(Text(text))
 
 	def onElementStart( self, name, attributes=None,isSingleLine=False ):
-		element = self.Element(name,attributes=attributes,isSingleLine=isSingleLine)
+		element = Element(name,attributes=attributes,isSingleLine=isSingleLine)
 		self._node().append(element)
 		self._nodeStack.append(element)
 
@@ -173,7 +209,7 @@ class Writer:
 		self._nodeStack.pop()
 
 	def onDeclarationStart( self, name, attributes=None ):
-		element = self.Declaration(name)
+		element = Declaration(name)
 		self._nodeStack.append(element)
 
 	def onDeclarationEnd( self ):
@@ -190,6 +226,23 @@ class Writer:
 # -----------------------------------------------------------------------------
 
 class Parser:
+	"""Implements a parser that will turn a Pamela document into an HTML
+	document, returned as a string.
+
+	The main methods that you should use are
+
+	- 'parseFile' to parse file identified by the given path
+	- 'parseString' to parse a string given as parameter
+
+	You can configure the parser by using the following methods:
+
+	- 'acceptTabsOnly', to tell that the parser will only accept tabs.
+	- 'acceptSpacesOnly', to tell that the parser will only accept spaces.
+	- 'acceptTabsAndSpaces', to tell that the parser will accept both tabs and
+	   spaces.
+	- 'tabsWidth', to specify the width of a tab in spaces, which is only used
+	   when the parser accepts both tabs and spaces.
+	"""
 
 	def __init__( self ):
 		self._tabsOnly   = False
@@ -197,17 +250,21 @@ class Parser:
 		self._tabsWidth  = 4
 		self._elementStack = []
 		self._writer = Writer()
+		self._formatter = Formatter()
 
 	def parseFile( self, path ):
+		"""Parses the file with the given  path, and return the corresponding
+		HTML document."""
 		# FIXME: File exists and is readable
 		f = file(path, "r")
 		self._writer.onDocumentStart()
 		for l in f.readlines():
-			self.parseLine(l)
-		return self._writer.onDocumentEnd()
+			self._parseLine(l)
+		return self._formatter.formatContent(self._writer.onDocumentEnd())
 
-	def parseLine( self, line ):
-		"""Parses the given line of text."""
+	def _parseLine( self, line ):
+		"""Parses the given line of text.
+		This is an internal method that you should not really use directly."""
 		indent, line = self._getLineIndent(line)
 		# First, we make sure we close the elements that may be outside of the
 		# scope of this
@@ -239,7 +296,7 @@ class Parser:
 			# Element is a single line if it ends with ':'
 			if group[-1] == ":": is_single_line = True
 			else: is_single_line = False
-			name,attributes,hints=self.parsePamelaElement(group)
+			name,attributes,hints=self._parsePamelaElement(group)
 			self._writer.onElementStart(name, attributes, isSingleLine=is_single_line)
 			if rest:
 				self._writer.onTextAdd(rest.replace("\n", " "), onSameLine=True)
@@ -247,11 +304,11 @@ class Parser:
 		# Otherwise it's data
 		self._writer.onTextAdd(line.replace("\n", " "))
 
-	def parseContentLine( self, line ):
+	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
 		content.""" 
 
-	def parsePamelaElement( self, element ):
+	def _parsePamelaElement( self, element ):
 		"""Parses the declaration of a Pamela element, which is like that
 
 		>	(#ID | NAME #ID?) .CLASS* ATTRIBUTES? |HINTS? :?
@@ -270,7 +327,7 @@ class Parser:
 		if parens_start != -1:
 			attributes_list = element[parens_start+1:]
 			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
-			attributes = self.parsePamelaAttributes(attributes_list)
+			attributes = self._parsePamelaAttributes(attributes_list)
 			element = element[:parens_start]
 		else:
 			attributes = []
@@ -294,7 +351,9 @@ class Parser:
 			element = eid[0]
 		return (element, attributes, [])
 
-	def parsePamelaAttributes( self, attributes ):
+	def _parsePamelaAttributes( self, attributes ):
+		"""Parses a string representing Pamela attributes and returns a list of
+		couples '[name, value]' representing the attributes."""
 		result = []
 		original = attributes
 		while attributes:
@@ -313,6 +372,8 @@ class Parser:
 		return result
 
 	def _gotoParentElement( self, currentIndent ):
+		"""Finds the parent element that has an identation lower than the given
+		'currentIndent'."""
 		while self._elementStack and self._elementStack[-1] >= currentIndent:
 			self._elementStack.pop()
 			self._writer.onElementEnd()
