@@ -13,9 +13,14 @@
 
 import os, sys, re
 
-PAMELA_VERSION = "0.2.5"
+__version__ = "0.2.6"
+PAMELA_VERSION = __version__
 
-# PAMELA GRAMMAR ______________________________________________________________
+# -----------------------------------------------------------------------------
+#
+# GRAMMAR
+#
+# -----------------------------------------------------------------------------
 
 SYMBOL_NAME    = "[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
@@ -36,16 +41,41 @@ RE_LEADING_SPC = re.compile("[ ]*")
 
 # -----------------------------------------------------------------------------
 #
-# Object Model
+# Formatting
 #
 # -----------------------------------------------------------------------------
 
-FORMAT_INDENT = "i"
+FORMAT_INLINE      = "i"
 FORMAT_SINGLE_LINE = "sl"
-FORMAT_PRESERVE = "p"
-FORMAT_NORMALIZE = "n"
-FORMAT_STRIP = "s"
-FORMAT_COMPACT = "c"
+FORMAT_PRESERVE    = "p"
+FORMAT_NORMALIZE   = "n"
+FORMAT_STRIP       = "s"
+FORMAT_COMPACT     = "c"
+FORMAT_OPTIONS     = (
+	FORMAT_SINGLE_LINE,
+	FORMAT_PRESERVE,
+	FORMAT_NORMALIZE,
+	FORMAT_STRIP,
+	FORMAT_COMPACT,
+)
+
+# Defaults for HTML documents
+HTML_DEFAULTS = {
+	"title":"sl n s".split(),
+	"h1":"sl n s".split(),
+	"h2":"sl n s".split(),
+	"h3":"sl n s".split(),
+	"h4":"sl n s".split(),
+#	"p":"n s c".split(),
+	"code":"n s c".split(),
+	"pre":"p".split(),
+}
+
+# -----------------------------------------------------------------------------
+#
+# Object Model
+#
+# -----------------------------------------------------------------------------
 
 class Text:
 	"""Reprensents a text fragment within the HTML document."""
@@ -54,11 +84,11 @@ class Text:
 
 class Element:
 	"""Represents an element within the HTML document."""
-	def __init__(self, name, attributes=None,isSingleLine=False):
+	def __init__(self, name, attributes=None,isInline=False):
 		self.name=name
 		self.attributes=attributes or []
 		self.content=[]
-		self.isSingleLine=isSingleLine
+		self.isInline=isInline
 		self.formatOptions = []
 	def append(self,n):
 		self.content.append(n)
@@ -89,44 +119,145 @@ class Declaration(Element):
 #
 # -----------------------------------------------------------------------------
 
+RE_SPACES = re.compile("\s")
+
 class Formatter:
 	"""Formats the elements of the Pamela object model."""
 
 	def __init__( self ):
-		pass
+		self.indent = 0
+		self.indentValue = "  "
+		self.textWidth = 80
+		# FIXME
+		self.defaults = {}
+		self.defaults = HTML_DEFAULTS
+		self.flags    = [[]]
+
+	def setDefaults( self, element, formatOptions=()):
+		"""Sets the formatting defaults for the given element name."""
+		assert type(element) in (str, unicode)
+		assert type(formatOptions) in (list, tuple)
+		for f in formatOptions:
+			assert f in FORMAT_OPTIONS, "Unknown formatting option: %s" % (f)
+		self.defaults[element] = list(formatOptions)
+
+	def getDefaults( self, elementName ):
+		"""Gets the formatting defaults for the given element name."""
+		return self.defaults.get(elementName) or ()
+
+	def pushFlags( self, *flags ):
+		"""Pushes the given flags (as varargs) on the flags queue."""
+		self.flags.append([])
+		map(self.setFlag, flags)
+
+	def setFlag( self, flag ):
+		"""Sets the given flag."""
+		if flag == FORMAT_SINGLE_LINE:
+			self.setFlags(FORMAT_STRIP, FORMAT_NORMALIZE)
+		if flag not in self.flags[-1]:
+			self.flags[-1].append(flag)
+
+	def setFlags( self, *flags ):
+		"""Set the given flags, given as varargs."""
+		map(self.setFlag, flags)
+
+	def popFlags( self ):
+		"""Pops the given flags from the flags queue."""
+		self.flags.pop()
+
+	def hasFlag( self, flag ):
+		"""Tells if the given flag is currently defined."""
+		if flag == FORMAT_SINGLE_LINE:
+			single_line = self.findFlag(flag)
+			preserve    = self.findFlag(FORMAT_PRESERVE)
+			if single_line > preserve: return True
+			else: return False
+		else:
+			return self.findFlag(flag) != -1
+
+	def getFlags( self ):
+		"""Returns the list of defined flags, by order of definition (last flags
+		are more recent."""
+		res = []
+		for flags in self.flags:
+			res.extend(flags)
+		return res
+
+	def findFlag( self, flag ):
+		"""Finds the level at which the given flag is defined. Returns -1 if it
+		is not found."""
+		for i in range(0, len(self.flags)):
+			j = len(self.flags) - 1 - i
+			if flag in self.flags[j]:
+				return j
+		return -1
+
+	def format( self, document, indent=0 ):
+		self.indent = indent
+		result = self.formatContent(document)
+		# FIXME: This shouldn't be necessary
+		if result and result[-1] == "\n": result = result[:-1]
+		return result
 
 	def formatContent( self, element ):
 		"""Returns a string representing the formatting of the given 'element'
 		content."""
 		result = []
+		text   = []
+		# NOTE: In this process we aggregate text elements, which are typically
+		# one text element per line. This allows proper formatting
 		for e in element.content:
 			if isinstance(e, Element):
+				if text:
+					result.append(self.formatText("".join(text)))
+					text = []
 				result.append(self.formatElement(e))
 			elif isinstance(e, Text):
-				result.append(self.formatText(e))
+				text.append(e.content)
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
-		return "\n".join(result)
+		if text:
+			result.append(self.formatText("".join(text)))
+			text = []
+		result = "".join(result) 
+		return result
 
 	def formatElement( self, element ):
 		"""Returns the given element (and its content) as a string formatted
 		according to this formatter configuration."""
 		attributes = element._attributesAsHTML()
 		if element.content:
+			self.pushFlags(*self.getDefaults(element.name))
 			start   = "<%s%s>" % (element.name, attributes)
 			end     = "</%s>" % (element.name)
-			content = self.formatContent(element)
-			content = self.indent(content, 2)
-			return start + "\n" + content + end
+			if self.hasFlag(FORMAT_SINGLE_LINE):
+				result = self.indentAsSpaces() + start + self.formatContent(element) + end + "\n"
+			else:
+				start   = self.indentAsSpaces() + start
+				end     = self.indentAsSpaces() + end
+				self.indent += 2
+				content = self.formatContent(element)
+				self.indent -= 2
+				result = start + "\n" + content + end + "\n"
+			self.popFlags()
+			return result
 		else:
-			return "<%s%s />" % (attributes, self.name)
+			return self.indentAsSpaces() + "<%s%s />\n" % (element.name, attributes)
 
-	def formatText( self, element ):
-		"""Returns the given text element properly formatted according to
+	def formatText( self, text ):
+		"""Returns the given text properly formatted according to
 		this formatted configuration."""
-		return element.content
+		if not self.hasFlag(FORMAT_PRESERVE):
+			if self.hasFlag(FORMAT_NORMALIZE):
+				text = self.normalizeText(text)
+			if self.hasFlag(FORMAT_STRIP):
+				text = self.stripText(text)
+			if not self.hasFlag(FORMAT_SINGLE_LINE):
+				compact = self.hasFlag(FORMAT_COMPACT)
+				text = self.indentString(text, start=not compact, end=not compact)
+		return text
 
-	def indent( self, text, indent, start=True, end=True ):
+	def indentString( self, text, indent=None, start=True, end=True ):
 		"""Indents the given 'text' with the given 'value' (which will be
 		converted to either spaces or tabs, depending on the formatter
 		parameters.
@@ -134,25 +265,46 @@ class Formatter:
 		If 'start' is True, then the start line will be indented as well,
 		otherwise it won't. When 'end' is True, a newline is inserted at
 		the end of the resulting text, otherwise not."""
+		if indent is None: indent = self.indent
 		first_line = True
 		result     = []
-		prefix     = self.indentToText(indent)
-		for line in text.split("\n"):
+		prefix     = self.indentAsSpaces(indent)
+		lines      = text.split("\n")
+		line_i     = 0
+		for line in lines:
+			if not line and line_i == len(lines)-1:
+				continue
 			if first_line and not start:
 				result.append(line)
 			else:
 				result.append(prefix + line)
 			first_line = False
+			line_i += 1
 		result = "\n".join(result)
 		if end: result += "\n"
 		return result
 
-	def indentToText( self, indent ):
+	def indentAsSpaces( self, indent=None, increment=0 ):
 		"""Converts the 'indent' value to a string filled with spaces or tabs
 		depending on the formatter parameters."""
-		return " " * int(indent)
+		if indent is None: indent = self.indent
+		return self.indentValue * (indent + increment)
 
+	def normalizeText( self, text ):
+		"""Replaces the tabs and eols by spaces, ignoring the value of tabs."""
+		return RE_SPACES.sub(" ", text)
 
+	def stripText( self, text ):
+		"""Strips leading and trailing spaces or eols from this text"""
+		while text and text[0] in '\t\n ':
+			text = text[1:]
+		while text and text[-1] in '\t\n ':
+			text = text[:-1]
+		return text
+
+	def reformatText( self, text ):
+		"""Reformats a text so that it fits a particular text width."""
+		return text
 
 # -----------------------------------------------------------------------------
 #
@@ -182,26 +334,12 @@ class Writer:
 		#comment = ET.Comment(line)
 		#self._node().append(comment)
 
-	def onTextAdd( self, text, onSameLine=False ):
-		"""Adds the given text fragment to the current element. When
-		'onSameLine', it means that the text fragment was on the same line as
-		the element, like this:
-
-		>    <title:Here is my title
-
-		as opposed to
-
-		>    <title
-		>       Here is my title
-
-		this will trigger (or not) a rendering hint that will tell the current
-		element to render as multi or single line."""
-		if not onSameLine:
-			self._node().isSingleLine = False
+	def onTextAdd( self, text ):
+		"""Adds the given text fragment to the current element."""
 		self._node().append(Text(text))
 
-	def onElementStart( self, name, attributes=None,isSingleLine=False ):
-		element = Element(name,attributes=attributes,isSingleLine=isSingleLine)
+	def onElementStart( self, name, attributes=None,isInline=False ):
+		element = Element(name,attributes=attributes,isInline=isInline)
 		self._node().append(element)
 		self._nodeStack.append(element)
 
@@ -260,7 +398,7 @@ class Parser:
 		self._writer.onDocumentStart()
 		for l in f.readlines():
 			self._parseLine(l)
-		return self._formatter.formatContent(self._writer.onDocumentEnd())
+		return self._formatter.format(self._writer.onDocumentEnd())
 
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
@@ -272,6 +410,9 @@ class Parser:
 		# are bound to
 		is_empty       = RE_EMPTY.match(line)
 		if is_empty:
+			# FIXME: When you have an empty line followed by content which is
+			# text with same or greeater indent, the empty line  should be taken
+			# into account. Same for elements with greater indent.
 			return
 		is_comment     = RE_COMMENT.match(line)
 		# Is it a comment ?
@@ -293,16 +434,14 @@ class Parser:
 			self._elementStack.append(indent)
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
-			# Element is a single line if it ends with ':'
-			if group[-1] == ":": is_single_line = True
-			else: is_single_line = False
 			name,attributes,hints=self._parsePamelaElement(group)
-			self._writer.onElementStart(name, attributes, isSingleLine=is_single_line)
-			if rest:
-				self._writer.onTextAdd(rest.replace("\n", " "), onSameLine=True)
+			# Element is a single line if it ends with ':'
+			self._writer.onElementStart(name, attributes, isInline=False)
+			if group[-1] == ":" and rest:
+				self._writer.onTextAdd(rest)
 			return
 		# Otherwise it's data
-		self._writer.onTextAdd(line.replace("\n", " "))
+		self._writer.onTextAdd(line)
 
 	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
