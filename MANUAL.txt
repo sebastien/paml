@@ -57,30 +57,31 @@ Dive into Pamela
 
   First things first, let's start with a simple Pamela example:
 
-  <<<
-    <html
-      <head
-        <title:My first Pamela document
-      <body
-
-        <h1:I like Pamela
-
-        <p:Pamela allows you to write HTML documents in a simple and nice way
-          that is less error-prone than the usual way to write HTML documents.
-
-        <h1:Links
-
-        Pamela was inspired by:
-        <ul
-          <li:the <a(href=http://haml.hamptoncatlin.com/tutorial):HAML> project
-          <li:the <a(href=http://slip.sf.net):SLIP> project
-  >>>
+  >   <html
+  >     <head
+  >       <title:My first Pamela document
+  >     <body
+  >       <h1:Lorem ipsum
+  >       <p
+  >         Lorem <b:ipsum dolor sit amet>, consectetuer adipiscing elit. Sed
+  >         feugiat, dui eu condimentum porttitor, nisi erat ultrices elit, in
+  >         sagittis sapien quam sed dolor. 
 
   this example will be translated to
 
-  <<<
-    TODO
-  >>>
+  >   <html>
+  >       <head>
+  >           <title>My first Pamela document</title>
+  >       </head>
+  >       <body>
+  >           <h1>Lorem ipsum</h1>
+  >           <p>
+  >               Lorem <b:ipsum dolor sit amet>, consectetuer adipiscing elit. Sed
+  >               feugiat, dui eu condimentum porttitor, nisi erat ultrices elit, in
+  >               sagittis sapien quam sed dolor. 
+  >           </p>
+  >       </body>
+  >   </html>
 
   This quick example can give you a good idea of the basic principles of Pamela:
 
@@ -92,21 +93,6 @@ Dive into Pamela
     them.
 
   As a summary, here are the syntactic elements presented in the above example:
-
-  == Pamela elements basic syntax
-  =============================================================================
-  Element           || Syntax                     || HTML
-  =============================================================================
-  _inlined element_ || '<tag:...>'                || '<tag>...</tag>'
-  -----------------------------------------------------------------------------
-  Here is an example where you use 'span' and 'a' elements:
-  >   Lorem <span:ipsum dolor> sit <a(href=http://www.google.com):amet> 
-  ------------------++---------------------------------------------------------
-  _block element_   || >   <tag                   || '<tag>Lorem ipsum</tag>'
-                    || >     Lorem ipsum          ||
-  ------------------++---------------------------------------------------------
-  _attributes_      || '<a(href=http://...):link' || '<a href="http://...">link</a>'
-  =============================================================================
 
   2. CSS and IDs
   ==============
@@ -127,14 +113,6 @@ Dive into Pamela
   where you indicate your element id with '#ID' and the classes as '.class'
   appended to your element.
 
-  == Pamela ID and class specification
-  =====================================================================================
-  Element           || Syntax                  || HTML
-  =====================================================================================
-  _element id_      || '<tag#myid:...>'        || '<tag id="myid">...</tag>'
-  -------------------------------------------------------------------------------------
-  _element class_   || '<span.mySpanClass:...' || '<span class="mySpanClass>...</span>'
-  =====================================================================================
 
   3. Content declaration and inclusion
   ====================================
@@ -164,14 +142,6 @@ Dive into Pamela
     TODO
   >>>
 
-  == Pamela element declaration and inclusion
-  =============================================================================
-  Element               || Syntax                   
-  =============================================================================
-  _element declaration_ || '@element'             
-  -----------------------------------------------------------------------------
-  _element reference_   || <div=@element
-  =============================================================================
 
   4. JavaScript and CSS support
   =============================
@@ -196,14 +166,6 @@ Dive into Pamela
   '[...]' as a specific kind of content. As always, content indentation is
   required for this block to be valid.
 
-  == Declaration of specific languages
-  =============================================================================
-  Element                   || Syntax                   
-  =============================================================================
-  _css declaration_         || '<div:[css|...]'
-  -----------------------------------------------------------------------------
-  _javascript declaration_  || '<script:[javascript|...]'
-  =============================================================================
 
   5. HTML rendering hints
   =======================
@@ -354,7 +316,55 @@ Dive into Pamela
 
   Let's take the FOAF or RDF XML applications...
 
-  --
+
+  8. Quick reference
+  ==================
+
+  == Pamela elements basic syntax
+  =============================================================================
+  Element           || Syntax                     || HTML
+  =============================================================================
+  _inlined element_ || '<tag:...>'                || '<tag>...</tag>'
+  -----------------------------------------------------------------------------
+  Here is an example where you use 'span' and 'a' elements:
+  >   Lorem <span:ipsum dolor> sit <a(href=http://www.google.com):amet> 
+  ------------------++---------------------------------------------------------
+  _block element_   || >   <tag                   || '<tag>Lorem ipsum</tag>'
+                    || >     Lorem ipsum          ||
+  ------------------++---------------------------------------------------------
+  _attributes_      || '<a(href=http://...):link' || '<a href="http://...">link</a>'
+  =============================================================================
+
+  == Pamela ID and class specification
+  =====================================================================================
+  Element           || Syntax                  || HTML
+  =====================================================================================
+  _element id_      || '<tag#myid:...>'        || '<tag id="myid">...</tag>'
+  -------------------------------------------------------------------------------------
+  _element class_   || '<span.mySpanClass:...' || '<span class="mySpanClass>...</span>'
+  =====================================================================================
+
+
+  == Pamela element declaration and inclusion
+  =============================================================================
+  Element               || Syntax
+  =============================================================================
+  _element declaration_ || '@element'
+  -----------------------------------------------------------------------------
+  _element reference_   || '<div=@element'
+  =============================================================================
+
+
+  == Declaration of specific languages
+  =============================================================================
+  Element                   || Syntax                   
+  =============================================================================
+  _css declaration_         || '<div:[css|...]'
+  -----------------------------------------------------------------------------
+  _javascript declaration_  || '<script:[javascript|...]'
+  =============================================================================
+
+# --
 
  [HAML]: HAML ''markup haiku'', <http://haml.hamptoncatlin.com/tutorial>
  [SLIP]: Slip, a "Sorta Like Python" shorthand for XML,

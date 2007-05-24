@@ -37,9 +37,10 @@ Version 0.4::
 
 	[ ] Single and multi-line properly represented
 	[ ] Proper emptyline/whitespace strategy
-	[ ] Pretty-printing that behaves as expected
+	[~] Pretty-printing that behaves as expected
 
 Version 0.3::
 
 	[ ] Ids classes and attributes
+	[ ] Inline content parsing
 	[X] Basic test cases

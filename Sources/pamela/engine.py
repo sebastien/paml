@@ -13,7 +13,7 @@
 
 import os, sys, re
 
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -26,16 +26,18 @@ SYMBOL_NAME    = "[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
-RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
-RE_COMMENT     = re.compile("^#.*$")
-RE_EMPTY       = re.compile("^\s*$")
-RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
-RE_ELEMENT     = re.compile("^\<(%s(%s)?|%s)(%s)?\:?" % (
+SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
 	SYMBOL_ID_CLS,
 	SYMBOL_ATTRS
-))
+)
+RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
+RE_COMMENT     = re.compile("^#.*$")
+RE_EMPTY       = re.compile("^\s*$")
+RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
+RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
+RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 
@@ -230,7 +232,11 @@ class Formatter:
 			self.pushFlags(*self.getDefaults(element.name))
 			start   = "<%s%s>" % (element.name, attributes)
 			end     = "</%s>" % (element.name)
-			if self.hasFlag(FORMAT_SINGLE_LINE):
+			if element.isInline:
+				self.pushFlags(FORMAT_SINGLE_LINE)
+				result = start + self.formatContent(element) + end
+				self.popFlags()
+			elif self.hasFlag(FORMAT_SINGLE_LINE):
 				result = self.indentAsSpaces() + start + self.formatContent(element) + end + "\n"
 			else:
 				start   = self.indentAsSpaces() + start
@@ -438,17 +444,51 @@ class Parser:
 			# Element is a single line if it ends with ':'
 			self._writer.onElementStart(name, attributes, isInline=False)
 			if group[-1] == ":" and rest:
-				self._writer.onTextAdd(rest)
+				self._parseContentLine(rest)
 			return
 		# Otherwise it's data
-		self._writer.onTextAdd(line)
+		self._parseContentLine(line)
 
 	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
 		content.""" 
+		offset = 0
+		# We look for elements in the content
+		while offset < len(line):
+			element = RE_INLINE.search(line, offset)
+			if not element:
+				break
+			closing = line.find(">", element.end())
+			# Elements must have a closing
+			if closing == -1:
+				raise Exception("Unclosed inline tag: %s" % (line))
+			# We prepend the text from the offset to the eleemnt
+			text = line[offset:element.start()]
+			if text:
+				self._writer.onTextAdd(text)
+			# And we append the element itself
+			group = element.group()[1:]
+			name,attributes,hints=self._parsePamelaElement(group)
+			self._writer.onElementStart(name, attributes, isInline=True)
+			text = line[element.end():closing]
+			if text: self._writer.onTextAdd(text)
+			self._writer.onElementEnd()
+			offset = closing + 1
+		# We add the remaining text
+		if offset < len(line):
+			text = line[offset:]
+			if text: self._writer.onTextAdd(text)
 
 	def _parsePamelaElement( self, element ):
-		"""Parses the declaration of a Pamela element, which is like that
+		"""Parses the declaration of a Pamela element, which is like the
+		following examples:
+
+		>	html
+		>	title:
+		>	body#main.body(onclick=load)|c:
+
+		basically, it is what lies between '<' and the ':' (or '\n'), which can
+		be summmed up as:
 
 		>	(#ID | NAME #ID?) .CLASS* ATTRIBUTES? |HINTS? :?
 
@@ -457,8 +497,9 @@ class Parser:
 
 		>	NAME=(VALUE|'VALUE'|"VALUE")
 
-		This function returns a tuple (name, id, classes, attributes, hints)
-		representing this parsed element."""
+		This function returns a triple (name, attributes, hints)
+		representing the parsed element. Attributes are stored as an ordered
+		list of couples '(name, value'), hints are given as a list of strings."""
 		original = element
 		if element[-1] == ":": element = element[:-1]
 		# We look for the attributes list

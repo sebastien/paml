@@ -1,0 +1,17 @@
+# Pamela single and multi-line elements hint information
+<html
+	<body
+		# We test an empty inline without attributes, and then with attributes
+		<div:<span>
+		<div:<span(class=emptyInline)>
+		<div:<span(class=emptyInline,style=backrgound:pink)>
+		# Same thing for non empty inline
+		<div:<span:non-empty inline>
+		<div:<span(class=emptyInline):non-empty inline>
+		<div:<span(class=emptyInline,style=backrgound:pink):non-empty inline>
+		# Now we test it with multiple inlines
+		<div:<span>, <span>
+		<div:<span(class=emptyInline)>, <span(class=emptyInline)>
+		<div:<span(class=emptyInline)>, <span(class=emptyInline,style=backrgound:pink)>
+
+# EOF
