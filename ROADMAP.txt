@@ -41,6 +41,7 @@ Version 0.4::
 
 Version 0.3::
 
-	[ ] Ids classes and attributes
-	[ ] Inline content parsing
+	[ ] Document formatted almost as in document
+	[X] Ids classes and attributes
+	[X] Inline content parsing
 	[X] Basic test cases

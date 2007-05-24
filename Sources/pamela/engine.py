@@ -5,10 +5,10 @@
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
 # Author            :   Sebastien Pierre                 <sebastien@type-z.org>
-# License           :   Lesser Gnu Public License
+# License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   21-May-2007
+# Last mod.         :   24-May-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -128,7 +128,7 @@ class Formatter:
 
 	def __init__( self ):
 		self.indent = 0
-		self.indentValue = "  "
+		self.indentValue = "\t"
 		self.textWidth = 80
 		# FIXME
 		self.defaults = {}
@@ -194,61 +194,73 @@ class Formatter:
 				return j
 		return -1
 
-	def format( self, document, indent=0 ):
-		self.indent = indent
-		result = self.formatContent(document)
-		# FIXME: This shouldn't be necessary
-		if result and result[-1] == "\n": result = result[:-1]
-		return result
+	# -------------------------------------------------------------------------
+	# MAIN FORMATTING OPERATIONS
+	# -------------------------------------------------------------------------
 
-	def formatContent( self, element ):
-		"""Returns a string representing the formatting of the given 'element'
-		content."""
-		result = []
+	def format( self, document, indent=0 ):
+		self.startWriting()
+		self.indent = indent
+		self._formatContent(document)
+		return self.endWriting()
+
+	def _formatContent( self, element ):
+		"""Formats the content of the given element. This uses the formatting
+		operations defined in this class."""
 		text   = []
 		# NOTE: In this process we aggregate text elements, which are typically
 		# one text element per line. This allows proper formatting
 		for e in element.content:
 			if isinstance(e, Element):
 				if text:
-					result.append(self.formatText("".join(text)))
+					self.writeText("".join(text))
 					text = []
-				result.append(self.formatElement(e))
+				self._formatElement(e)
 			elif isinstance(e, Text):
 				text.append(e.content)
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
-			result.append(self.formatText("".join(text)))
-			text = []
-		result = "".join(result) 
-		return result
+			self.writeText("".join(text))
 
-	def formatElement( self, element ):
-		"""Returns the given element (and its content) as a string formatted
-		according to this formatter configuration."""
+	def _formatElement( self, element ):
+		"""Formats the given element and its content, by using the formatting
+		operations defined in this class."""
 		attributes = element._attributesAsHTML()
+		# Does this element has any content ?
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			start   = "<%s%s>" % (element.name, attributes)
 			end     = "</%s>" % (element.name)
 			if element.isInline:
 				self.pushFlags(FORMAT_SINGLE_LINE)
-				result = start + self.formatContent(element) + end
+				self.writeText(start)
+				self._formatContent(element)
+				self.writeText(end)
 				self.popFlags()
 			elif self.hasFlag(FORMAT_SINGLE_LINE):
-				result = self.indentAsSpaces() + start + self.formatContent(element) + end + "\n"
+				self.newLine()
+				self.writeText(start)
+				self._formatContent(element)
+				self.writeText(end)
 			else:
-				start   = self.indentAsSpaces() + start
-				end     = self.indentAsSpaces() + end
-				self.indent += 2
-				content = self.formatContent(element)
-				self.indent -= 2
-				result = start + "\n" + content + end + "\n"
+				self.newLine()
+				self.writeText(start)
+				self.newLine()
+				self.startIndent()
+				self._formatContent(element)
+				self.endIndent()
+				self.ensureNewLine()
+				self.writeText(end)
 			self.popFlags()
-			return result
+		# Otherwise it doesn't
 		else:
-			return self.indentAsSpaces() + "<%s%s />\n" % (element.name, attributes)
+			text =  "<%s%s />" % (element.name, attributes)
+			if element.isInline:
+				self.writeText(text)
+			else:
+				self.newLine()
+				self.writeText(text)
 
 	def formatText( self, text ):
 		"""Returns the given text properly formatted according to
@@ -263,7 +275,91 @@ class Formatter:
 				text = self.indentString(text, start=not compact, end=not compact)
 		return text
 
-	def indentString( self, text, indent=None, start=True, end=True ):
+	# -------------------------------------------------------------------------
+	# TEXT OUTPUT COMMANDS
+	# -------------------------------------------------------------------------
+
+	def _isNewLine( self ):
+		"""Tells wether the current line is a new line."""
+		if not self._result or not self._result[-1]: return False
+		return not self._result or self._result[-1][-1] == "\n"
+
+	def _ensureNewLine( self ):
+		"""Ensures that there is a new line."""
+		if not self._isNewLine():
+			if not  self._result:
+				self._result.append("")
+			else:
+				self._result[-1] = self._result[-1] + "\n"
+
+	def startWriting( self ):
+		self._result = []
+
+	def startIndent( self ):
+		self.indent += 1
+
+	def endIndent( self ):
+		assert self.indent > 0
+		self.indent -= 1
+		self._ensureNewLine()
+
+	def newLine( self ):
+		self._ensureNewLine()
+
+	def ensureNewLine( self ):
+		self._ensureNewLine()
+
+	def writeText( self, text ):
+		result = self._result
+		if self.hasFlag(FORMAT_PRESERVE):
+			raise Exception("Not implemented")
+		else:
+			if self._isNewLine():
+				result.append(self.wrapText(text))
+			else:
+				offset = len(result[-1])
+				result[-1] = result[-1] + self.wrapText(text, len(result[-1]))
+
+	def endWriting( self ):
+		res = "".join(self._result)
+		del self._result
+		return res
+
+	def wrapText( self, text, offset=0, textWidth=80, indent=None ):
+		"""Wraps the given text at the given 'textWidth', starting at the given
+		'offset' with the given optional 'ident'."""
+		lines = []
+		current_line = []
+		text = text.replace("\n", " ")
+		if not text: return ''
+		if indent is None: indent = self.indent
+		# FIXME: Add a nicer way to break the text by considering tags as
+		# unbreakable entities
+		if offset == 0:
+			current_line.append(self.indentAsSpaces(indent))
+			offset = indent
+		for word in text.split(" "):
+			offset += len(word)
+			# Is it on the same line ?
+			if offset <=textWidth:
+				current_line.append(word)
+			# Or on a new line ?
+			else:
+				lines.append(" ".join(current_line))
+				current_line = []
+				offset = indent + len(word)
+				# We strip the previous line trailing space
+				current_line.append(self.indentAsSpaces(indent) + word)
+			offset += 1
+		if current_line: lines.append(" ".join(current_line))
+		res = "\n".join(lines)
+		return res
+
+	# -------------------------------------------------------------------------
+	# TEXT MANIPULATION OPERATIONS
+	# -------------------------------------------------------------------------
+
+	def indentString( self, text, indent=None, start=True, end=False ):
 		"""Indents the given 'text' with the given 'value' (which will be
 		converted to either spaces or tabs, depending on the formatter
 		parameters.
