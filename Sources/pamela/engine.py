@@ -128,7 +128,7 @@ class Formatter:
 
 	def __init__( self ):
 		self.indent = 0
-		self.indentValue = "\t"
+		self.indentValue = "  "
 		self.textWidth = 80
 		# FIXME
 		self.defaults = {}
@@ -336,8 +336,14 @@ class Formatter:
 		# FIXME: Add a nicer way to break the text by considering tags as
 		# unbreakable entities
 		if offset == 0:
-			current_line.append(self.indentAsSpaces(indent))
 			offset = indent
+			current_line.append(self.indentAsSpaces(indent))
+		def join_line( line ):
+			"""Joins the given line, where the first element is the indent, the
+			rest being the content (words)."""
+			# FIXME: This may not be adequate
+			if not line: return ""
+			return line[0] + " ".join(line[1:])
 		for word in text.split(" "):
 			offset += len(word)
 			# Is it on the same line ?
@@ -345,13 +351,13 @@ class Formatter:
 				current_line.append(word)
 			# Or on a new line ?
 			else:
-				lines.append(" ".join(current_line))
+				lines.append(join_line(current_line))
 				current_line = []
 				offset = indent + len(word)
 				# We strip the previous line trailing space
 				current_line.append(self.indentAsSpaces(indent) + word)
 			offset += 1
-		if current_line: lines.append(" ".join(current_line))
+		if current_line: lines.append(join_line(current_line))
 		res = "\n".join(lines)
 		return res
 
@@ -607,13 +613,33 @@ class Parser:
 			element = element[:parens_start]
 		else:
 			attributes = []
+		# Useful functions to manage attributes
+		def has_attribute( name, attributes ):
+			for a in attributes:
+				if a[0] == name: return a
+			return None
+		def set_attribute( name, value, attribtues ):
+			for a in attributes:
+				if a[0] == name:
+					a[1] = value
+					return 
+			attributes.append([name,value])
+		def append_attribute( name, value, attributes, prepend=False ):
+			a = has_attribute(name, attributes)
+			if a:
+				if prepend:
+					a[1] = value + " " + a[1]
+				else:
+					a[1] = a[1] + " " + value
+			else:
+				set_attribute(name, value, attributes)
 		# We look for the classes
 		classes = element.split(".")
 		if len(classes) > 1:
 			element = classes[0]
 			classes = classes[1:]
 			classes = " ".join( classes)
-			attributes.append(["class", classes])
+			append_attribute("class", classes, attributes, prepend=True)
 		else:
 			element = classes[0]
 		eid = element.split("#")
@@ -621,7 +647,9 @@ class Parser:
 		# and do something appropriate
 		if len(eid) > 1:
 			assert len(eid) == 2, "More than one id given: %s" % (original)
-			attributes.append(["id", eid[1]])
+			if has_attribute("id", attributes):
+				raise Exception("Id already given as element attribute")
+			attributes.insert(0,["id", eid[1]])
 			element = eid[0]
 		else:
 			element = eid[0]

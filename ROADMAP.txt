@@ -36,12 +36,12 @@ Version 0.5::
 Version 0.4::
 
 	[ ] Single and multi-line properly represented
-	[ ] Proper emptyline/whitespace strategy
+	[ ] Proper emptyline/whitespace handling
 	[~] Pretty-printing that behaves as expected
 
 Version 0.3::
 
-	[ ] Document formatted almost as in document
+	[X] Document formatted almost as in document
 	[X] Ids classes and attributes
 	[X] Inline content parsing
 	[X] Basic test cases
