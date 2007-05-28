@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   24-May-2007
+# Last mod.         :   28-May-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.2.7"
+__version__ = "0.3.1"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -40,6 +40,7 @@ RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
 RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
+RE_SPACE       = re.compile("[\s\n]")
 
 # -----------------------------------------------------------------------------
 #
@@ -53,6 +54,7 @@ FORMAT_PRESERVE    = "p"
 FORMAT_NORMALIZE   = "n"
 FORMAT_STRIP       = "s"
 FORMAT_COMPACT     = "c"
+FORMAT_WRAP        = "w"
 FORMAT_OPTIONS     = (
 	FORMAT_SINGLE_LINE,
 	FORMAT_PRESERVE,
@@ -68,7 +70,7 @@ HTML_DEFAULTS = {
 	"h2":"sl n s".split(),
 	"h3":"sl n s".split(),
 	"h4":"sl n s".split(),
-#	"p":"n s c".split(),
+	"p":"n s c w".split(),
 	"code":"n s c".split(),
 	"pre":"p".split(),
 }
@@ -234,33 +236,33 @@ class Formatter:
 			end     = "</%s>" % (element.name)
 			if element.isInline:
 				self.pushFlags(FORMAT_SINGLE_LINE)
-				self.writeText(start)
+				self.writeTag(start)
 				self._formatContent(element)
-				self.writeText(end)
+				self.writeTag(end)
 				self.popFlags()
 			elif self.hasFlag(FORMAT_SINGLE_LINE):
 				self.newLine()
-				self.writeText(start)
+				self.writeTag(start)
 				self._formatContent(element)
-				self.writeText(end)
+				self.writeTag(end)
 			else:
 				self.newLine()
-				self.writeText(start)
+				self.writeTag(start)
 				self.newLine()
 				self.startIndent()
 				self._formatContent(element)
 				self.endIndent()
 				self.ensureNewLine()
-				self.writeText(end)
+				self.writeTag(end)
 			self.popFlags()
 		# Otherwise it doesn't
 		else:
 			text =  "<%s%s />" % (element.name, attributes)
 			if element.isInline:
-				self.writeText(text)
+				self.writeTag(text)
 			else:
 				self.newLine()
-				self.writeText(text)
+				self.writeTag(text)
 
 	def formatText( self, text ):
 		"""Returns the given text properly formatted according to
@@ -309,57 +311,62 @@ class Formatter:
 	def ensureNewLine( self ):
 		self._ensureNewLine()
 
+	def writeTag( self, tagText ):
+		if self._isNewLine():
+			self._result.append(self.indentAsSpaces() + tagText)
+		else:
+			self._result[-1] = self._result[-1] + tagText
+
 	def writeText( self, text ):
 		result = self._result
 		if self.hasFlag(FORMAT_PRESERVE):
 			raise Exception("Not implemented")
 		else:
 			if self._isNewLine():
-				result.append(self.wrapText(text))
+				if self.hasFlag(FORMAT_WRAP):
+					result.append(self.wrapText(text))
+				else:
+					result.append( self.indentAsSpaces() + text)
 			else:
 				offset = len(result[-1])
-				result[-1] = result[-1] + self.wrapText(text, len(result[-1]))
+				if self.hasFlag(FORMAT_WRAP):
+					result[-1] = result[-1] + self.wrapText(text, len(result[-1]))
+				else:
+					result[-1] = result[-1] + text
 
 	def endWriting( self ):
 		res = "".join(self._result)
 		del self._result
 		return res
 
+	def _iterateOnWords( self, text ):
+		"""Splits the given text into words (separated by ' ', '\t' or '\n') and
+		returns an iterator on these words.
+		
+		This function is used by 'wrapText'."""
+		offset = 0
+		while offset < len(text):
+			space  = RE_SPACE.search(text, offset)
+			inline = RE_INLINE.search(text, offset)
+			if space:
+				if inline and inline.start() < space.start():
+					end = text.find(">", inline.end()) + 1
+					yield text[offset:end]
+					offset = end
+				else:
+					yield text[offset:space.start()]
+					offset = space.end()
+			else:
+				yield text[offset:]
+				offset = len(text)
+
 	def wrapText( self, text, offset=0, textWidth=80, indent=None ):
 		"""Wraps the given text at the given 'textWidth', starting at the given
 		'offset' with the given optional 'ident'."""
-		lines = []
-		current_line = []
-		text = text.replace("\n", " ")
-		if not text: return ''
-		if indent is None: indent = self.indent
-		# FIXME: Add a nicer way to break the text by considering tags as
-		# unbreakable entities
-		if offset == 0:
-			offset = indent
-			current_line.append(self.indentAsSpaces(indent))
-		def join_line( line ):
-			"""Joins the given line, where the first element is the indent, the
-			rest being the content (words)."""
-			# FIXME: This may not be adequate
-			if not line: return ""
-			return line[0] + " ".join(line[1:])
-		for word in text.split(" "):
-			offset += len(word)
-			# Is it on the same line ?
-			if offset <=textWidth:
-				current_line.append(word)
-			# Or on a new line ?
-			else:
-				lines.append(join_line(current_line))
-				current_line = []
-				offset = indent + len(word)
-				# We strip the previous line trailing space
-				current_line.append(self.indentAsSpaces(indent) + word)
-			offset += 1
-		if current_line: lines.append(join_line(current_line))
-		res = "\n".join(lines)
-		return res
+		words = []
+		for word in self._iterateOnWords(text):
+			words.append(word)
+		return " ".join(words)
 
 	# -------------------------------------------------------------------------
 	# TEXT MANIPULATION OPERATIONS
@@ -538,7 +545,22 @@ class Parser:
 			return
 		# Is it an element ?
 		is_element = RE_ELEMENT.match(line)
+		# It may be an inline element, like:
+		# <a(href=/about):about> | <a(href=/sitemap):sitemap>
 		if is_element:
+			closing = line.find(">", is_element.end())
+			opening = line.find("<", is_element.end())
+			if closing == -1:
+				inline_element = False
+			elif opening == -1:
+				inline_element = True
+			elif closing < opening:
+				inline_element = True
+			else:
+				inline_element = False
+		else:
+			inline_element = False
+		if is_element and not inline_element:
 			self._elementStack.append(indent)
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]

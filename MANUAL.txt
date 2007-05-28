@@ -1,7 +1,7 @@
 == Pamela
 == Brings the pleasure back to HTML and XML !
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
--- Date: 21-May-2007
+-- Date: 25-May-2007
 
 Introduction
 ============
@@ -122,19 +122,17 @@ Dive into Pamela
   specific subsets of your HTML document, and then assign them to be the content
   for specific elements:
 
-  <<<
-    @head
-      <title:My document
-      <link(rel=Stylesheet,media=screen,type=text/css,href=screen.css)
-    @content
-      <h1:Lorem ipsum
-      <p:Dolor sit amet
-
-    <html
-      <head=@head
-      <body
-        <div=@content
-  >>>
+  >   @head
+  >     <title:My document
+  >     <link(rel=Stylesheet,media=screen,type=text/css,href=screen.css)
+  >   @content
+  >     <h1:Lorem ipsum
+  >     <p:Dolor sit amet
+  >   
+  >   <html
+  >     <head=@head
+  >     <body
+  >       <div=@content
 
   will result into
 
@@ -211,11 +209,22 @@ Dive into Pamela
     |
     >   <h1>Lorem ipsum dolor sit amet</h1>
 
-  Indent (default, 'i')::
-    tells that the content should be indented to the same level
-    as the enclosing tag.
+  Wrap (default, 'w')::
+    tells that the content should be wrapped to the text width (set to 80 by
+    default). This is especially for paragraphs:
     |
-    >  <
+    >   <p>
+    >     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo,
+    >     suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
+    >     consequat aliquam tempor, nibh nisl porta augue, in condimentum nunc sem sed
+    >     nunc. Duis a justo. Integer tincidunt, nisi lacinia pretium sollicitudin
+    >   </p>
+    |
+    instead of having everything on a single line
+    |
+    >   <p>
+    >     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo...
+    >   </p>
 
   Preserve ('p')::
     tells that the text content should be preserved ''as-is'', which is

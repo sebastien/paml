@@ -13,5 +13,11 @@
 		<div:<span>, <span>
 		<div:<span(class=emptyInline)>, <span(class=emptyInline)>
 		<div:<span(class=emptyInline)>, <span(class=emptyInline,style=backrgound:pink)>
+		# Cases which were observed as being problematic at some point
+		# PROBLEM: The following was interpreted as an element, not an inline
+		<a(href=/about):about> | <a(href=/sitemap):sitemap>
+		# PROBLEM: div.search was interpreted as an inline, while it is not
+		<div.search:<input.search(type=text,size=20)><input(type=button,value=Search)>
+
 
 # EOF
