@@ -13,7 +13,7 @@
 
 import os, sys, re
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -513,6 +513,13 @@ class Parser:
 		self._writer.onDocumentStart()
 		for l in f.readlines():
 			self._parseLine(l)
+		return self._formatter.format(self._writer.onDocumentEnd())
+
+	def parseText( self, text ):
+		"""Parses the given string and returns an HTML document."""
+		self._writer.onDocumentStart()
+		for line in text.split("\n"):
+			self._parseLine(line)
 		return self._formatter.format(self._writer.onDocumentEnd())
 
 	def _parseLine( self, line ):
