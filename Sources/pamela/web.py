@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   01-Jun-2007
+# Last mod.         :   05-Jun-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -31,7 +31,7 @@ def processSugar( sugarText, path ):
 def run( arguments ):
 	files  = LocalFiles(processors={"paml":processPamela, "sjs":processSugar})
 	app    = railways.Application(components=(files,))
-	railways.run(app=app)
+	railways.run(app=app,sessions=False)
 
 # -----------------------------------------------------------------------------
 #
