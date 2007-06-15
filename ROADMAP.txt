@@ -20,7 +20,7 @@ Version 0.8::
 Version 0.7::
 
 	[ ] Namespace support (XML)
-	[ ] Quirks support (HTML like empty-divs, etc)
+	[ ] Quirks support (HTML like empty-divs, non-empty script tags, etc)
 	[ ] HTML tidy integration
 
 Version 0.6::
@@ -32,6 +32,7 @@ Version 0.5::
 
 	[ ] Command-line interface
 	[ ] Declarations suppport
+	[ ] Escaped/Specific-content support
 
 Version 0.4::
 

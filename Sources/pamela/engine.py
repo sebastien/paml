@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   28-May-2007
+# Last mod.         :   14-Jun-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -320,7 +320,7 @@ class Formatter:
 	def writeText( self, text ):
 		result = self._result
 		if self.hasFlag(FORMAT_PRESERVE):
-			raise Exception("Not implemented")
+			result.append(text)
 		else:
 			if self._isNewLine():
 				if self.hasFlag(FORMAT_WRAP):
