@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   05-Jun-2007
+# Last mod.         :   27-Jun-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -28,8 +28,19 @@ def processSugar( sugarText, path ):
 		return sugarText, "text/plain"
 	return sugar.sourceToJavaScript(path, sugarText)[0], "text/plain"
 
+def getProcessors():
+	"""Returns a dictionary with the Railways LocalFiles processors already
+	setup."""
+	return {"paml":processPamela, "sjs":processSugar}
+
+def getLocalFile():
+	"""Returns a Railways LocalFile component initialized with the Pamela
+	processor."""
+	return LocalFiles(processors=getProcessors())
+
+
 def run( arguments ):
-	files  = LocalFiles(processors={"paml":processPamela, "sjs":processSugar})
+	files  = getLocalFile()
 	app    = railways.Application(components=(files,))
 	railways.run(app=app,sessions=False)
 
