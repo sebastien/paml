@@ -1,0 +1,8 @@
+# PROBLEM: leading whitespace is eaten in inline tag
+# RESULT : The following whitespace<b>will be</b> eaten
+# EXPECTS: The following whitespace <b>will be</b> eaten
+# DATE:    20-Jun-2007
+<html
+	<body
+		<p:The following whitespace <b:will be> eaten
+# EOF

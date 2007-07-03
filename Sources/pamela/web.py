@@ -19,7 +19,8 @@ from railways.contrib.localfiles import LocalFiles
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
-	return parser.parseText(pamelaText), "text/html"
+	result = parser.parseText(pamelaText)
+	return result, "text/html"
 
 def processSugar( sugarText, path ):
 	try:

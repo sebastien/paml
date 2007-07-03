@@ -340,18 +340,23 @@ class Formatter:
 	def writeText( self, text ):
 		result = self._result
 		if self.hasFlag(FORMAT_PRESERVE):
+			#print "APPEND ",repr(text)
 			result.append(text)
 		else:
 			if self._isNewLine():
 				if self.hasFlag(FORMAT_WRAP):
+					#print "WRAP ",repr(self.wrapText(text))
 					result.append(self.wrapText(text))
 				else:
+					#print "INDENT ",repr(self.indentAsSpaces() + text)
 					result.append( self.indentAsSpaces() + text)
 			else:
 				offset = len(result[-1])
 				if self.hasFlag(FORMAT_WRAP):
+					#print "APPEND WRAP ",repr(self.wrapText(text, len(result[-1])))
 					result[-1] = result[-1] + self.wrapText(text, len(result[-1]))
 				else:
+					#print "APPEND ",repr(text)
 					result[-1] = result[-1] + text
 
 	def endWriting( self ):
@@ -542,7 +547,7 @@ class Parser:
 		"""Parses the given string and returns an HTML document."""
 		self._writer.onDocumentStart()
 		for line in text.split("\n"):
-			self._parseLine(line)
+			self._parseLine(line + "\n")
 		return self._formatter.format(self._writer.onDocumentEnd())
 
 	def _parseLine( self, line ):
@@ -760,6 +765,7 @@ class Parser:
 def run( arguments ):
 	input_file = arguments[0]
 	parser = Parser()
+	t = file(input_file, 'r').read()
 	print parser.parseFile(input_file)
 
 # -----------------------------------------------------------------------------
