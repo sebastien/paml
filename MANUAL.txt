@@ -1,7 +1,7 @@
 == Pamela
 == Brings the pleasure back to HTML and XML !
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
--- Date: 25-May-2007
+-- Date: 03-Jul-2007
 
 Introduction
 ============
