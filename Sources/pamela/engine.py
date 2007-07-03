@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   14-Jun-2007
+# Last mod.         :   03-Jul-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -126,9 +126,23 @@ class Declaration(Element):
 RE_SPACES = re.compile("\s")
 
 class Formatter:
-	"""Formats the elements of the Pamela object model."""
+	"""Formats the elements of the Pamela object model. A formatter really acts
+	as a state machine, and keeps track of the various formatting hints bound to
+	the Pamela XML/HTML elements to render the document in the most appropriate
+	way.
+	
+	If you instanciate a formatter, you'll have access to the following
+	attributes, which can influence the generated text:
+	
+	 - 'indent=0'
+	 - 'indentValue="  "'
+	 - 'textWidth=80'
+	 - 'defaults=HTML_DEFAULT'
+
+	"""
 
 	def __init__( self ):
+		"""Creates a new formatter."""
 		self.indent = 0
 		self.indentValue = "  "
 		self.textWidth = 80
@@ -223,7 +237,10 @@ class Formatter:
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
-			self.writeText("".join(text))
+			text = "".join(text)
+			if not element.isInline:
+				while text[-1] in "\n\t ": text = text[:-1]
+			self.writeText(text)
 
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
@@ -234,17 +251,22 @@ class Formatter:
 			self.pushFlags(*self.getDefaults(element.name))
 			start   = "<%s%s>" % (element.name, attributes)
 			end     = "</%s>" % (element.name)
+			# If the element is an inline, we enter the SINGLE_LINE formatting
+			# mode, without adding an new line
 			if element.isInline:
 				self.pushFlags(FORMAT_SINGLE_LINE)
 				self.writeTag(start)
 				self._formatContent(element)
 				self.writeTag(end)
 				self.popFlags()
+			# Or maybe the element has a SINGLE_LINE flag, in which case we add a
+			# newline inbetween
 			elif self.hasFlag(FORMAT_SINGLE_LINE):
 				self.newLine()
 				self.writeTag(start)
 				self._formatContent(element)
 				self.writeTag(end)
+			# Otherwise it's a normal open/closed element
 			else:
 				self.newLine()
 				self.writeTag(start)
@@ -255,14 +277,12 @@ class Formatter:
 				self.ensureNewLine()
 				self.writeTag(end)
 			self.popFlags()
-		# Otherwise it doesn't
+		# Otherwise it doesn't have any content
 		else:
 			text =  "<%s%s />" % (element.name, attributes)
-			if element.isInline:
-				self.writeTag(text)
-			else:
-				self.newLine()
-				self.writeTag(text)
+			# And if it's an inline, we don't add a newline
+			if not element.isInline: self.newLine()
+			self.writeTag(text)
 
 	def formatText( self, text ):
 		"""Returns the given text properly formatted according to
@@ -359,6 +379,9 @@ class Formatter:
 			else:
 				yield text[offset:]
 				offset = len(text)
+		if space and space.end() == len(text) \
+		or inline and inline.end() == len(text):
+			yield ""
 
 	def wrapText( self, text, offset=0, textWidth=80, indent=None ):
 		"""Wraps the given text at the given 'textWidth', starting at the given
