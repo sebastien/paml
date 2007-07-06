@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   03-Jul-2007
+# Last mod.         :   06-Jul-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -239,7 +239,7 @@ class Formatter:
 		if text:
 			text = "".join(text)
 			if not element.isInline:
-				while text[-1] in "\n\t ": text = text[:-1]
+				while text and text[-1] in "\n\t ": text = text[:-1]
 			self.writeText(text)
 
 	def _formatElement( self, element ):
