@@ -612,6 +612,7 @@ class Parser:
 		"""Parses a line that is data/text that is part of an element
 		content.""" 
 		offset = 0
+		print repr(line)
 		# We look for elements in the content
 		while offset < len(line):
 			element = RE_INLINE.search(line, offset)
@@ -620,7 +621,7 @@ class Parser:
 			closing = line.find(">", element.end())
 			# Elements must have a closing
 			if closing == -1:
-				raise Exception("Unclosed inline tag: %s" % (line))
+				raise Exception("Unclosed inline tag: '%s'" % (line))
 			# We prepend the text from the offset to the eleemnt
 			text = line[offset:element.start()]
 			if text:

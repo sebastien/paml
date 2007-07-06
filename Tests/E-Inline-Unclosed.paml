@@ -1,0 +1,6 @@
+# PROBLEM:
+# Exception: Unclosed inline tag: i				<input#add-shelf(type=button,value=Add shelf)
+<html
+	<body
+i				<input#add-shelf(type=button,value=Add shelf)
+# EOF
