@@ -151,9 +151,18 @@ aimg {
 	padding-bottom: 0.2em;
 }
 
+.kiwiContent ul li.todo {
+	list-style-type: square;
+}
+
+.kiwiContent ul li.todo.done {
+	text-decoration: line-through;
+}
+
 .kiwiContent table {
 	border:  1px solid rgb(150, 220, 238);
 	padding: 0pt;
+	min-width: 50%;
 }
 
 .kiwiContent table caption {
@@ -273,7 +282,7 @@ aimg {
 <body>
 <div
 	class="title"><h1>Pamela Roadmap</h1></div>
-<div class="kiwiContent"><div class='content'><dl><dt>Version 1.0</dt><dd><div class='content'><ul><li>Cleanup, review </li><li>Proper error reporting</li></ul></div></dd><dt>Version 0.9</dt><dd><div class='content'><ul><li>Python interface to load libraries </li><li>Hooks to process data</li></ul></div></dd><dt>Version 0.8</dt><dd><div class='content'><ul><li>CSS validation support </li><li>JavaScript validation support </li><li>Sugar validation support </li><li>Kiwi processing of text</li></ul></div></dd><dt>Version 0.7</dt><dd><div class='content'><ul><li>Namespace support (XML) </li><li>Quirks support (HTML like empty-divs, non-empty script tags, etc) </li><li>HTML tidy integration</li></ul></div></dd><dt>Version 0.6</dt><dd><div class='content'><ul><li>Rendering hints </li><li>Include files support</li></ul></div></dd><dt>Version 0.5</dt><dd><div class='content'><ul><li>Command-line interface </li><li>Declarations suppport </li><li>Escaped/Specific-content support</li></ul></div></dd><dt>Version 0.4</dt><dd><div class='content'><ul><li>Single and multi-line properly represented </li><li>Proper emptyline/whitespace handling </li><li>Pretty-printing that behaves as expected</li></ul></div></dd><dt>Version 0.3</dt><dd><div class='content'><ul><li>Document formatted almost as in document </li><li>Ids classes and attributes </li><li>Inline content parsing </li><li>Basic test cases </li></ul></div></dd></dl></div></div>
+<div class="kiwiContent"><div class='content'><dl><dt>Version 1.0</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Cleanup, review </input></li><li class="todo"><input type='checkbox' readonly>Proper error reporting</input></li></ul></div></dd><dt>Version 0.9</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Python interface to load libraries </input></li><li class="todo"><input type='checkbox' readonly>Hooks to process data</input></li></ul></div></dd><dt>Version 0.8</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>CSS validation support </input></li><li class="todo"><input type='checkbox' readonly>JavaScript validation support </input></li><li class="todo"><input type='checkbox' readonly>Sugar validation support </input></li><li class="todo"><input type='checkbox' readonly>Kiwi processing of text</input></li></ul></div></dd><dt>Version 0.7</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Namespace support (XML) </input></li><li class="todo"><input type='checkbox' readonly>Quirks support (HTML like empty-divs, non-empty script tags, etc) </input></li><li class="todo"><input type='checkbox' readonly>HTML tidy integration</input></li></ul></div></dd><dt>Version 0.6</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Rendering hints </input></li><li class="todo"><input type='checkbox' readonly>Include files support</input></li></ul></div></dd><dt>Version 0.5</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Command-line interface </input></li><li class="todo"><input type='checkbox' readonly>Declarations suppport </input></li><li class="todo"><input type='checkbox' readonly>OS Environment override for declarations </input></li><li class="todo"><input type='checkbox' readonly>Escaped/Specific-content support</input></li></ul></div></dd><dt>Version 0.4</dt><dd><div class='content'><ul class="todo"><li class="todo"><input type='checkbox' readonly>Single and multi-line properly represented </input></li><li class="todo"><input type='checkbox' readonly>Proper emptyline/whitespace handling </input></li><li>Pretty-printing that behaves as expected</li></ul></div></dd><dt>Version 0.3</dt><dd><div class='content'><ul class="todo"><li class="todo done"><input type='checkbox' checked='true' readonly>Document formatted almost as in document </input></li><li class="todo done"><input type='checkbox' checked='true' readonly>Ids classes and attributes </input></li><li class="todo done"><input type='checkbox' checked='true' readonly>Inline content parsing </input></li><li class="todo done"><input type='checkbox' checked='true' readonly>Basic test cases </input></li></ul></div></dd></dl></div></div>
 
 </body>
 </html>

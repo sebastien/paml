@@ -48,14 +48,17 @@ RE_SPACE       = re.compile("[\s\n]")
 #
 # -----------------------------------------------------------------------------
 
-FORMAT_INLINE      = "i"
-FORMAT_SINGLE_LINE = "sl"
-FORMAT_PRESERVE    = "p"
-FORMAT_NORMALIZE   = "n"
-FORMAT_STRIP       = "s"
-FORMAT_COMPACT     = "c"
-FORMAT_WRAP        = "w"
-FORMAT_OPTIONS     = (
+FORMAT_INLINE       = "i"
+FORMAT_INLINE_BLOCK = "ib"
+FORMAT_SINGLE_LINE  = "sl"
+FORMAT_PRESERVE     = "p"
+FORMAT_NORMALIZE    = "n"
+FORMAT_STRIP        = "s"
+FORMAT_COMPACT      = "c"
+FORMAT_WRAP         = "w"
+FORMAT_OPTIONS      = (
+	FORMAT_INLINE,
+	FORMAT_INLINE_BLOCK,
 	FORMAT_SINGLE_LINE,
 	FORMAT_PRESERVE,
 	FORMAT_NORMALIZE,
@@ -65,6 +68,8 @@ FORMAT_OPTIONS     = (
 
 # Defaults for HTML documents
 HTML_DEFAULTS = {
+	"script":"i".split(),
+	"link":"i".split(),
 	"title":"sl n s".split(),
 	"h1":"sl n s".split(),
 	"h2":"sl n s".split(),
@@ -73,8 +78,17 @@ HTML_DEFAULTS = {
 	"p":"n s c w".split(),
 	"code":"n s c".split(),
 	"pre":"p".split(),
+	"div":"ib".split()
 }
 
+HTML_EXCEPTIONS = {
+	"script":{
+		"NOT_EMPTY":" "
+	},
+	"div":{
+		"NOT_EMPTY":"&znjs;"
+	}
+}
 # -----------------------------------------------------------------------------
 #
 # Object Model
@@ -242,15 +256,36 @@ class Formatter:
 				while text and text[-1] in "\n\t ": text = text[:-1]
 			self.writeText(text)
 
+	def _inlineCanSpanOneLine( self, element ):
+		"""Tells wether the given element (when considered as an inline) can
+		span one single line. It can if only it has inlines that can span
+		one line and text without EOLs as content."""
+		if isinstance(element, Text):
+			return element.content.find("\n") == -1
+		else:
+			for c in element.content:
+				if not self._inlineCanSpanOneLine(c):
+					return False
+			return True
+	
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
 		attributes = element._attributesAsHTML()
+		exceptions = HTML_EXCEPTIONS.get(element.name)
+		content = element.content
+		if exceptions:
+			not_empty = exceptions.get("NOT_EMPTY")
+			if not_empty != None and not content:
+				element.content.append(Text(not_empty))
 		# Does this element has any content ?
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			start   = "<%s%s>" % (element.name, attributes)
 			end     = "</%s>" % (element.name)
+			if self.hasFlag(FORMAT_INLINE):
+				if self._inlineCanSpanOneLine(element):
+					self.setFlag(FORMAT_SINGLE_LINE)
 			# If the element is an inline, we enter the SINGLE_LINE formatting
 			# mode, without adding an new line
 			if element.isInline:
@@ -612,7 +647,6 @@ class Parser:
 		"""Parses a line that is data/text that is part of an element
 		content.""" 
 		offset = 0
-		print repr(line)
 		# We look for elements in the content
 		while offset < len(line):
 			element = RE_INLINE.search(line, offset)
@@ -767,7 +801,7 @@ def run( arguments ):
 	input_file = arguments[0]
 	parser = Parser()
 	t = file(input_file, 'r').read()
-	print parser.parseFile(input_file)
+	return parser.parseFile(input_file)
 
 # -----------------------------------------------------------------------------
 #
@@ -776,7 +810,7 @@ def run( arguments ):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	run(sys.argv[1:])
+	print run(sys.argv[1:])
 
 # EOF
 

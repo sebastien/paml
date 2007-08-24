@@ -39,7 +39,6 @@ def getLocalFile():
 	processor."""
 	return LocalFiles(processors=getProcessors())
 
-
 def run( arguments ):
 	files  = getLocalFile()
 	app    = railways.Application(components=(files,))

@@ -151,6 +151,14 @@ aimg {
 	padding-bottom: 0.2em;
 }
 
+.kiwiContent ul li.todo {
+	list-style-type: square;
+}
+
+.kiwiContent ul li.todo.done {
+	text-decoration: line-through;
+}
+
 .kiwiContent table {
 	border:  1px solid rgb(150, 220, 238);
 	padding: 0pt;
@@ -272,7 +280,7 @@ aimg {
 </head>
 <body>
 <div
-	class="title"><h1>Pamela</h1><h2>Brings The Pleasure Back To Html And Xml !</h2></div><table class='kiwiMeta'><tr><td width='0px' class='name'>Author</td><td width='100%' class='value'>Sébastien Pierre &lt;sebastien@ivy.fr&gt;</td></tr><tr><td width='0px' class='name'>Date</td><td width='100%' class='value'>25-May-2007</td></tr></table>
+	class="title"><h1>Pamela</h1><h2>Brings The Pleasure Back To Html And Xml !</h2></div><table class='kiwiMeta'><tr><td width='0px' class='name'>Author</td><td width='100%' class='value'>Sébastien Pierre &lt;sebastien@ivy.fr&gt;</td></tr><tr><td width='0px' class='name'>Date</td><td width='100%' class='value'>24-Aug-2007</td></tr></table>
 <div class="kiwiContent"><div class='content'><div class="section"><h1 class="heading">Introduction</h1><div class="level1"><p>People who care about web application design and development know that it's better to write your HTML by hand rather than using a tool to produce it. The reasons are that you know and control the information and the structure of your documents, which is a critical aspect when your HTML is the basis for a JavaScript-driven rich client application.</p><p>Writing HTML is quite painful, and you have some tools out there to help you in this task. You can use templating languages like Cheetah or KID (Python) or RHTML (Ruby) to make your life easier and encourage re-use of bits of code&ndash; but you may find that process a bit too complicated for your daily usage.</p><p>Some people tried to make writing HTML easier, the <a href="#HAML">HAML</a> or <a href="#SLIP">SLIP</a> projects are good examples of that. However, HAML is too tied to Ruby and RHTML, and SLIP was not flexible enough and a bit outdated.</p><p>Pamela is an attempt at following the path of HAML and SLIP, while improving on some aspects:</p><dl><dt> Be simple</dt><dd><div class='content'>while there is a need for include/import of elements, there is no need for supporting a full templating system. This helps keep the syntax sane and easy.</div></dd><dt> Less errors</dt><dd><div class='content'>it is easy to make mistakes when you write HTML (forget to close tags, empty divs that are removed by the browser), so Pamela's syntax is designed to prevent errors and maximize re-use and readability.</div></dd><dt> Does one thing, but does it very well</dt><dd><div class='content'>we do not want to introduce features tied to a specific technology not related to HTML. Pamela will only output HTML/XML, and does not try to be a full templating language. Pamela does its best to offer you the most flexibility in producing the HTML document that you want.</div></dd><dt> For designers and developers</dt><dd><div class='content'>whether you quickly want to prototype your design or define CSS classes and ids to hook your JavaScript on, Pamela will make it easy and quick to do what you want and help people understand your design.</div></dd></dl><p>Pamela's syntax was designed to be very easy to learn, to be consistent, to favor explicit over implicit, and to allow people to quickly write HTML code.</p></div></div><div class="section"><h1 class="heading">Getting started</h1><div class="level1"></div></div><div class="section"><h1 class="heading">Dive into Pamela</h1><div class="level1"><div class="section"><h2 class="heading">Basics</h2><div class="level2"><p>First things first, let's start with a simple Pamela example:</p><pre>&lt;html
   &lt;head
     &lt;title:My first Pamela document
@@ -324,7 +332,13 @@ quis, urna. Maecenas pretium dignissim massa. Quisque nisi.&lt;/p&gt;</pre><p>Ad
 &lt;div#mydiv.myClass(attr=value)|s</pre><p>all tell that the resulting HTML content should be stripped (<code>s</code> rendering hint). You can just add letters to add more rendering hints.</p><dl><dt> Single-line (<code>sl</code>)</dt><dd><div class='content'>indicates that you want your HTML element to be rendered on a single line (which may be wrapped if you specified a text width)<br /><pre>&lt;h1|sl:
   Lorem ipsum dolor
   sit amet
-</pre> will be rendered as<br /><pre>&lt;h1&gt;Lorem ipsum dolor sit amet&lt;/h1&gt;</pre></div></dd><dt> Wrap (default, <code>w</code>)</dt><dd><div class='content'>tells that the content should be wrapped to the text width (set to 80 by default). This is especially for paragraphs:<br /><pre>&lt;p&gt;
+</pre> will be rendered as<br /><pre>&lt;h1&gt;Lorem ipsum dolor sit amet&lt;/h1&gt;</pre></div></dd><dt> Inline (<code>i</code>)</dt><dd><div class='content'>inlines will be written as single-lines when their content do not have any newline <code>\n</code>:<br /><pre>&lt;script|i:alert("Hello");
+</pre> will be rendered as<br /><pre>&lt;script&gt;alert("Hello");&lt;/script&gt;
+</pre> while<br /><pre>&lt;script
+  alert("Hello");
+</pre> will be rendered as <pre>&lt;script&gt;
+   alert("Hello");
+&lt;/script&gt;</pre></div></dd><dt> Wrap (default, <code>w</code>)</dt><dd><div class='content'>tells that the content should be wrapped to the text width (set to 80 by default). This is especially for paragraphs:<br /><pre>&lt;p&gt;
   Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo,
   suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
   consequat aliquam tempor, nibh nisl porta augue, in condimentum nunc sem sed
@@ -339,7 +353,7 @@ quis, urna. Maecenas pretium dignissim massa. Quisque nisi.&lt;/p&gt;</pre><p>Ad
   print "Hello, ", someone, "!"&lt;/pre&gt;</pre></div></dd><dt> Normalize (<code>n</code>)</dt><dd><div class='content'>indicates that you want <code>\n</code> and <code>\t</code> to be converted to spaces, and multiple spaces to be compressed into one.<br /><pre> &lt;code:   Lorem    ipsum
       dolor    sit amet
 </pre> will be rendered as<br /><pre> &lt;code&gt; Lorem ipsum dolor sit amet&lt;/code&gt;</pre></div></dd><dt> Strip (<code>s</code>)</dt><dd><div class='content'>indicates that you want your string content to be stripped out leading and trailing spaces.<br /><pre>&lt;h1|s:  Stripped heading
-</pre> will be rendered as<br /><pre>&lt;h1&gt;Stripped heading&lt;/h1&gt;</pre></div></dd><dt> Compact (<code>c</code>)</dt><dd><div class='content'>tells that no new-lines should be inserted before and after the opening tag, like in the following example<br /><pre>&lt;p|c
+</pre> will be rendered as<br /><pre>&lt;h1&gt;Stripped heading&lt;/h1&gt;</pre></div></dd><dt> Compact (<code>c</code>)</dt><dd><div class='content'>tells that no new-lines or spaces should be inserted before and after the opening tag, like in the following example<br /><pre>&lt;p|c
   Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo,
   suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
   consequat aliquam tempor, nibh nisl porta augue.
