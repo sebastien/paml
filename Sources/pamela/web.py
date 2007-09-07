@@ -24,10 +24,11 @@ def processPamela( pamelaText, path ):
 
 def processSugar( sugarText, path ):
 	try:
-		from sugar import sugar
+		from sugar import main as sugar
 	except:
 		return sugarText, "text/plain"
-	return sugar.sourceToJavaScript(path, sugarText)[0], "text/plain"
+	modulename = os.path.splitext(os.path.basename(path))[0]
+	return sugar.sourceToJavaScript(sugarText, modulename), "text/plain"
 
 def getProcessors():
 	"""Returns a dictionary with the Railways LocalFiles processors already
