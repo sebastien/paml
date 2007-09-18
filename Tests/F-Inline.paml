@@ -18,6 +18,8 @@
 		<a(href=/about):about> | <a(href=/sitemap):sitemap>
 		# PROBLEM: div.search was interpreted as an inline, while it is not
 		<div.search:<input.search(type=text,size=20)><input(type=button,value=Search)>
+		# PROBLEM: Nested inlines are not interpreted properly
+		<span.inline:<span.inline:<span.inline>>>
 
 
 # EOF

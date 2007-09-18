@@ -11,12 +11,12 @@ body {
 	padding: 20pt;
 	padding-top: 10pt;
 	background: rgb(255,255,255);
-	font:  10.5pt/15pt sans-serif;
+	font:  9.5pt/15pt "Helvetica Neue",Helvetica,sans-serif;
 	color: rgb(80,80,80);
 }
 
 h1, h2, h3, h4 {
-	font-family: "Trebuchet MS",sans-serif;
+	font-family: "Trebuchet MS",Helvetica,sans-serif;
 	color: rgb(22, 130, 178);
 	font-weight: normal;
 	padding-top: 0.5em;
@@ -78,7 +78,7 @@ aimg {
 }
 
 .kiwiMeta {
-	width: 100%;
+	max-width: 700px;
 	padding: 5pt;
 	margin-bottom:  2em;
 	border-top:  1px solid rgb(150, 220, 238);
@@ -93,24 +93,43 @@ aimg {
 	font-weight: bold;
 }
 
-.kiwiContent h1, .kiwiContent h2{
-	padding-bottom: 5pt;
-	border-bottom:  1px dotted rgb(150, 220, 238);
+.kiwiContent {
+	padding-left: 10pt;
+	max-width: 700px;
+}
+
+.kiwiContent .heading .number {
+	padding-right: 8pt;
+}
+
+.kiwiContent .heading .number .lastDot {
+	display: none;
+}
+
+
+.kiwiContent .heading .number .level0 .lastDot {
+	display: inline;
 }
 
 .kiwiContent h1 {
-	font-size: 1.5em;
-	font-weight: normal;
-	padding-top: 1.5em;
+	font-size: 1.8em;
+	font-weight: bold;
+	margin-top: 1.5em;
+	margin-left: -10pt;
 	padding-bottom: 0.5em;
+	border-bottom:  2px solid rgb(150, 220, 238);
 }
 
 .kiwiContent h2 {
-	font-size: 1.3em;
+	font-size: 1.4em;
+	font-weight: bold;
+	padding-bottom: 0.5em;
+	border-bottom:  1px dotted rgb(150, 220, 238);
 }
 
 .kiwiContent h3 {
-	font-size: 1.1em;
+	font-size: 1.2em;
+	font-weight: normal;
 }
 
 .kiwiContent pre {
@@ -184,6 +203,7 @@ aimg {
 	margin: 0;
 	padding: 5pt;
 	font-size: 90%;
+	min-width: 125px;
 	background-color: rgb(250,250,250);
 	border-bottom: 1px solid rgb(150, 220, 238);
 }
@@ -281,7 +301,7 @@ aimg {
 <body>
 <div
 	class="title"><h1>Pamela</h1><h2>Brings The Pleasure Back To Html And Xml !</h2></div><table class='kiwiMeta'><tr><td width='0px' class='name'>Author</td><td width='100%' class='value'>Sébastien Pierre &lt;sebastien@ivy.fr&gt;</td></tr><tr><td width='0px' class='name'>Date</td><td width='100%' class='value'>24-Aug-2007</td></tr></table>
-<div class="kiwiContent"><div class='content'><div class="section"><h1 class="heading">Introduction</h1><div class="level1"><p>People who care about web application design and development know that it's better to write your HTML by hand rather than using a tool to produce it. The reasons are that you know and control the information and the structure of your documents, which is a critical aspect when your HTML is the basis for a JavaScript-driven rich client application.</p><p>Writing HTML is quite painful, and you have some tools out there to help you in this task. You can use templating languages like Cheetah or KID (Python) or RHTML (Ruby) to make your life easier and encourage re-use of bits of code&ndash; but you may find that process a bit too complicated for your daily usage.</p><p>Some people tried to make writing HTML easier, the <a href="#HAML">HAML</a> or <a href="#SLIP">SLIP</a> projects are good examples of that. However, HAML is too tied to Ruby and RHTML, and SLIP was not flexible enough and a bit outdated.</p><p>Pamela is an attempt at following the path of HAML and SLIP, while improving on some aspects:</p><dl><dt> Be simple</dt><dd><div class='content'>while there is a need for include/import of elements, there is no need for supporting a full templating system. This helps keep the syntax sane and easy.</div></dd><dt> Less errors</dt><dd><div class='content'>it is easy to make mistakes when you write HTML (forget to close tags, empty divs that are removed by the browser), so Pamela's syntax is designed to prevent errors and maximize re-use and readability.</div></dd><dt> Does one thing, but does it very well</dt><dd><div class='content'>we do not want to introduce features tied to a specific technology not related to HTML. Pamela will only output HTML/XML, and does not try to be a full templating language. Pamela does its best to offer you the most flexibility in producing the HTML document that you want.</div></dd><dt> For designers and developers</dt><dd><div class='content'>whether you quickly want to prototype your design or define CSS classes and ids to hook your JavaScript on, Pamela will make it easy and quick to do what you want and help people understand your design.</div></dd></dl><p>Pamela's syntax was designed to be very easy to learn, to be consistent, to favor explicit over implicit, and to allow people to quickly write HTML code.</p></div></div><div class="section"><h1 class="heading">Getting started</h1><div class="level1"></div></div><div class="section"><h1 class="heading">Dive into Pamela</h1><div class="level1"><div class="section"><h2 class="heading">Basics</h2><div class="level2"><p>First things first, let's start with a simple Pamela example:</p><pre>&lt;html
+<div class="kiwiContent"><div class='content'><div class="section"><h1 class="heading"><span class="number"><span class="level0">1<span class="lastDot dot">.</span></span></span>Introduction</h1><div class="level1"><p>People who care about web application design and development know that it's better to write your HTML by hand rather than using a tool to produce it. The reasons are that you know and control the information and the structure of your documents, which is a critical aspect when your HTML is the basis for a JavaScript-driven rich client application.</p><p>Writing HTML is quite painful, and you have some tools out there to help you in this task. You can use templating languages like Cheetah or KID (Python) or RHTML (Ruby) to make your life easier and encourage re-use of bits of code&ndash; but you may find that process a bit too complicated for your daily usage.</p><p>Some people tried to make writing HTML easier, the <a href="#HAML">HAML</a> or <a href="#SLIP">SLIP</a> projects are good examples of that. However, HAML is too tied to Ruby and RHTML, and SLIP was not flexible enough and a bit outdated.</p><p>Pamela is an attempt at following the path of HAML and SLIP, while improving on some aspects:</p><dl><dt> Be simple</dt><dd><div class='content'>while there is a need for include/import of elements, there is no need for supporting a full templating system. This helps keep the syntax sane and easy.</div></dd><dt> Less errors</dt><dd><div class='content'>it is easy to make mistakes when you write HTML (forget to close tags, empty divs that are removed by the browser), so Pamela's syntax is designed to prevent errors and maximize re-use and readability.</div></dd><dt> Does one thing, but does it very well</dt><dd><div class='content'>we do not want to introduce features tied to a specific technology not related to HTML. Pamela will only output HTML/XML, and does not try to be a full templating language. Pamela does its best to offer you the most flexibility in producing the HTML document that you want.</div></dd><dt> For designers and developers</dt><dd><div class='content'>whether you quickly want to prototype your design or define CSS classes and ids to hook your JavaScript on, Pamela will make it easy and quick to do what you want and help people understand your design.</div></dd></dl><p>Pamela's syntax was designed to be very easy to learn, to be consistent, to favor explicit over implicit, and to allow people to quickly write HTML code.</p></div></div><div class="section"><h1 class="heading"><span class="number"><span class="level0">2<span class="lastDot dot">.</span></span></span>Getting started</h1><div class="level1"></div></div><div class="section"><h1 class="heading"><span class="number"><span class="level0">3<span class="lastDot dot">.</span></span></span>Dive into Pamela</h1><div class="level1"><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">1<span class="lastDot dot">.</span></span></span>Basics</h2><div class="level2"><p>First things first, let's start with a simple Pamela example:</p><pre>&lt;html
   &lt;head
     &lt;title:My first Pamela document
   &lt;body
@@ -301,7 +321,7 @@ aimg {
             sagittis sapien quam sed dolor. 
         &lt;/p&gt;
     &lt;/body&gt;
-&lt;/html&gt;</pre><p>This quick example can give you a good idea of the basic principles of Pamela:</p><dl><dt> - Pamela is indentation-driven</dt><dd><div class='content'>the indentation defines which tag is the parent tag.</div></dd><dt> - Pamela elements can be inlined</dt><dd><div class='content'>you're not forced to indent all your tags, and you can simply inline your tags, taking care of explicitely closing them.</div></dd></dl><p>As a summary, here are the syntactic elements presented in the above example:</p></div></div><div class="section"><h2 class="heading">CSS and IDs</h2><div class="level2"><p>This basic knowledge will allow you to create simple HTML documents. If you're working on HTML documents that will be part of a web application or make some intensive use of CSS, you'll want to specify <span class='term'>classes and ids</span> for your HTML elements.</p><p>You can use the default syntax to do that</p><pre>&lt;div(id=mydiv,class=classA classB)</pre><p>however, you have a more convenient way of doing the same:</p><pre>&lt;div#mydiv.classA.classB</pre><p>where you indicate your element id with <code>#ID</code> and the classes as <code>.class</code> appended to your element.</p></div></div><div class="section"><h2 class="heading">Content declaration and inclusion</h2><div class="level2"><p>When you'll start writing more complex Pamela document, you may want to avoid having too many levels of nested elements. A good way to do that is to define specific subsets of your HTML document, and then assign them to be the content for specific elements:</p><pre>@head
+&lt;/html&gt;</pre><p>This quick example can give you a good idea of the basic principles of Pamela:</p><dl><dt> - Pamela is indentation-driven</dt><dd><div class='content'>the indentation defines which tag is the parent tag.</div></dd><dt> - Pamela elements can be inlined</dt><dd><div class='content'>you're not forced to indent all your tags, and you can simply inline your tags, taking care of explicitely closing them.</div></dd></dl><p>As a summary, here are the syntactic elements presented in the above example:</p></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">2<span class="lastDot dot">.</span></span></span>CSS and IDs</h2><div class="level2"><p>This basic knowledge will allow you to create simple HTML documents. If you're working on HTML documents that will be part of a web application or make some intensive use of CSS, you'll want to specify <span class='term'>classes and ids</span> for your HTML elements.</p><p>You can use the default syntax to do that</p><pre>&lt;div(id=mydiv,class=classA classB)</pre><p>however, you have a more convenient way of doing the same:</p><pre>&lt;div#mydiv.classA.classB</pre><p>where you indicate your element id with <code>#ID</code> and the classes as <code>.class</code> appended to your element.</p></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">3<span class="lastDot dot">.</span></span></span>Content declaration and inclusion</h2><div class="level2"><p>When you'll start writing more complex Pamela document, you may want to avoid having too many levels of nested elements. A good way to do that is to define specific subsets of your HTML document, and then assign them to be the content for specific elements:</p><pre>@head
   &lt;title:My document
   &lt;link(rel=Stylesheet,media=screen,type=text/css,href=screen.css)
 @content
@@ -311,7 +331,7 @@ aimg {
 &lt;html
   &lt;head=@head
   &lt;body
-    &lt;div=@content</pre><p>will result into</p><pre>TODO</pre></div></div><div class="section"><h2 class="heading">JavaScript and CSS support</h2><div class="level2"><p>Last but not least, you may want to indicate that parts of your HTML documents are expressed in a specific language, say for instance CSS. Pamela allows you to declare that:</p><pre>@style:[css|
+    &lt;div=@content</pre><p>will result into</p><pre>TODO</pre></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">4<span class="lastDot dot">.</span></span></span>JavaScript and CSS support</h2><div class="level2"><p>Last but not least, you may want to indicate that parts of your HTML documents are expressed in a specific language, say for instance CSS. Pamela allows you to declare that:</p><pre>@style:[css|
   html, body {
     margin:  0;
     padding: 0;
@@ -319,7 +339,7 @@ aimg {
   #toolbar ul {
     list-style-type: none;
   }
-]</pre><p>this gives you the opportunity to process the data contained within the <code>[...]</code> as a specific kind of content. As always, content indentation is required for this block to be valid.</p></div></div><div class="section"><h2 class="heading">HTML rendering hints</h2><div class="level2"><p>If you're very picky about the way your HTML document looks like, you'll probably find the <span class='term'>rendering hints</span> useful. Let's look at the following HTML code:</p><pre>&lt;h1&gt;Lorem ipsum&lt;/h1&gt;
+]</pre><p>this gives you the opportunity to process the data contained within the <code>[...]</code> as a specific kind of content. As always, content indentation is required for this block to be valid.</p></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">5<span class="lastDot dot">.</span></span></span>HTML rendering hints</h2><div class="level2"><p>If you're very picky about the way your HTML document looks like, you'll probably find the <span class='term'>rendering hints</span> useful. Let's look at the following HTML code:</p><pre>&lt;h1&gt;Lorem ipsum&lt;/h1&gt;
 &lt;p&gt;Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo,
 suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
 consequat aliquam tempor, nibh nisl porta augue, in condimentum nunc sem sed
@@ -364,7 +384,7 @@ quis, urna. Maecenas pretium dignissim massa. Quisque nisi.&lt;/p&gt;</pre><p>Ad
     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean ante leo,
     suscipit sit amet, iaculis sed, rutrum eu, mi. Aenean laoreet, erat
     consequat aliquam tempor, nibh nisl porta augue.
-  &lt;/p&gt;</pre></div></dd></dl><p>Additionaly you can define specific hints for classes of elements, by using declarations. If you want to define that <code>pre</code> and <code>code</code> elements should be <code>preserved</code>, you can do this (preferably at the top of your document)</p><pre>@pre,code|preserved</pre></div></div><div class="section"><h2 class="heading">Including other Pamela files</h2><div class="level2"><p>It's likely that at some point you'd like to have a library of Pamela files with already defined snippets of Pamela code, whether it's specific rendering hints or pre-defined declarations.</p><p>To include a file <code>library.paml</code> file that resides in the same directory as your current Pamela file, just do the following:</p><pre> %include library</pre><p>if there is no <code>library.paml</code> file in the current directory, you can also define a <code>PAMELA_LIBRARY</code> environment variable that points to a specific directory containing your <code>.paml</code> files.</p><p>If this directory also has subdirectories like <code>widget/datepicker.paml</code>, you can do:</p><pre>%include widget/datepicker</pre><p>to include the <code>widget/datepicker.paml</code> from your library into your current document. It is a good practice to collect some library of snippets that can be easily be re-used among your various HTML documents.</p></div></div><div class="section"><h2 class="heading">Ideas about using Pamela</h2><div class="level2"><p>If you're like me and have stopped using XML as a data-format because there was no simple editor, you should really consider Pamela. Pamela can be greate for hand-writing XML code specific to your application.</p><p>Let's take the FOAF or RDF XML applications&hellip;</p></div></div><div class="section"><h2 class="heading">Quick reference</h2><div class="level2"><table cellpadding="0" cellspacing="0" align="center"><caption>Pamela elements basic syntax</caption><tbody><tr class='even'><td>Element<br /></td><td>Syntax<br /></td><td>HTML<br /></td></tr><tr class='odd'><td><span class='term'>inlined element</span><br /></td><td><code>&lt;tag:...&gt;</code><br /></td><td><code>&lt;tag&gt;...&lt;/tag&gt;</code><br /></td></tr><tr class='even'><td colspan='3'>Here is an example where you use <code>span</code> and <code>a</code> elements: <pre>Lorem &lt;span:ipsum dolor&gt; sit &lt;a(href=http://www.google.com):amet&gt; </pre><br /></td></tr><tr class='odd'><td><span class='term'>block element</span><br /></td><td>&lt;tag                   
+  &lt;/p&gt;</pre></div></dd></dl><p>Additionaly you can define specific hints for classes of elements, by using declarations. If you want to define that <code>pre</code> and <code>code</code> elements should be <code>preserved</code>, you can do this (preferably at the top of your document)</p><pre>@pre,code|preserved</pre></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">6<span class="lastDot dot">.</span></span></span>Including other Pamela files</h2><div class="level2"><p>It's likely that at some point you'd like to have a library of Pamela files with already defined snippets of Pamela code, whether it's specific rendering hints or pre-defined declarations.</p><p>To include a file <code>library.paml</code> file that resides in the same directory as your current Pamela file, just do the following:</p><pre> %include library</pre><p>if there is no <code>library.paml</code> file in the current directory, you can also define a <code>PAMELA_LIBRARY</code> environment variable that points to a specific directory containing your <code>.paml</code> files.</p><p>If this directory also has subdirectories like <code>widget/datepicker.paml</code>, you can do:</p><pre>%include widget/datepicker</pre><p>to include the <code>widget/datepicker.paml</code> from your library into your current document. It is a good practice to collect some library of snippets that can be easily be re-used among your various HTML documents.</p></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">7<span class="lastDot dot">.</span></span></span>Ideas about using Pamela</h2><div class="level2"><p>If you're like me and have stopped using XML as a data-format because there was no simple editor, you should really consider Pamela. Pamela can be greate for hand-writing XML code specific to your application.</p><p>Let's take the FOAF or RDF XML applications&hellip;</p></div></div><div class="section"><h2 class="heading"><span class="number"><span class="level0">3<span class="dot">.</span></span><span class="level1">8<span class="lastDot dot">.</span></span></span>Quick reference</h2><div class="level2"><table cellpadding="0" cellspacing="0" align="center"><caption>Pamela elements basic syntax</caption><tbody><tr class='even'><td>Element<br /></td><td>Syntax<br /></td><td>HTML<br /></td></tr><tr class='odd'><td><span class='term'>inlined element</span><br /></td><td><code>&lt;tag:...&gt;</code><br /></td><td><code>&lt;tag&gt;...&lt;/tag&gt;</code><br /></td></tr><tr class='even'><td colspan='3'>Here is an example where you use <code>span</code> and <code>a</code> elements: <pre>Lorem &lt;span:ipsum dolor&gt; sit &lt;a(href=http://www.google.com):amet&gt; </pre><br /></td></tr><tr class='odd'><td><span class='term'>block element</span><br /></td><td>&lt;tag                   
   Lorem ipsum          </td><td><code>&lt;tag&gt;Lorem ipsum&lt;/tag&gt;</code><br /></td></tr><tr class='even'><td><span class='term'>attributes</span><br /></td><td><code>&lt;a(href=http://...):link</code><br /></td><td><code>&lt;a href="http://..."&gt;link&lt;/a&gt;</code><br /></td></tr></tbody></table><table cellpadding="0" cellspacing="0" align="center"><caption>Pamela ID and class specification</caption><tbody><tr class='even'><td>Element<br /></td><td>Syntax<br /></td><td>HTML<br /></td></tr><tr class='odd'><td><span class='term'>element id</span><br /></td><td><code>&lt;tag#myid:...&gt;</code><br /></td><td><code>&lt;tag id="myid"&gt;...&lt;/tag&gt;</code><br /></td></tr><tr class='even'><td><span class='term'>element class</span><br /></td><td><code>&lt;span.mySpanClass:...</code><br /></td><td><code>&lt;span class="mySpanClass&gt;...&lt;/span&gt;</code><br /></td></tr></tbody></table><table cellpadding="0" cellspacing="0" align="center"><caption>Pamela element declaration and inclusion</caption><tbody><tr class='even'><td>Element<br /></td><td>Syntax<br /></td></tr><tr class='odd'><td><span class='term'>element declaration</span><br /></td><td><code>@element</code><br /></td></tr><tr class='even'><td><span class='term'>element reference</span><br /></td><td><code>&lt;div=@element</code><br /></td></tr></tbody></table><table cellpadding="0" cellspacing="0" align="center"><caption>Declaration of specific languages</caption><tbody><tr class='even'><td>Element<br /></td><td>Syntax<br /></td></tr><tr class='odd'><td><span class='term'>css declaration</span><br /></td><td><code>&lt;div:[css|...]</code><br /></td></tr><tr class='even'><td><span class='term'>javascript declaration</span><br /></td><td><code>&lt;script:[javascript|...]</code><br /></td></tr></tbody></table></div></div></div></div></div></div>
 <div class="kiwiReferences"><div class="entry"><div class="name"><a name="HAML">HAML</a></div><div class="content"> HAML &ldquo;<span class='quote'>markup haiku</span>&rdquo;, <a href="http://haml.hamptoncatlin.com/tutorial">http://haml.hamptoncatlin.com/tutorial</a></div></div><div class="entry"><div class="name"><a name="SLIP">SLIP</a></div><div class="content"> Slip, a "Sorta Like Python" shorthand for XML,
          <a href="http://slip.sourceforge.net/">http://slip.sourceforge.net/</a></div></div><div class="entry"><div class="name"><a name="YAML">YAML</a></div><div class="content"> Yet Another Markup Language <a href="http://www.yaml.org">http://www.yaml.org</a></div></div></div>
