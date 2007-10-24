@@ -1,8 +1,10 @@
 <html
 	<head
+		# Scripts should not be empty
 		<script
 		<script
 	<body
+		# Divs either
 		<div
 			<div
 			<div
