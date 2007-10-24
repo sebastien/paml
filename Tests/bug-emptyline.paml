@@ -1,0 +1,35 @@
+{% load i18n %}
+
+# =================================================================
+# HeaderSubBar
+# ================================================================
+
+<div#HeaderSubBar
+	
+	# ============================================================
+	# PageNavigationBar/pnb
+	# ============================================================
+
+	<div#PageNavigationBar
+		<ul.pnb-sections
+			<li#PageNavigationShowcase.pnb-page.pnb-current
+				<a(href="/{{ user.username }}"):Showcase
+			<li#PageNavigationCollection.pnb-page.pnb-section
+				<a(href="/{{ user.username }}/collection"):Collection
+
+	# ============================================================
+	# UserOperationBar/uob
+	# ============================================================
+
+	<div#UserOperationBar
+		<span.uob-actions
+			<span#UserOperationMail.uob-page.uob-current
+				<img(src=../Widgets/images/icon-mail-small.jpg,width="15px")
+			<span#UserOperationCollection.pnb-page.uob-section
+				<img(src=../Widgets/images/icon-collection-small.jpg,height="15px")
+		<span#UserOperationSearch.uob-search
+			<input.uob-search-input(type=search,value="Search items to add",name="q",results="5",autosave="ork.akoha.searchhistory")
+			<input.uob-search-button(type=image,src=../Widgets/images/icon-search-small.jpg,value="Submit",alt="Submit")
+			
+<div#collection-pulldown
+<div#messaging

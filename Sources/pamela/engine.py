@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   06-Jul-2007
+# Last mod.         :   24-Oct-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -385,7 +385,7 @@ class Formatter:
 				else:
 					#print "INDENT ",repr(self.indentAsSpaces() + text)
 					result.append( self.indentAsSpaces() + text)
-			else:
+			elif result:
 				offset = len(result[-1])
 				if self.hasFlag(FORMAT_WRAP):
 					#print "APPEND WRAP ",repr(self.wrapText(text, len(result[-1])))
@@ -393,6 +393,11 @@ class Formatter:
 				else:
 					#print "APPEND ",repr(text)
 					result[-1] = result[-1] + text
+			else:
+				if self.hasFlag(FORMAT_WRAP):
+					result.append(self.wrapText(text, len(result[-1])))
+				else:
+					result.append(text)
 
 	def endWriting( self ):
 		res = "".join(self._result)
