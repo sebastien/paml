@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   27-Jun-2007
+# Last mod.         :   13-Nov-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -25,7 +25,9 @@ def processPamela( pamelaText, path ):
 def processSugar( sugarText, path ):
 	try:
 		from sugar import main as sugar
-	except:
+	except Exception, e:
+		print "Sugar/LambdaFactory is not available"
+		print e
 		return sugarText, "text/plain"
 	modulename = os.path.splitext(os.path.basename(path))[0]
 	return sugar.sourceToJavaScript(sugarText, modulename), "text/plain"
