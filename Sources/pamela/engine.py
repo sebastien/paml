@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   24-Oct-2007
+# Last mod.         :   03-Nov-2007
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -83,6 +83,9 @@ HTML_DEFAULTS = {
 
 HTML_EXCEPTIONS = {
 	"script":{
+		"NOT_EMPTY":" "
+	},
+	"textarea":{
 		"NOT_EMPTY":" "
 	},
 	"div":{
