@@ -413,6 +413,8 @@ class Formatter:
 		
 		This function is used by 'wrapText'."""
 		offset = 0
+		space  = None
+		inline = None
 		while offset < len(text):
 			space  = RE_SPACE.search(text, offset)
 			inline = RE_INLINE.search(text, offset)
