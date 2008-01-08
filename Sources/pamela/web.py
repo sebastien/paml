@@ -45,7 +45,7 @@ def getLocalFile():
 def run( arguments ):
 	files  = getLocalFile()
 	app    = railways.Application(components=(files,))
-	railways.run(app=app,sessions=False)
+	railways.command(arguments, app=app,sessions=False)
 
 # -----------------------------------------------------------------------------
 #
