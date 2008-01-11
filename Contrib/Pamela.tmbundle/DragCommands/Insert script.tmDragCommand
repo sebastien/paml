@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>echo "&lt;script(language=javascript,type=text/javascript,src=$TM_DROPPED_FILE)"</string>
+	<key>draggedFileExtensions</key>
+	<array>
+		<string>js</string>
+		<string>sjs</string>
+	</array>
+	<key>input</key>
+	<string>selection</string>
+	<key>name</key>
+	<string>Insert script</string>
+	<key>output</key>
+	<string>insertAsSnippet</string>
+	<key>scope</key>
+	<string>source.paml, text.html.django</string>
+	<key>uuid</key>
+	<string>E7D07DC4-35A0-4D3B-9D3A-22118EAD3779</string>
+</dict>
+</plist>
