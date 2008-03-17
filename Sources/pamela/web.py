@@ -16,7 +16,6 @@ import engine
 import railways
 from railways.contrib.localfiles import LocalFiles
 
-
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
 	result = parser.parseText(pamelaText)

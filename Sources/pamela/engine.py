@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   03-Nov-2007
+# Last mod.         :   17-Mar-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -86,6 +86,9 @@ HTML_EXCEPTIONS = {
 		"NOT_EMPTY":" "
 	},
 	"textarea":{
+		"NOT_EMPTY":" "
+	},
+	"iframe":{
 		"NOT_EMPTY":" "
 	},
 	"div":{
