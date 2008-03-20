@@ -771,7 +771,7 @@ class Parser:
 			match  = RE_ATTRIBUTE.match(attributes)
 			assert match, "Given attributes are malformed: %s" % (attributes)
 			name  = match.group(1)
-			value = match.group(3)
+			value = match.group(4)
 			# handles '::' syntax for namespaces
 			name = name.replace("::",":")
 			if value and value[0] == value[-1] and value[0] in ("'", '"'):
