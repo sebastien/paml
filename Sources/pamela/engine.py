@@ -22,7 +22,7 @@ PAMELA_VERSION = __version__
 #
 # -----------------------------------------------------------------------------
 
-SYMBOL_NAME    = "[\w\d_-]+"
+SYMBOL_NAME    = "([\w\d_-]+::)?[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
@@ -758,6 +758,8 @@ class Parser:
 			element = eid[0]
 		else:
 			element = eid[0]
+		# handle '::' syntax for namespaces
+		element = element.replace("::",":")
 		return (element, attributes, [])
 
 	def _parsePamelaAttributes( self, attributes ):
@@ -770,6 +772,8 @@ class Parser:
 			assert match, "Given attributes are malformed: %s" % (attributes)
 			name  = match.group(1)
 			value = match.group(3)
+			# handles '::' syntax for namespaces
+			name = name.replace("::",":")
 			if value and value[0] == value[-1] and value[0] in ("'", '"'):
 				value = value[1:-1]
 			result.append([name, value])
