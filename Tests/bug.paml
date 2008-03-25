@@ -1,0 +1,11 @@
+# PROBLEM:
+# Some inline tags were displayed as
+# <ahref="/sitemap">sitemap</a> 
+# and this was related to the wrap function
+<html
+	<head
+		<title:Ivy - Main page
+	<body
+		<div#header
+			<a(href=/about):about> | <a(href=/sitemap):sitemap> 
+			<div.search:<input.search(type=text,size=20)><input(type=button,value=Search)>

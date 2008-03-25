@@ -1,0 +1,19 @@
+<div|p
+	{% extends "TemplateBrowser.paml" %}
+
+	{% block title %}{{ owner.username }}'s collection (test){% endblock %}
+
+	{% block NavigationBar %}
+		{{ html_NavigationBar_start }}
+			{{ html_NavigationBar_Main }}
+		
+			{% if user.is_authenticated %}
+				{{ html_NavigationBar_HomeMenu }}
+				{% ifnotequal user owner %}
+					{{ html_NavigationBar_RoomOperationPublic }}
+				{% endifnotequal %}
+			{% else %}
+				{{ html_NavigationBar_RoomMenu }}
+			{% endif %}
+			{{ html_NavigationBar_shadows }}
+	{% endblock %}
