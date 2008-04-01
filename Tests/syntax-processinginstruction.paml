@@ -1,0 +1,6 @@
+<html
+	<body
+		<?php
+			print 'hello' ;
+			print 'world' ;
+			print '!!' ;

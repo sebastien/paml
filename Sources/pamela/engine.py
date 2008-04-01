@@ -22,15 +22,17 @@ PAMELA_VERSION = __version__
 #
 # -----------------------------------------------------------------------------
 
-SYMBOL_NAME    = "([\w\d_-]+::)?[\w\d_-]+"
+SYMBOL_NAME    = "\??([\w\d_-]+::)?[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
-SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?\:?" % (
+SYMBOL_CONTENT = "@\w+"
+SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
 	SYMBOL_ID_CLS,
-	SYMBOL_ATTRS
+	SYMBOL_ATTRS,
+	SYMBOL_CONTENT
 )
 RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
 RE_COMMENT     = re.compile("^#.*$")
@@ -108,14 +110,21 @@ class Text:
 
 class Element:
 	"""Represents an element within the HTML document."""
-	def __init__(self, name, attributes=None,isInline=False):
-		self.name=name
-		self.attributes=attributes or []
-		self.content=[]
-		self.isInline=isInline
+
+	def __init__(self, name, attributes=None,isInline=False,isPI=False):
+		self.name          = name
+		self.attributes    = attributes or []
+		self.content       = []
+		self.isInline      = isInline
+		self.isPI          = isPI
 		self.formatOptions = []
+		if name[0] == "?":
+			self.isPI = True
+			self.name = name[1:]
+
 	def append(self,n):
 		self.content.append(n)
+
 	def _attributesAsHTML(self):
 		"""Returns the attributes as HTML"""
 		r = []
@@ -235,6 +244,8 @@ class Formatter:
 	# -------------------------------------------------------------------------
 
 	def format( self, document, indent=0 ):
+		"""Formats the given document, starting at the given indentation (0 by
+		default)."""
 		self.startWriting()
 		self.indent = indent
 		self._formatContent(document)
@@ -287,8 +298,13 @@ class Formatter:
 		# Does this element has any content ?
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
-			start   = "<%s%s>" % (element.name, attributes)
-			end     = "</%s>" % (element.name)
+			if element.isPI:
+				assert not attributes, "Processing instruction cannot have attributes"
+				start   = "<?%s " % (element.name)
+				end     = " ?>"
+			else:
+				start   = "<%s%s>" % (element.name, attributes)
+				end     = "</%s>" % (element.name)
 			if self.hasFlag(FORMAT_INLINE):
 				if self._inlineCanSpanOneLine(element):
 					self.setFlag(FORMAT_SINGLE_LINE)
