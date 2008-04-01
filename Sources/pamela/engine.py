@@ -639,17 +639,14 @@ class Parser:
 			return
 		is_comment     = RE_COMMENT.match(line)
 		# Is it a comment ?
-		#if is_comment and not self._isInEmbed():
-		if is_comment:
+		if is_comment and not self._isInEmbed():
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
-		if False and self._isInEmbed():
-			# TODO: Strip leading whitespace
-			print "EMBED", line
-			self.onTextAdd(line)
+		if self._isInEmbed():
+			self._writer.onTextAdd(line)
 			return
 		# Is it a declaration ?
 		is_declaration = RE_DECLARATION.match(line)
@@ -834,7 +831,7 @@ class Parser:
 	def _gotoParentElement( self, currentIndent ):
 		"""Finds the parent element that has an identation lower than the given
 		'currentIndent'."""
-		while self._elementStack and self._elementStack[-1] >= currentIndent:
+		while self._elementStack and self._elementStack[-1][0] >= currentIndent:
 			self._elementStack.pop()
 			self._writer.onElementEnd()
 
