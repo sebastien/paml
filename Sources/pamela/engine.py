@@ -754,7 +754,7 @@ class Parser:
 		if parens_start != -1:
 			parens_end = element.rfind(")")
 			if at_start < parens_end: at_start = -1
-			attributes_list = element[parens_start+1:parens_end-1]
+			attributes_list = element[parens_start+1:parens_end]
 			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
 			attributes = self._parsePamelaAttributes(attributes_list)
 			element = element[:parens_start]
