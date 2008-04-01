@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   17-Mar-2008
+# Last mod.         :   01-Apr-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -604,8 +604,11 @@ class Parser:
 	def parseFile( self, path ):
 		"""Parses the file with the given  path, and return the corresponding
 		HTML document."""
-		# FIXME: File exists and is readable
-		f = file(path, "r")
+		if path == "--":
+			f = sys.stdin
+		else:
+			# FIXME: File exists and is readable
+			f = file(path, "r")
 		self._writer.onDocumentStart()
 		for l in f.readlines():
 			self._parseLine(l)
@@ -861,7 +864,6 @@ class Parser:
 def run( arguments ):
 	input_file = arguments[0]
 	parser = Parser()
-	t = file(input_file, 'r').read()
 	return parser.parseFile(input_file)
 
 # -----------------------------------------------------------------------------
