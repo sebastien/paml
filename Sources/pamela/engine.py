@@ -44,6 +44,10 @@ RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
 
+T_ELEMENT      = "EL"
+T_DECLARATION  = "DC"
+T_EMBED        = "EM"
+
 # -----------------------------------------------------------------------------
 #
 # Formatting
@@ -614,6 +618,11 @@ class Parser:
 			self._parseLine(line + "\n")
 		return self._formatter.format(self._writer.onDocumentEnd())
 
+	def _isInEmbed( self ):
+		"""Tells if the current element is an embed element (like
+		CSS,PHP,etc)"""
+		return len(self._elementStack) > 0 and self._elementStack[-1][1] == T_EMBED
+
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
 		This is an internal method that you should not really use directly."""
@@ -630,15 +639,22 @@ class Parser:
 			return
 		is_comment     = RE_COMMENT.match(line)
 		# Is it a comment ?
+		#if is_comment and not self._isInEmbed():
 		if is_comment:
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
 		self._gotoParentElement(indent)
+		# Is the parent an embedded element ?
+		if False and self._isInEmbed():
+			# TODO: Strip leading whitespace
+			print "EMBED", line
+			self.onTextAdd(line)
+			return
 		# Is it a declaration ?
 		is_declaration = RE_DECLARATION.match(line)
 		if is_declaration:
-			self._elementStack.append(indent)
+			self._elementStack.append((indent, T_DECLARATION))
 			declared_name = is_declaration.group(1)
 			self._writer.onDeclarationStart(declared_name)
 			return
@@ -660,17 +676,24 @@ class Parser:
 		else:
 			inline_element = False
 		if is_element and not inline_element:
-			self._elementStack.append(indent)
+			at_index    = is_element.group().rfind("@")
+			paren_index = is_element.group().rfind(")")
+			# The element is an embedded element, we use this to make sure we
+			# don't interpret the content as Pamela
+			if at_index > paren_index:
+				self._elementStack.append((indent, T_EMBED))
+			else:
+				self._elementStack.append((indent, T_ELEMENT))
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
-			name,attributes,hints=self._parsePamelaElement(group)
+			name,attributes,embed, hints=self._parsePamelaElement(group)
 			# Element is a single line if it ends with ':'
 			self._writer.onElementStart(name, attributes, isInline=False)
 			if group[-1] == ":" and rest:
 				self._parseContentLine(rest)
-			return
-		# Otherwise it's data
-		self._parseContentLine(line)
+		else:
+			# Otherwise it's data
+			self._parseContentLine(line)
 
 	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
@@ -691,7 +714,7 @@ class Parser:
 				self._writer.onTextAdd(text)
 			# And we append the element itself
 			group = element.group()[1:]
-			name,attributes,hints=self._parsePamelaElement(group)
+			name,attributes,embed, hints=self._parsePamelaElement(group)
 			self._writer.onElementStart(name, attributes, isInline=True)
 			text = line[element.end():closing]
 			if text: self._writer.onTextAdd(text)
@@ -727,8 +750,11 @@ class Parser:
 		if element[-1] == ":": element = element[:-1]
 		# We look for the attributes list
 		parens_start = element.find("(")
+		at_start     = element.rfind("@")
 		if parens_start != -1:
-			attributes_list = element[parens_start+1:]
+			parens_end = element.rfind(")")
+			if at_start < parens_end: at_start = -1
+			attributes_list = element[parens_start+1:parens_end-1]
 			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
 			attributes = self._parsePamelaAttributes(attributes_list)
 			element = element[:parens_start]
@@ -755,6 +781,11 @@ class Parser:
 			else:
 				set_attribute(name, value, attributes)
 		# We look for the classes
+		if at_start != -1:
+			embed = element[at_start+1:]
+			element = element[:at_start]
+		else:
+			embed = None
 		classes = element.split(".")
 		if len(classes) > 1:
 			element = classes[0]
@@ -776,7 +807,7 @@ class Parser:
 			element = eid[0]
 		# handle '::' syntax for namespaces
 		element = element.replace("::",":")
-		return (element, attributes, [])
+		return (element, attributes, embed, [])
 
 	def _parsePamelaAttributes( self, attributes ):
 		"""Parses a string representing Pamela attributes and returns a list of
