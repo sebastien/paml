@@ -148,7 +148,7 @@ class Element:
 
 class Declaration(Element):
 	def __init__(self, name, attributes=None):
-		Writer.Element.__init__(self,name,attributes)
+		Element.__init__(self,name,attributes)
 
 # -----------------------------------------------------------------------------
 #
