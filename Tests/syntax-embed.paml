@@ -8,3 +8,4 @@
 				color: magenta;
 			}
 	<body
+		<?php@php:echo ("<h1>Pouet</h1>");
