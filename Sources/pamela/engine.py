@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   01-Apr-2008
+# Last mod.         :   11-Jul-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -663,6 +663,9 @@ class Parser:
 		# It may be an inline element, like:
 		# <a(href=/about):about> | <a(href=/sitemap):sitemap>
 		if is_element:
+			at_index    = is_element.group().rfind("@")
+			paren_index = is_element.group().rfind(")")
+			is_embed    = (at_index > paren_index)
 			closing = line.find(">", is_element.end())
 			opening = line.find("<", is_element.end())
 			if closing == -1:
@@ -673,14 +676,14 @@ class Parser:
 				inline_element = True
 			else:
 				inline_element = False
+			if is_embed:
+				inline_element = False
 		else:
 			inline_element = False
 		if is_element and not inline_element:
-			at_index    = is_element.group().rfind("@")
-			paren_index = is_element.group().rfind(")")
 			# The element is an embedded element, we use this to make sure we
 			# don't interpret the content as Pamela
-			if at_index > paren_index:
+			if is_embed:
 				self._elementStack.append((indent, T_EMBED))
 			else:
 				self._elementStack.append((indent, T_ELEMENT))

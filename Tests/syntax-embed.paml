@@ -9,3 +9,4 @@
 			}
 	<body
 		<?php@php:echo ("<h1>Pouet</h1>");
+		<?php@php:echo $this->that;
