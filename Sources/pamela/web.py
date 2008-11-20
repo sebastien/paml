@@ -8,13 +8,16 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   13-Nov-2007
+# Last mod.         :   20-Nov-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 import engine
 import railways
 from railways.contrib.localfiles import LocalFiles
+from railways.contrib.cache import Cache
+
+CACHE = Cache()
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
@@ -22,14 +25,19 @@ def processPamela( pamelaText, path ):
 	return result, "text/html"
 
 def processSugar( sugarText, path ):
-	try:
-		from sugar import main as sugar
-	except Exception, e:
-		print "Sugar/LambdaFactory is not available"
-		print e
-		return sugarText, "text/plain"
-	modulename = os.path.splitext(os.path.basename(path))[0]
-	return sugar.sourceToJavaScript(sugarText, modulename), "text/plain"
+	timestamp         = CACHE.filemod(path)
+	has_changed, data = CACHE.get(path,timestamp)
+	if has_changed:
+		try:
+			from sugar import main as sugar
+		except Exception, e:
+			print "Sugar/LambdaFactory is not available"
+			print e
+			return sugarText, "text/plain"
+		modulename = os.path.splitext(os.path.basename(path))[0]
+		data = sugar.sourceToJavaScript(sugarText, modulename)
+		CACHE.put(path,timestamp,data)
+	return data, "text/plain"
 
 def getProcessors():
 	"""Returns a dictionary with the Railways LocalFiles processors already
