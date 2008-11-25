@@ -614,7 +614,7 @@ class Parser:
 			self._parseLine(l)
 		return self._formatter.format(self._writer.onDocumentEnd())
 
-	def parseText( self, text ):
+	def parseString( self, text ):
 		"""Parses the given string and returns an HTML document."""
 		self._writer.onDocumentStart()
 		for line in text.split("\n"):
@@ -864,7 +864,10 @@ class Parser:
 #
 # -----------------------------------------------------------------------------
 
-def run( arguments ):
+def parse( text ):
+	return Parser().parseString(text)
+
+def run( arguments, input=None ):
 	input_file = arguments[0]
 	parser = Parser()
 	return parser.parseFile(input_file)
