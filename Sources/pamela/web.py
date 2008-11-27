@@ -21,7 +21,7 @@ CACHE = Cache()
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
-	result = parser.parseText(pamelaText)
+	result = parser.parseString(pamelaText)
 	return result, "text/html"
 
 def processSugar( sugarText, path ):
