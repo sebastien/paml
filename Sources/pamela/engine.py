@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   11-Jul-2008
+# Last mod.         :   02-Dec-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -40,6 +40,7 @@ RE_EMPTY       = re.compile("^\s*$")
 RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
 RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
 RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
+RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
@@ -629,6 +630,7 @@ class Parser:
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
 		This is an internal method that you should not really use directly."""
+		original_line = line
 		indent, line = self._getLineIndent(line)
 		# First, we make sure we close the elements that may be outside of the
 		# scope of this
@@ -646,6 +648,21 @@ class Parser:
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
+		is_include     = RE_INCLUDE.match(original_line)
+		if is_include:
+			path = is_include.group(2)
+			if path[0] in ['"',"'"]: path = path[1:-1]
+			if not os.path.exists(path): path += ".paml"
+			if not os.path.exists(path):
+				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (path))
+			else:
+				f = file(path,'r')
+				for l in f.readlines():
+					# FIXME: This does not work when I use tabs instead
+					p = int(indent/4)
+					self._parseLine(p * "\t" + l)
+				f.close()
+			return
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
 		if self._isInEmbed():
