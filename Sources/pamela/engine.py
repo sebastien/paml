@@ -667,13 +667,10 @@ class Parser:
 			local_path = os.path.join(local_dir, path)
 			if   os.path.exists(local_path):
 				path = local_path
-				sys.stderr.write( "1:"+ path+"\n")
 			elif os.path.exists(local_path + ".paml"):
 				path = local_path + ".paml"
-				sys.stderr.write( "2:"+ path+"\n")
 			elif os.path.exists(path):
 				path = path
-				sys.stderr.write( "3:"+ path+"\n")
 			elif os.path.exists(path + ".paml"):
 				path = path + ".paml"
 			if not os.path.exists(path):
