@@ -663,24 +663,30 @@ class Parser:
 		if is_include:
 			path = is_include.group(2)
 			if path[0] in ['"',"'"]: path = path[1:-1]
-			local_path = os.path.join(self.path(), path)
+			local_dir  = os.path.dirname(os.path.join(self.path()))
+			local_path = os.path.join(local_dir, path)
 			if   os.path.exists(local_path):
 				path = local_path
+				sys.stderr.write( "1:"+ path+"\n")
 			elif os.path.exists(local_path + ".paml"):
 				path = local_path + ".paml"
+				sys.stderr.write( "2:"+ path+"\n")
 			elif os.path.exists(path):
 				path = path
+				sys.stderr.write( "3:"+ path+"\n")
 			elif os.path.exists(path + ".paml"):
 				path = path + ".paml"
 			if not os.path.exists(path):
 				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (path))
 			else:
+				self._paths.append(path)
 				f = file(path,'r')
 				for l in f.readlines():
 					# FIXME: This does not work when I use tabs instead
 					p = int(indent/4)
 					self._parseLine(p * "\t" + l)
 				f.close()
+				self._paths.pop()
 			return
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
