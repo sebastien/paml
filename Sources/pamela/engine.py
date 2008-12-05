@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   02-Dec-2008
+# Last mod.         :   05-Dec-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -601,6 +601,14 @@ class Parser:
 		self._elementStack = []
 		self._writer = Writer()
 		self._formatter = Formatter()
+		self._paths     = []
+
+	def path( self ):
+		"""Returns the current path of the file being parsed, if any"""
+		if not self._paths or self._paths[-1] == "--":
+			return "."
+		else:
+			return self._paths[-1]
 
 	def parseFile( self, path ):
 		"""Parses the file with the given  path, and return the corresponding
@@ -610,10 +618,13 @@ class Parser:
 		else:
 			# FIXME: File exists and is readable
 			f = file(path, "r")
+		self._paths.append(path)
 		self._writer.onDocumentStart()
 		for l in f.readlines():
 			self._parseLine(l)
-		return self._formatter.format(self._writer.onDocumentEnd())
+		result = self._formatter.format(self._writer.onDocumentEnd())
+		self._paths.pop()
+		return result
 
 	def parseString( self, text ):
 		"""Parses the given string and returns an HTML document."""
@@ -652,7 +663,15 @@ class Parser:
 		if is_include:
 			path = is_include.group(2)
 			if path[0] in ['"',"'"]: path = path[1:-1]
-			if not os.path.exists(path): path += ".paml"
+			local_path = os.path.join(self.path(), path)
+			if   os.path.exists(local_path):
+				path = local_path
+			elif os.path.exists(local_path + ".paml"):
+				path = local_path + ".paml"
+			elif os.path.exists(path):
+				path = path
+			elif os.path.exists(path + ".paml"):
+				path = path + ".paml"
 			if not os.path.exists(path):
 				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (path))
 			else:
