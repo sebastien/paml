@@ -1,0 +1,6 @@
+<html
+	<body
+		<script@sugar
+			@function helloWorld
+				alert "Hello !"
+			@end

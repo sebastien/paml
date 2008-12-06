@@ -113,6 +113,9 @@ class Text:
 	def __init__(self, content):
 		self.content = content
 
+	def contentAsLines( self ):
+		return [self.content]
+
 class Element:
 	"""Represents an element within the HTML document."""
 
@@ -121,14 +124,27 @@ class Element:
 		self.attributes    = attributes or []
 		self.content       = []
 		self.isInline      = isInline
+		self.mode          = None
 		self.isPI          = isPI
 		self.formatOptions = []
 		if name[0] == "?":
 			self.isPI = True
 			self.name = name[1:]
 
+	def setMode( self, mode):
+		self.mode = mode
+
 	def append(self,n):
 		self.content.append(n)
+
+	def contentAsLines( self ):
+		res = []
+		for e in self.content:
+			if type(e) in (str,unicode):
+				res.append(e)
+			else:
+				res.extend(e.contentAsLines())
+		return res
 
 	def _attributesAsHTML(self):
 		"""Returns the attributes as HTML"""
@@ -301,6 +317,12 @@ class Formatter:
 			if not_empty != None and not content:
 				element.content.append(Text(not_empty))
 		# Does this element has any content ?
+		if element.mode == "sugar":
+			lines = element.contentAsLines()
+			import pamela.web
+			source = "".join(lines)
+			res, _ = pamela.web.processSugar(source, ".")
+			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
@@ -534,6 +556,7 @@ class Writer:
 		pass
 
 	def onDocumentStart( self ):
+		self._modes     = []
 		self._content   = []
 		self._nodeStack = []
 		self._document  = Element("document")
@@ -543,6 +566,7 @@ class Writer:
 
 	def onComment( self, line ):
 		line = line.replace("\n", " ").strip()
+		# FIXME: Why is this disabled ?
 		#comment = ET.Comment(line)
 		#self._node().append(comment)
 
@@ -553,21 +577,42 @@ class Writer:
 	def onElementStart( self, name, attributes=None,isInline=False ):
 		element = Element(name,attributes=attributes,isInline=isInline)
 		self._node().append(element)
-		self._nodeStack.append(element)
+		self._pushStack(element)
 
 	def onElementEnd( self ):
-		self._nodeStack.pop()
+		self._popStack()
 
 	def onDeclarationStart( self, name, attributes=None ):
 		element = Declaration(name)
-		self._nodeStack.append(element)
+		self._pushStack(element)
 
 	def onDeclarationEnd( self ):
+		self._popStack()
+
+	def _pushStack( self, node ):
+		node.setMode(self.mode())
+		self._nodeStack.append(node)
+
+	def _popStack(self):
 		self._nodeStack.pop()
 
 	def _node( self ):
 		if not self._nodeStack: return self._document
 		return self._nodeStack[-1]
+
+	def pushMode( self, name ):
+		self._modes.append(name)
+
+	def popMode( self ):
+		self._modes.pop()
+
+	def mode( self ):
+		modes = filter(lambda x:x,self._modes)
+		if modes:
+			return modes[-1]
+		else:
+			return None
+
 
 # -----------------------------------------------------------------------------
 #
@@ -609,6 +654,12 @@ class Parser:
 			return "."
 		else:
 			return self._paths[-1]
+	
+	def indent( self ):
+		if self._elementStack:
+			return self._elementStack[-1][0]
+		else:
+			return 0
 
 	def parseFile( self, path ):
 		"""Parses the file with the given  path, and return the corresponding
@@ -654,11 +705,12 @@ class Parser:
 			# into account. Same for elements with greater indent.
 			return
 		is_comment     = RE_COMMENT.match(line)
-		# Is it a comment ?
+		# Is it a comment (# ....)
 		if is_comment and not self._isInEmbed():
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
+		# Is it an include element (%include ...)
 		is_include     = RE_INCLUDE.match(original_line)
 		if is_include:
 			path = is_include.group(2)
@@ -688,12 +740,13 @@ class Parser:
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
 		if self._isInEmbed():
-			self._writer.onTextAdd(line)
+			line_with_indent = original_line[(self.indent()+4)/4:]
+			self._writer.onTextAdd(line_with_indent)
 			return
 		# Is it a declaration ?
 		is_declaration = RE_DECLARATION.match(line)
 		if is_declaration:
-			self._elementStack.append((indent, T_DECLARATION))
+			self._pushStack(indent, T_DECLARATION)
 			declared_name = is_declaration.group(1)
 			self._writer.onDeclarationStart(declared_name)
 			return
@@ -723,9 +776,11 @@ class Parser:
 			# The element is an embedded element, we use this to make sure we
 			# don't interpret the content as Pamela
 			if is_embed:
-				self._elementStack.append((indent, T_EMBED))
+				language = is_element.group()[at_index+1:]
+				if language[-1] == ":":language = language[:-1]
+				self._pushStack(indent, T_EMBED, language)
 			else:
-				self._elementStack.append((indent, T_ELEMENT))
+				self._pushStack(indent, T_ELEMENT)
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
 			name,attributes,embed, hints=self._parsePamelaElement(group)
@@ -736,6 +791,14 @@ class Parser:
 		else:
 			# Otherwise it's data
 			self._parseContentLine(line)
+
+	def _pushStack(self, indent, type, mode=None):
+		self._elementStack.append((indent, type))
+		self._writer.pushMode(mode)
+
+	def _popStack(self):
+		self._elementStack.pop()
+		self._writer.popMode()
 
 	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
@@ -877,7 +940,7 @@ class Parser:
 		"""Finds the parent element that has an identation lower than the given
 		'currentIndent'."""
 		while self._elementStack and self._elementStack[-1][0] >= currentIndent:
-			self._elementStack.pop()
+			self._popStack()
 			self._writer.onElementEnd()
 
 	def _getLineIndent( self, line ):
