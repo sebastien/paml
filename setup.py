@@ -15,7 +15,7 @@ import sys ; sys.path.insert(0, "Sources")
 from distutils.core import setup
 import pamela.engine
 
-SUMMARY     = "Brings the pleasure back to HTML and XML !
+SUMMARY     = "Brings the pleasure back to HTML and XML !"
 DESCRIPTION = """\
 Pamela is a simple HTML/XML shorthand syntax in the same spirit as HAML or SLIP.
 It was designed to be faithful to the HTML/XML syntax while reducing the
