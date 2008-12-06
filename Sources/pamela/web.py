@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   20-Nov-2008
+# Last mod.         :   06-Dec-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -24,10 +24,10 @@ def processPamela( pamelaText, path ):
 	result = parser.parseString(pamelaText)
 	return result, "text/html"
 
-def processSugar( sugarText, path ):
+def processSugar( sugarText, path, cache=True ):
 	timestamp         = CACHE.filemod(path)
 	has_changed, data = CACHE.get(path,timestamp)
-	if has_changed:
+	if has_changed or not cache:
 		try:
 			from sugar import main as sugar
 		except Exception, e:
@@ -36,7 +36,8 @@ def processSugar( sugarText, path ):
 			return sugarText, "text/plain"
 		modulename = os.path.splitext(os.path.basename(path))[0]
 		data = sugar.sourceToJavaScript(sugarText, modulename)
-		CACHE.put(path,timestamp,data)
+		if cache:
+			CACHE.put(path,timestamp,data)
 	return data, "text/plain"
 
 def getProcessors():

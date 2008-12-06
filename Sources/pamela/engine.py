@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   05-Dec-2008
+# Last mod.         :   06-Dec-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -321,7 +321,7 @@ class Formatter:
 			lines = element.contentAsLines()
 			import pamela.web
 			source = "".join(lines)
-			res, _ = pamela.web.processSugar(source, ".")
+			res, _ = pamela.web.processSugar(source, ".", cache=False)
 			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
