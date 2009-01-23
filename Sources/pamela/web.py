@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   06-Dec-2008
+# Last mod.         :   23-Jan-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -50,10 +50,15 @@ def getLocalFile():
 	processor."""
 	return LocalFiles(processors=getProcessors())
 
-def run( arguments ):
+def run( arguments, options={} ):
 	files  = getLocalFile()
 	app    = railways.Application(components=(files,))
-	railways.command(arguments, app=app,sessions=False)
+	railways.command(
+		arguments,
+		app      = app,
+		sessions = False,
+		port     = int(options.get("port") or railways.DEFAULT_PORT)
+	)
 
 # -----------------------------------------------------------------------------
 #
@@ -62,7 +67,13 @@ def run( arguments ):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	run(sys.argv[1:])
+	options = {}
+	for a in sys.argv[1:]:
+		a=a.split("=",1)
+		if len(a) == 1: v=True
+		else: v=a[1];a=a[0]
+		options[a.lower()] = v
+	run(sys.argv[1:], options)
 
 # EOF
 
