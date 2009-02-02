@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   06-Dec-2008
+# Last mod.         :   02-Fev-2008
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -677,12 +677,15 @@ class Parser:
 		self._paths.pop()
 		return result
 
-	def parseString( self, text ):
+	def parseString( self, text, path=None ):
 		"""Parses the given string and returns an HTML document."""
+		if path: self._paths.append(path)
 		self._writer.onDocumentStart()
 		for line in text.split("\n"):
 			self._parseLine(line + "\n")
-		return self._formatter.format(self._writer.onDocumentEnd())
+		res = self._formatter.format(self._writer.onDocumentEnd())
+		if path: self._paths.pop()
+		return res
 
 	def _isInEmbed( self ):
 		"""Tells if the current element is an embed element (like
@@ -726,7 +729,7 @@ class Parser:
 			elif os.path.exists(path + ".paml"):
 				path = path + ".paml"
 			if not os.path.exists(path):
-				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (path))
+				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (local_path))
 			else:
 				self._paths.append(path)
 				f = file(path,'r')
@@ -966,8 +969,8 @@ class Parser:
 #
 # -----------------------------------------------------------------------------
 
-def parse( text ):
-	return Parser().parseString(text)
+def parse( text, path=None ):
+	return Parser().parseString(text, path=path)
 
 def run( arguments, input=None ):
 	input_file = arguments[0]
