@@ -25,8 +25,10 @@ def processPamela( pamelaText, path ):
 	return result, "text/html"
 
 def processSugar( sugarText, path, cache=True ):
-	timestamp         = CACHE.filemod(path)
-	has_changed, data = CACHE.get(path,timestamp)
+	timestamp = has_changed = data = None
+	if cache:
+		timestamp         = CACHE.filemod(path)
+		has_changed, data = CACHE.get(path,timestamp)
 	if has_changed or not cache:
 		try:
 			from sugar import main as sugar
