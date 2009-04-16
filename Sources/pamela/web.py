@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   23-Jan-2009
+# Last mod.         :   16-Apr-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -16,6 +16,7 @@ import engine
 import railways
 from railways.contrib.localfiles import LocalFiles
 from railways.contrib.cache import Cache
+from railways.contrib import proxy
 
 CACHE = Cache()
 
@@ -53,8 +54,11 @@ def getLocalFile():
 	return LocalFiles(processors=getProcessors())
 
 def run( arguments, options={} ):
-	files  = getLocalFile()
-	app    = railways.Application(components=(files,))
+	files   = getLocalFile()
+	comps   = [files]
+	proxies = map(lambda x:x[len("proxy:"):],filter(lambda x:x.startswith("proxy:"),arguments))
+	comps.extend(proxy.createProxies(proxies))
+	app     = railways.Application(components=comps)
 	railways.command(
 		arguments,
 		app      = app,
