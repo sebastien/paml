@@ -4,7 +4,7 @@
 		<h2:Users Example test  (03-Jul-2007)
 		<p
 			To run the test, you'll need to start the
-			<a(href=http://www.ivy.fr/railways):Railways> server located in the
+			<a(href=http://www.ivy.fr/retro):Retro> server located in the
 			Iciela <code:Examples/Users> (do <code:python Users.py>) from there,
 			and paste the URL returned by the script into the following form and
 			hit the <b:run> button

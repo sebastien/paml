@@ -6,7 +6,7 @@ SOURCES=\
 doc: $(DOCS)
 	@echo Documentation ready
 
-%-api.html:  $(SOURCES)
+Documentation/%-api.html:  $(SOURCES)
 	sdoc -c $^ $@
 
 %.html: %.txt

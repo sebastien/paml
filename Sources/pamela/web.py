@@ -13,10 +13,10 @@
 
 import os, sys, re
 import engine
-import railways
-from railways.contrib.localfiles import LocalFiles
-from railways.contrib.cache import Cache
-from railways.contrib import proxy
+import retro
+from retro.contrib.localfiles import LocalFiles
+from retro.contrib.cache import Cache
+from retro.contrib import proxy
 
 CACHE = Cache()
 
@@ -44,12 +44,12 @@ def processSugar( sugarText, path, cache=True ):
 	return data, "text/plain"
 
 def getProcessors():
-	"""Returns a dictionary with the Railways LocalFiles processors already
+	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
 	return {"paml":processPamela, "sjs":processSugar}
 
 def getLocalFile():
-	"""Returns a Railways LocalFile component initialized with the Pamela
+	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
 	return LocalFiles(processors=getProcessors())
 
@@ -58,12 +58,12 @@ def run( arguments, options={} ):
 	comps   = [files]
 	proxies = map(lambda x:x[len("proxy:"):],filter(lambda x:x.startswith("proxy:"),arguments))
 	comps.extend(proxy.createProxies(proxies))
-	app     = railways.Application(components=comps)
-	railways.command(
+	app     = retro.Application(components=comps)
+	retro.command(
 		arguments,
 		app      = app,
 		sessions = False,
-		port     = int(options.get("port") or railways.DEFAULT_PORT)
+		port     = int(options.get("port") or retro.DEFAULT_PORT)
 	)
 
 # -----------------------------------------------------------------------------
