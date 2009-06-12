@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# Encoding: iso-8859-1
-# vim: tw=80 ts=4 sw=4 noet
 # -----------------------------------------------------------------------------
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
@@ -8,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   16-Apr-2009
+# Last mod.         :   12-Jun-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -24,6 +22,11 @@ def processPamela( pamelaText, path ):
 	parser = engine.Parser()
 	result = parser.parseString(pamelaText)
 	return result, "text/html"
+
+def processCleverCSS( text, path ):
+	import clevercss
+	result = clevercss.convert(text)
+	return result, "text/css"
 
 def processSugar( sugarText, path, cache=True ):
 	timestamp = has_changed = data = None
@@ -46,7 +49,7 @@ def processSugar( sugarText, path, cache=True ):
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
-	return {"paml":processPamela, "sjs":processSugar}
+	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS}
 
 def getLocalFile():
 	"""Returns a Retro LocalFile component initialized with the Pamela
@@ -81,6 +84,4 @@ if __name__ == "__main__":
 		options[a.lower()] = v
 	run(sys.argv[1:], options)
 
-# EOF
-
-
+# EOF - vim: tw=80 ts=4 sw=4 noet
