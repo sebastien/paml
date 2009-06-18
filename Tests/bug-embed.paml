@@ -1,0 +1,5 @@
+# 2009-06-18: The last '#EOF' will not be interpreted as a comment but be appended in the document
+<body
+	<script@sugar
+		pouet()
+# EOF

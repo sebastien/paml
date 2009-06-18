@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   04-May-2009
+# Last mod.         :   18-Jun-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -693,10 +693,15 @@ class Parser:
 		if path: self._paths.pop()
 		return res
 
-	def _isInEmbed( self ):
+	def _isInEmbed( self, indent=None ):
 		"""Tells if the current element is an embed element (like
 		CSS,PHP,etc)"""
-		return len(self._elementStack) > 0 and self._elementStack[-1][1] == T_EMBED
+		if not self._elementStack:
+			return False
+		elif indent is None:
+			return self._elementStack[-1][1] == T_EMBED
+		else:
+			return self._elementStack[-1][1] == T_EMBED and self._elementStack[-1][0] <= indent
 
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
@@ -715,7 +720,7 @@ class Parser:
 			return
 		is_comment     = RE_COMMENT.match(line)
 		# Is it a comment (# ....)
-		if is_comment and not self._isInEmbed():
+		if is_comment and not self._isInEmbed(indent):
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
@@ -748,7 +753,7 @@ class Parser:
 			return
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
-		if self._isInEmbed():
+		if self._isInEmbed(indent):
 			line_with_indent = original_line[(self.indent()+4)/4:]
 			self._writer.onTextAdd(line_with_indent)
 			return
