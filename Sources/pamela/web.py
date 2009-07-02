@@ -54,7 +54,7 @@ def getProcessors():
 def getLocalFile():
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
-	return LocalFiles(processors=getProcessors())
+	return LocalFiles(processors=getProcessors(),optsuffix=[".paml",".html"])
 
 def run( arguments, options={} ):
 	files   = getLocalFile()
