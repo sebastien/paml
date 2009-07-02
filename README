@@ -1,7 +1,8 @@
 == Pamela
 == Brings the pleasure back to HTML and XML !
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
--- Date: 24-Aug-2007
+-- Date:     02-Jul-2009
+-- Creation: 24-Aug-2007
 
 Introduction
 ============
@@ -334,7 +335,19 @@ Dive into Pamela
   to include the 'widget/datepicker.paml' from your library into your current
   document. It is a good practice to collect some library of snippets that can
   be easily be re-used among your various HTML documents.
- 
+
+  You can also specify *replacement values* for variables declared in the included pamela
+  file as '${VARIABLE}'. For instance:
+
+  >   %include widget/datepicker (ID=mywidget,TITLE="Start date")
+
+  with 'widget/datepicker.paml' being something like:
+
+  >    <div#${ID}.DatePicker
+  >       <h3.title:${TITLE}
+
+  this is an easy way to make generic '.paml' snippets that can be used as ''templates'' 
+  for specific elements.
 
   7. Ideas about using Pamela
   ===========================

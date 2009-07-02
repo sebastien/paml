@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   18-Jun-2009
+# Last mod.         :   02-Jul-2009
 # -----------------------------------------------------------------------------
 
-import os, sys, re
+import os, sys, re, string
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -727,8 +727,22 @@ class Parser:
 		# Is it an include element (%include ...)
 		is_include     = RE_INCLUDE.match(original_line)
 		if is_include:
-			path = is_include.group(2)
-			if path[0] in ['"',"'"]: path = path[1:-1]
+			# FIXME: This could be written better
+			path = is_include.group(2).strip()
+			subs = None
+			# If there is a paren, we extract the replacement
+			lparen = path.find("(")
+			if lparen >= 0:
+				subs    = {}
+				rparen  = path.rfind(")")
+				for replace in path[lparen+1:rparen].split(","):
+					name, value = replace.split("=",1)
+					value       = value.strip()
+					if value and value[0] in ["'", '"']: value = value[1:-1]
+					subs[name] = value
+				path = path[:lparen].strip()
+			if path[0] in ['"',"'"]:path = path[1:-1]
+			# Now we load the file
 			local_dir  = os.path.dirname(os.path.join(self.path()))
 			local_path = os.path.join(local_dir, path)
 			if   os.path.exists(local_path):
@@ -747,6 +761,7 @@ class Parser:
 				for l in f.readlines():
 					# FIXME: This does not work when I use tabs instead
 					p = int(indent/4)
+					if subs: l = string.Template(l).substitute(**subs)
 					self._parseLine(p * "\t" + l)
 				f.close()
 				self._paths.pop()

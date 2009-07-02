@@ -4,4 +4,4 @@
 		# <textarea> </textarea>
 		<textarea
 		<textarea:
-		<textarea:POUET
+		<textarea(name=${NAME}):${VALUE}
