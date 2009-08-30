@@ -13,10 +13,10 @@ import os, sys, re
 import engine
 import retro
 from retro.contrib.localfiles import LocalFiles
-from retro.contrib.cache import Cache
+from retro.contrib.cache import SignatureCache
 from retro.contrib import proxy
 
-CACHE = Cache()
+CACHE = SignatureCache()
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()

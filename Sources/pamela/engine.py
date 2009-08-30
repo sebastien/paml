@@ -660,7 +660,7 @@ class Parser:
 			return "."
 		else:
 			return self._paths[-1]
-	
+
 	def indent( self ):
 		if self._elementStack:
 			return self._elementStack[-1][0]
