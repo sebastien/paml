@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   02-Jul-2009
+# Last mod.         :   01-Sep-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
@@ -548,6 +548,44 @@ class Formatter:
 
 # -----------------------------------------------------------------------------
 #
+# JavaScript HTML formatter
+#
+# -----------------------------------------------------------------------------
+
+class JSHTMLFormatter( Formatter ):
+	"""Formats the given Pamela document to a JavaScript source code
+	using the 'html.js' markup file."""
+
+	def format( self, document, indent=0 ):
+		elements = filter(lambda v:isinstance(v, Element), document.content)
+		assert len(elements) == len(document.content) == 1, "JSHTMLFormatter can only be used with one element"
+		return self._formatContent(elements[0])
+
+	def _formatContent( self, value ):
+		"""Formats the content of the given element. This uses the formatting
+		operations defined in this class."""
+		if isinstance( value, Text ):
+			return  repr(value.content)
+		elif isinstance( value, Element ):
+			element = value
+			if element.isPI: return ""
+			res = ["html.%s(" % (element.name)]
+			cnt = []
+			if element.attributes:
+				attr = []
+				for name, value in element.attributes:
+					attr.append("%s:%s" % (repr(name), repr(value)))
+				cnt.append("{%s}" % (",".join(attr)))
+			for child in element.content:
+				cnt.append(self._formatContent(child))
+			res.append(",".join(cnt))
+			res.append(")")
+			return "".join(res)
+		else:
+			assert None, "Unrecognized value type: " + str(value)
+
+# -----------------------------------------------------------------------------
+#
 # Writer class
 #
 # -----------------------------------------------------------------------------
@@ -555,7 +593,7 @@ class Formatter:
 class Writer:
 	"""The Writer class implements a simple SAX-like interface to create the
 	resulting HTML/XML document. This is not API-compatible with SAX because
-	Pamela as slightly differnt information than what SAX offers, which requires
+	Pamela has slightly different information than what SAX offers, which requires
 	specific methods."""
 
 	def __init__( self ):
@@ -618,7 +656,6 @@ class Writer:
 			return modes[-1]
 		else:
 			return None
-
 
 # -----------------------------------------------------------------------------
 #
@@ -999,8 +1036,14 @@ def parse( text, path=None ):
 	return Parser().parseString(text, path=path)
 
 def run( arguments, input=None ):
-	input_file = arguments[0]
 	parser = Parser()
+	if arguments[0] == "--to-html":
+		input_file = arguments[1]
+	elif arguments[0] == "--to-js":
+		parser._formatter = JSHTMLFormatter()
+		input_file = arguments[1]
+	else:
+		input_file = arguments[0]
 	return parser.parseFile(input_file)
 
 # -----------------------------------------------------------------------------
