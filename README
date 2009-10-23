@@ -1,7 +1,7 @@
 == Pamela
 == Brings the pleasure back to HTML and XML !
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
--- Date:     02-Jul-2009
+-- Date:     03-Oct-2009
 -- Creation: 24-Aug-2007
 
 Introduction
@@ -339,7 +339,7 @@ Dive into Pamela
   You can also specify *replacement values* for variables declared in the included pamela
   file as '${VARIABLE}'. For instance:
 
-  >   %include widget/datepicker (ID=mywidget,TITLE="Start date")
+  >   %include widget/datepicker {ID=mywidget,TITLE="Start date"}
 
   with 'widget/datepicker.paml' being something like:
 
@@ -348,6 +348,15 @@ Dive into Pamela
 
   this is an easy way to make generic '.paml' snippets that can be used as ''templates'' 
   for specific elements.
+
+  In case you want to add additional class attributes or specific attributes, you can
+  add (and override) the included elements attributes by doing:
+
+  >   %include widget/datepicker +.Imported(date=2009-10-23)
+
+  in the above example, the 'widget/datepicker.paml' snippet will be included, the 
+  'Imported' class will be added to the element class attributes and a 'date' attribute
+  will be set with the value '2009-10-23'.
 
   7. Ideas about using Pamela
   ===========================

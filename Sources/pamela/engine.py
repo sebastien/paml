@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   01-Sep-2009
+# Last mod.         :   23-Oct-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -604,6 +604,7 @@ class Writer:
 		self._content   = []
 		self._nodeStack = []
 		self._document  = Element("document")
+		self._override  = None
 
 	def onDocumentEnd( self ):
 		return self._document
@@ -619,9 +620,37 @@ class Writer:
 		self._node().append(Text(text))
 
 	def onElementStart( self, name, attributes=None,isInline=False ):
+		# We extend the override if present
+		if self._override:
+			# FIXME: This would be much more elegant with an ordered key-value
+			# pair set
+			keys           = []
+			class_override = None
+			# We look for the 'class' attribute, if any
+			for item in self._override:
+				if item[0] == "class": class_override = item
+				keys.append(item[0])
+			# We now add all the attributes not overridden
+			for key, value in attributes:
+				if key not in keys:
+					self._override.append([key,value])
+				# We merge the class attribute if present
+				elif key == "class":
+					if class_override[1]:
+						class_override[1] += " " + value
+					else:
+						class_override[1] = value
+			attributes = self._override
 		element = Element(name,attributes=attributes,isInline=isInline)
+		# We clear the override
+		if self._override:
+			self._override = None
 		self._node().append(element)
 		self._pushStack(element)
+	
+	def overrideAttributesForNextElement( self, attributes ):
+		self._override = []
+		self._override.extend(attributes)
 
 	def onElementEnd( self ):
 		self._popStack()
@@ -768,16 +797,23 @@ class Parser:
 			path = is_include.group(2).strip()
 			subs = None
 			# If there is a paren, we extract the replacement
-			lparen = path.find("(")
+			lparen = path.find("{")
 			if lparen >= 0:
 				subs    = {}
-				rparen  = path.rfind(")")
+				rparen  = path.rfind("}")
 				for replace in path[lparen+1:rparen].split(","):
 					name, value = replace.split("=",1)
 					value       = value.strip()
 					if value and value[0] in ["'", '"']: value = value[1:-1]
 					subs[name] = value
 				path = path[:lparen].strip()
+			# FIXME: The + will be swallowed if after paren
+			plus = path.find("+")
+			if plus >= 0:
+				element = "div" + path[plus+1:]
+				path    = path[:plus].strip()
+				_, attributes, _, _ = self._parsePamelaElement(element)
+				self._writer.overrideAttributesForNextElement(attributes)
 			if path[0] in ['"',"'"]:path = path[1:-1]
 			# Now we load the file
 			local_dir  = os.path.dirname(os.path.join(self.path()))
@@ -798,6 +834,7 @@ class Parser:
 				for l in f.readlines():
 					# FIXME: This does not work when I use tabs instead
 					p = int(indent/4)
+					# We do the substituion
 					if subs: l = string.Template(l).substitute(**subs)
 					self._parseLine(p * "\t" + l)
 				f.close()
