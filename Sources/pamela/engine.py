@@ -8,12 +8,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   23-Oct-2009
+# Last mod.         :   29-Oct-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__ = "0.5.2"
+__version__ = "0.5.3"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -95,6 +95,9 @@ HTML_EXCEPTIONS = {
 	"span":{
 		"NOT_EMPTY":" "
 	},
+	"li":{
+		"NOT_EMPTY":""
+	},
 	"canvas":{
 		"NOT_EMPTY":" "
 	},
@@ -105,6 +108,9 @@ HTML_EXCEPTIONS = {
 		"NOT_EMPTY":" "
 	},
 	"div":{
+		"NOT_EMPTY":"&nbsp;"
+	},
+	"td":{
 		"NOT_EMPTY":"&nbsp;"
 	}
 }
