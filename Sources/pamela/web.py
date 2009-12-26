@@ -51,7 +51,7 @@ def getProcessors():
 	setup."""
 	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS}
 
-def getLocalFile():
+def getLocalFiles():
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
 	return LocalFiles(processors=getProcessors(),optsuffix=[".paml",".html"])
