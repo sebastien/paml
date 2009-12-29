@@ -57,7 +57,7 @@ def getLocalFiles():
 	return LocalFiles(processors=getProcessors(),optsuffix=[".paml",".html"])
 
 def run( arguments, options={} ):
-	files   = getLocalFile()
+	files   = getLocalFiles()
 	comps   = [files]
 	proxies = map(lambda x:x[len("proxy:"):],filter(lambda x:x.startswith("proxy:"),arguments))
 	comps.extend(proxy.createProxies(proxies))
