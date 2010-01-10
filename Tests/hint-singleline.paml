@@ -1,0 +1,12 @@
+<div.method:GET
+	<span.server.hidden:http://bff.heroku.com:80
+	<span.uri|sl:/listing/1000?
+		<span.param
+			<span.name:start
+			<span:=
+			<span.value:100
+		&amp;
+		<span.param
+			<span.name:end
+			<span:=
+			<span.value:100i
