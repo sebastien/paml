@@ -1,4 +1,4 @@
-# vim: tw=80 ts=4 sw=4 noet
+#!/usr/bin/env python
 # -----------------------------------------------------------------------------
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
@@ -60,13 +60,13 @@ class XML2Paml:
 		self.result += ("\t" * self.indent) + text + "\n"
 
 
-def xml2paml(doc):
+def run(doc):
 	converter = XML2Paml()
 	return converter.convert(doc)
 
 
 if __name__ == "__main__":
 	doc = parse(sys.argv[1])
-	print xml2paml(doc)
+	sys.stdout.write(run(doc).encode("utf-8"))
 
-# EOF
+# EOF - vim: tw=80 ts=4 sw=4 noet
