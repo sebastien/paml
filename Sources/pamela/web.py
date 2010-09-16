@@ -41,7 +41,7 @@ def processSugar( sugarText, path, cache=True ):
 			print e
 			return sugarText, "text/plain"
 		modulename = os.path.splitext(os.path.basename(path))[0]
-		data = sugar.sourceToJavaScript(sugarText, modulename)
+		data = sugar.sourceToJavaScript(sugarText, modulename, "-Llib/sjs")
 		if cache:
 			CACHE.put(path,timestamp,data)
 	return data, "text/plain"

@@ -8,7 +8,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   09-Jun-2010
+# Last mod.         :   12-Aug-2010
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
@@ -827,9 +827,10 @@ class Parser:
 				_, attributes, _, _ = self._parsePamelaElement(element)
 				self._writer.overrideAttributesForNextElement(attributes)
 			if path[0] in ['"',"'"]:path = path[1:-1]
+			path.replace("/", os.path.sep)
 			# Now we load the file
-			local_dir  = os.path.dirname(os.path.join(self.path()))
-			local_path = os.path.join(local_dir, path)
+			local_dir  = os.path.dirname(os.path.normpath(os.path.join(self.path())))
+			local_path = os.path.normpath(os.path.join(local_dir, path))
 			if   os.path.exists(local_path):
 				path = local_path
 			elif os.path.exists(local_path + ".paml"):

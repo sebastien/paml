@@ -6,11 +6,11 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   09-Jun-2010
-# Last mod.         :   09-Jun-2010
+# Last mod.         :   30-Jul-2010
 # -----------------------------------------------------------------------------
 
-import sys
-from xml.dom.minidom import parse, parseString
+import sys, xml.parsers.expat
+import xml.dom.minidom as minidom
 
 class XML2Paml:
 
@@ -23,11 +23,20 @@ class XML2Paml:
 		lines = map(lambda _:_.strip(),text.split("\n"))
 		return filter(lambda _:len(_.strip()) > 0, lines)
 
-	def convert( self, node ):
+	def convert( self, node, bodyOnly=False ):
+		if type(node) in (str,unicode):
+			node = minidom.parseString(node)
 		t = node.nodeType
-		if   t == doc.DOCUMENT_NODE:
-			for n in node.childNodes:
-				self.convert(n)
+		if   t == node.DOCUMENT_NODE:
+			if bodyOnly:
+				html_node = filter(lambda n:n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "html", node.childNodes)
+				body_nodes = filter(lambda n:n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "body", html_node[0].childNodes)
+				if body_nodes:
+					for n in body_nodes[0].childNodes:
+						self.convert(n)
+			else:
+				for n in node.childNodes:
+					self.convert(n)
 		elif t == node.COMMENT_NODE:
 			map(lambda _:self.output("# " + _), self.extractLines(node.nodeValue))
 		elif t == node.TEXT_NODE:
@@ -60,13 +69,15 @@ class XML2Paml:
 		self.result += ("\t" * self.indent) + text + "\n"
 
 
-def run(doc):
+def run(doc, bodyOnly=False):
 	converter = XML2Paml()
-	return converter.convert(doc)
+	return converter.convert(doc, bodyOnly)
 
+def parseFile(path):
+	doc = minidom.parse(sys.argv[1])
+	return run(doc)
 
 if __name__ == "__main__":
-	doc = parse(sys.argv[1])
-	sys.stdout.write(run(doc).encode("utf-8"))
+	sys.stdout.write(parseFile(sys.argv[1]).encode("utf-8"))
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
