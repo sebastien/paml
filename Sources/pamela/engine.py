@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# Encoding: iso-8859-1
-# vim: tw=80 ts=4 sw=4 noet
 # -----------------------------------------------------------------------------
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
@@ -8,12 +6,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   12-Aug-2010
+# Last mod.         :   23-Sep-2010
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -154,6 +152,14 @@ class Element:
 
 	def append(self,n):
 		self.content.append(n)
+	
+	def isTextOnly( self ):
+		if len(self.content) == 0:
+			return True
+		elif len(self.content) == 1 and isinstance(self.content[0], Text) and self.content[0].content.find("\n") == -1:
+			return True
+		else:
+			return False
 
 	def contentAsLines( self ):
 		res = []
@@ -355,6 +361,7 @@ class Formatter:
 					self.setFlag(FORMAT_SINGLE_LINE)
 			# If the element is an inline, we enter the SINGLE_LINE formatting
 			# mode, without adding an new line
+			# FIXME: isInline is wlaways false
 			if element.isInline:
 				self.pushFlags(FORMAT_SINGLE_LINE)
 				self.writeTag(start)
@@ -363,7 +370,7 @@ class Formatter:
 				self.popFlags()
 			# Or maybe the element has a SINGLE_LINE flag, in which case we add a
 			# newline inbetween
-			elif self.hasFlag(FORMAT_SINGLE_LINE):
+			elif self.hasFlag(FORMAT_SINGLE_LINE) or element.isTextOnly():
 				self.newLine()
 				self.writeTag(start)
 				self._formatContent(element)
@@ -944,6 +951,9 @@ class Parser:
 		# We add the remaining text
 		if offset < len(line):
 			text = line[offset:]
+			# We remove the trainling EOL at the end of the line. This might not
+			# be the best way to do it, though.
+			if text and text[-1] == "\n": text = text[:-1]
 			if text: self._writer.onTextAdd(text)
 
 	def _parsePamelaElement( self, element ):
@@ -1105,5 +1115,5 @@ def run( arguments, input=None ):
 if __name__ == "__main__":
 	print run(sys.argv[1:])
 
-# EOF
+# EOF - vim: tw=80 ts=4 sw=4 noet
 

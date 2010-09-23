@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   12-Jun-2009
+# Last mod.         :   20-Sep-2009
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -30,10 +30,11 @@ def processCleverCSS( text, path ):
 
 def processSugar( sugarText, path, cache=True ):
 	timestamp = has_changed = data = None
+	is_same   = False
 	if cache:
-		timestamp         = CACHE.filemod(path)
-		has_changed, data = CACHE.get(path,timestamp)
-	if has_changed or not cache:
+		timestamp     = SignatureCache.mtime(path)
+		is_same, data = CACHE.get(path,timestamp)
+	if (not is_same) or (not cache):
 		try:
 			from sugar import main as sugar
 		except Exception, e:
@@ -43,7 +44,7 @@ def processSugar( sugarText, path, cache=True ):
 		modulename = os.path.splitext(os.path.basename(path))[0]
 		data = sugar.sourceToJavaScript(sugarText, modulename, "-Llib/sjs")
 		if cache:
-			CACHE.put(path,timestamp,data)
+			CACHE.set(path,timestamp,data)
 	return data, "text/plain"
 
 def getProcessors():
