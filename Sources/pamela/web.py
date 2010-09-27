@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   20-Sep-2009
+# Last mod.         :   26-Sep-2010
 # -----------------------------------------------------------------------------
 
 import os, sys, re
@@ -20,7 +20,7 @@ CACHE = SignatureCache()
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
-	result = parser.parseString(pamelaText)
+	result = parser.parseString(pamelaText, path)
 	return result, "text/html"
 
 def processCleverCSS( text, path ):
@@ -41,8 +41,9 @@ def processSugar( sugarText, path, cache=True ):
 			print "Sugar/LambdaFactory is not available"
 			print e
 			return sugarText, "text/plain"
-		modulename = os.path.splitext(os.path.basename(path))[0]
-		data = sugar.sourceToJavaScript(sugarText, modulename, "-Llib/sjs")
+		modulename  = os.path.splitext(os.path.basename(path))[0]
+		parent_path = os.path.dirname(path)
+		data = sugar.sourceToJavaScript(sugarText, modulename, "-L%s -L%s/lib/sjs" % (parent_path, parent_path))
 		if cache:
 			CACHE.set(path,timestamp,data)
 	return data, "text/plain"
@@ -52,10 +53,10 @@ def getProcessors():
 	setup."""
 	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS}
 
-def getLocalFiles():
+def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
-	return LocalFiles(processors=getProcessors(),optsuffix=[".paml",".html"])
+	return LocalFiles(root=root,processors=getProcessors(),optsuffix=[".paml",".html"])
 
 def run( arguments, options={} ):
 	files   = getLocalFiles()
