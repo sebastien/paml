@@ -855,7 +855,7 @@ class Parser:
 					# FIXME: This does not work when I use tabs instead
 					p = int(indent/4)
 					# We do the substituion
-					if subs: l = string.Template(l).substitute(**subs)
+					if subs: l = string.Template(l).safe_substitute(**subs)
 					self._parseLine(p * "\t" + l)
 				f.close()
 				self._paths.pop()

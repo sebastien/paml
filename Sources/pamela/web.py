@@ -6,17 +6,20 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   26-Sep-2010
+# Last mod.         :   05-Oct-2010
 # -----------------------------------------------------------------------------
 
-import os, sys, re
+import os, sys, re, subprocess, tempfile
 import engine
 import retro
 from retro.contrib.localfiles import LocalFiles
 from retro.contrib.cache import SignatureCache
 from retro.contrib import proxy
 
-CACHE = SignatureCache()
+CACHE    = SignatureCache()
+COMMANDS = dict(
+	sugar="sugar"
+)
 
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
@@ -35,15 +38,21 @@ def processSugar( sugarText, path, cache=True ):
 		timestamp     = SignatureCache.mtime(path)
 		is_same, data = CACHE.get(path,timestamp)
 	if (not is_same) or (not cache):
-		try:
-			from sugar import main as sugar
-		except Exception, e:
-			print "Sugar/LambdaFactory is not available"
-			print e
-			return sugarText, "text/plain"
 		modulename  = os.path.splitext(os.path.basename(path))[0]
 		parent_path = os.path.dirname(path)
-		data = sugar.sourceToJavaScript(sugarText, modulename, "-L%s -L%s/lib/sjs" % (parent_path, parent_path))
+		dirpath    = tempfile.mkdtemp()
+		p = dirpath + os.path.sep + modulename + ".sjs"
+		f = file(p, "w") ; f.write(sugarText)
+		command = "%s -cljs %s %s" % (COMMANDS["sugar"], "-L%s -L%s/lib/sjs" % (parent_path, parent_path), p)
+		cmd     = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		data    = cmd.stdout.read()
+		error   = cmd.stderr.read()
+		cmd.wait() ;
+		f.close()
+		os.unlink(p)
+		if os.path.exists(dirpath): os.rmdir(dirpath)
+		if not data:
+			raise Exception(error)
 		if cache:
 			CACHE.set(path,timestamp,data)
 	return data, "text/plain"
