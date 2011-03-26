@@ -6,12 +6,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   23-Sep-2010
+# Last mod.         :   26-May-2011
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__ = "0.5.5"
+__version__    = "0.5.6"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -174,16 +174,16 @@ class Element:
 		"""Returns the attributes as HTML"""
 		r = []
 		def escape(v):
-			if   v.find('"') == -1: v = '"%s"' % (v)
-			elif v.find("'") == -1: v = "'%s'" % (v)
-			else: v = '"%s"' % (v.replace('"', '\\"'))
+			if   v.find('"') == -1: v = u'"%s"' % (v)
+			elif v.find("'") == -1: v = u"'%s'" % (v)
+			else: v = u'"%s"' % (v.replace('"', '\\"'))
 			return v
 		for name, value in self.attributes:
 			if value is None:
-				r.append("%s" % (name))
+				r.append(u"%s" % (name))
 			else:
-				r.append("%s=%s" % (name,escape(value)))
-		r = " ".join(r)
+				r.append(u"%s=%s" % (name,escape(value)))
+		r = u" ".join(r)
 		if r: r= " "+r
 		return r
 
@@ -313,7 +313,8 @@ class Formatter:
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
-			text = "".join(text)
+			#text = "".join(map(lambda _:_.encode("utf-8"), text))
+			text  = "".join(text)
 			if not element.isInline:
 				while text and text[-1] in "\n\t ": text = text[:-1]
 			self.writeText(text)
@@ -329,7 +330,7 @@ class Formatter:
 				if not self._inlineCanSpanOneLine(c):
 					return False
 			return True
-	
+
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
@@ -344,18 +345,18 @@ class Formatter:
 		if element.mode == "sugar":
 			lines = element.contentAsLines()
 			import pamela.web
-			source = "".join(lines)
+			source = u"".join(lines)
 			res, _ = pamela.web.processSugar(source, ".", cache=False)
 			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
 				assert not attributes, "Processing instruction cannot have attributes"
-				start   = "<?%s " % (element.name)
-				end     = " ?>"
+				start   = u"<?%s " % (element.name)
+				end     = u" ?>"
 			else:
-				start   = "<%s%s>" % (element.name, attributes)
-				end     = "</%s>" % (element.name)
+				start   = u"<%s%s>" % (element.name, attributes)
+				end     = u"</%s>" % (element.name)
 			if self.hasFlag(FORMAT_INLINE):
 				if self._inlineCanSpanOneLine(element):
 					self.setFlag(FORMAT_SINGLE_LINE)
@@ -388,7 +389,7 @@ class Formatter:
 			self.popFlags()
 		# Otherwise it doesn't have any content
 		else:
-			text =  "<%s%s />" % (element.name, attributes)
+			text =  u"<%s%s />" % (element.name, attributes)
 			# And if it's an inline, we don't add a newline
 			if not element.isInline: self.newLine()
 			self.writeTag(text)
@@ -419,7 +420,7 @@ class Formatter:
 		"""Ensures that there is a new line."""
 		if not self._isNewLine():
 			if not  self._result:
-				self._result.append("")
+				self._result.append(u"")
 			else:
 				self._result[-1] = self._result[-1] + "\n"
 
@@ -474,7 +475,7 @@ class Formatter:
 					result.append(text)
 
 	def endWriting( self ):
-		res = "".join(self._result)
+		res = u"".join(self._result)
 		del self._result
 		return res
 
@@ -510,7 +511,7 @@ class Formatter:
 		words = []
 		for word in self._iterateOnWords(text):
 			words.append(word)
-		return " ".join(words)
+		return u" ".join(words)
 
 	# -------------------------------------------------------------------------
 	# TEXT MANIPULATION OPERATIONS
@@ -539,7 +540,7 @@ class Formatter:
 				result.append(prefix + line)
 			first_line = False
 			line_i += 1
-		result = "\n".join(result)
+		result = u"\n".join(result)
 		if end: result += "\n"
 		return result
 
@@ -588,18 +589,18 @@ class JSHTMLFormatter( Formatter ):
 		elif isinstance( value, Element ):
 			element = value
 			if element.isPI: return ""
-			res = ["html.%s(" % (element.name)]
+			res = [u"html.%s(" % (element.name)]
 			cnt = []
 			if element.attributes:
 				attr = []
 				for name, value in element.attributes:
-					attr.append("%s:%s" % (repr(name), repr(value)))
-				cnt.append("{%s}" % (",".join(attr)))
+					attr.append(u"%s:%s" % (repr(name), repr(value)))
+				cnt.append(u"{%s}" % (u",".join(attr)))
 			for child in element.content:
 				cnt.append(self._formatContent(child))
-			res.append(",".join(cnt))
-			res.append(")")
-			return "".join(res)
+			res.append(u",".join(cnt))
+			res.append(u")")
+			return u"".join(res)
 		else:
 			assert None, "Unrecognized value type: " + str(value)
 
@@ -763,7 +764,7 @@ class Parser:
 		self._paths.append(path)
 		self._writer.onDocumentStart()
 		for l in f.readlines():
-			self._parseLine(l)
+			self._parseLine(l.decode("utf-8"))
 		result = self._formatter.format(self._writer.onDocumentEnd())
 		self._paths.pop()
 		return result
@@ -771,6 +772,7 @@ class Parser:
 	def parseString( self, text, path=None ):
 		"""Parses the given string and returns an HTML document."""
 		if path: self._paths.append(path)
+		text = text.decode("utf-8")
 		self._writer.onDocumentStart()
 		for line in text.split("\n"):
 			self._parseLine(line + "\n")
@@ -816,7 +818,7 @@ class Parser:
 			path = is_include.group(2).strip()
 			subs = None
 			# If there is a paren, we extract the replacement
-			lparen = path.find("{")
+			lparen = path.rfind("{")
 			if lparen >= 0:
 				subs    = {}
 				rparen  = path.rfind("}")
@@ -850,9 +852,10 @@ class Parser:
 				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (local_path))
 			else:
 				self._paths.append(path)
-				f = file(path,'r')
+				f = file(path,'rb')
 				for l in f.readlines():
 					# FIXME: This does not work when I use tabs instead
+					l = l.decode("utf-8")
 					p = int(indent/4)
 					# We do the substituion
 					if subs: l = string.Template(l).safe_substitute(**subs)
@@ -953,7 +956,7 @@ class Parser:
 			text = line[offset:]
 			# We remove the trainling EOL at the end of the line. This might not
 			# be the best way to do it, though.
-			if text and text[-1] == "\n": text = text[:-1]
+			if text and text[-1] == "\n": text = text[:-1] + " "
 			if text: self._writer.onTextAdd(text)
 
 	def _parsePamelaElement( self, element ):
@@ -1021,7 +1024,7 @@ class Parser:
 		if len(classes) > 1:
 			element = classes[0]
 			classes = classes[1:]
-			classes = " ".join( classes)
+			classes = u" ".join( classes)
 			append_attribute("class", classes, attributes, prepend=True)
 		else:
 			element = classes[0]
@@ -1113,7 +1116,7 @@ def run( arguments, input=None ):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	print run(sys.argv[1:])
+	sys.stdout.write( run(sys.argv[1:]).encode("utf-8") )
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
 

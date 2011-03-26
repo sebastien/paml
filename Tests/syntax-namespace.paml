@@ -1,2 +1,3 @@
-<html(xmlns::svg="....")
-   <svg::svg ...
+<html(xmlns="http://www.w3.org/1999/xhtml")
+	<fb::login-button(autologoutlink="true")
+	<fb::like

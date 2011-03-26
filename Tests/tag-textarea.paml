@@ -5,3 +5,4 @@
 		<textarea
 		<textarea:
 		<textarea(name=${NAME}):${VALUE}
+		<textarea:>

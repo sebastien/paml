@@ -1,0 +1,2 @@
+<div
+	%include snippet +.TEST.class(attr1={hello:world})

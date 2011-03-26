@@ -1,0 +1,18 @@
+<ul
+	<li(data='{"type":"year","year":2011,"highlight":["Health","Medicare"]}')
+		<h4:The price of health
+		<p
+			“He that has not health, has nothing,” claims an old French
+			proverb, and like other developed countries, America spends a good
+			fifth of its budget on health and medicare. But unlike these
+			countries, it does not offer universal care: for every dollar the
+			government spends on health, another dollar comes out of private
+			insurance plans or patients’ pockets.
+		<p
+			Taking this into account, Americans spend more on health and
+			medicare than any other nation. Yet this does not seem to buy them
+			better health: in fact, they have a shorter-than-average life
+			expectancy and a higher-than-average child mortality rate. The
+			reason, speculates the Congressional Research Service, is that
+			prices for medical services are abnormally high.
+# EOF
