@@ -20,6 +20,12 @@ COMMANDS = dict(
 	sugar="sugar"
 )
 
+try:
+	import templating
+	HAS_TEMPLATING = templating
+except:
+	HAS_TEMPLATING = None
+
 def processPamela( pamelaText, path ):
 	parser = engine.Parser()
 	result = parser.parseString(pamelaText, path)
@@ -74,12 +80,16 @@ def getLocalFiles(root=""):
 	processor."""
 	return LocalFiles(root=root,processors=getProcessors(),optsuffix=[".paml",".html"])
 
+def beforeRequest( request ):
+	pass
+
 def run( arguments, options={} ):
 	files   = getLocalFiles()
 	comps   = [files]
 	proxies = map(lambda x:x[len("proxy:"):],filter(lambda x:x.startswith("proxy:"),arguments))
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
+	#app.onRequest(beforeRequest)
 	retro.command(
 		arguments,
 		app      = app,

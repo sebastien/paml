@@ -2,16 +2,16 @@
 # -----------------------------------------------------------------------------
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
-# Author            :   Sebastien Pierre                 <sebastien@type-z.org>
+# Author            :   Sebastien Pierre                  <sebastien@ffctn.com>
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   26-May-2011
+# Last mod.         :   20-Jan-2012
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__    = "0.5.6"
+__version__    = "0.5.7"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -337,6 +337,7 @@ class Formatter:
 		attributes = element._attributesAsHTML()
 		exceptions = HTML_EXCEPTIONS.get(element.name)
 		content = element.content
+		# FIXME: Flags are not properly supported
 		if exceptions:
 			not_empty = exceptions.get("NOT_EMPTY")
 			if not_empty != None and not content:
@@ -404,7 +405,7 @@ class Formatter:
 				text = self.stripText(text)
 			if not self.hasFlag(FORMAT_SINGLE_LINE):
 				compact = self.hasFlag(FORMAT_COMPACT)
-				text = self.indentString(text, start=not compact, end=not compact)
+				text    = self.indentString(text, start=not compact, end=not compact)
 		return text
 
 	# -------------------------------------------------------------------------
@@ -772,7 +773,11 @@ class Parser:
 	def parseString( self, text, path=None ):
 		"""Parses the given string and returns an HTML document."""
 		if path: self._paths.append(path)
-		text = text.decode("utf-8")
+		try:
+			text = text.decode("utf-8")
+		except UnicodeEncodeError, e:
+			# FIXME: What should we do?
+			pass
 		self._writer.onDocumentStart()
 		for line in text.split("\n"):
 			self._parseLine(line + "\n")
@@ -793,6 +798,8 @@ class Parser:
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
 		This is an internal method that you should not really use directly."""
+		# FIXME: This function is WAY TOO BIG, it should be broken down in
+		# _parse<element>
 		original_line = line
 		indent, line = self._getLineIndent(line)
 		# First, we make sure we close the elements that may be outside of the
@@ -812,56 +819,7 @@ class Parser:
 			return
 			return self._writer.onComment(line)
 		# Is it an include element (%include ...)
-		is_include     = RE_INCLUDE.match(original_line)
-		if is_include:
-			# FIXME: This could be written better
-			path = is_include.group(2).strip()
-			subs = None
-			# If there is a paren, we extract the replacement
-			lparen = path.rfind("{")
-			if lparen >= 0:
-				subs    = {}
-				rparen  = path.rfind("}")
-				for replace in path[lparen+1:rparen].split(","):
-					name, value = replace.split("=",1)
-					value       = value.strip()
-					if value and value[0] in ["'", '"']: value = value[1:-1]
-					subs[name] = value
-				path = path[:lparen].strip()
-			# FIXME: The + will be swallowed if after paren
-			plus = path.find("+")
-			if plus >= 0:
-				element = "div" + path[plus+1:]
-				path    = path[:plus].strip()
-				_, attributes, _, _ = self._parsePamelaElement(element)
-				self._writer.overrideAttributesForNextElement(attributes)
-			if path[0] in ['"',"'"]:path = path[1:-1]
-			path.replace("/", os.path.sep)
-			# Now we load the file
-			local_dir  = os.path.dirname(os.path.normpath(os.path.join(self.path())))
-			local_path = os.path.normpath(os.path.join(local_dir, path))
-			if   os.path.exists(local_path):
-				path = local_path
-			elif os.path.exists(local_path + ".paml"):
-				path = local_path + ".paml"
-			elif os.path.exists(path):
-				path = path
-			elif os.path.exists(path + ".paml"):
-				path = path + ".paml"
-			if not os.path.exists(path):
-				return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (local_path))
-			else:
-				self._paths.append(path)
-				f = file(path,'rb')
-				for l in f.readlines():
-					# FIXME: This does not work when I use tabs instead
-					l = l.decode("utf-8")
-					p = int(indent/4)
-					# We do the substituion
-					if subs: l = string.Template(l).safe_substitute(**subs)
-					self._parseLine(p * "\t" + l)
-				f.close()
-				self._paths.pop()
+		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
 			return
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
@@ -917,6 +875,96 @@ class Parser:
 		else:
 			# Otherwise it's data
 			self._parseContentLine(line)
+
+	def _tokenize( self, text, escape="\"'" ):
+		res = []
+		o   = 0
+		end = len(text)
+		while o < end:
+			escape_index     = end + 1
+			escape_index_end = -1
+			escape_char      = None
+			# We look for the closest matching escape character
+			for char in escape:
+				# We find the occurence of the escape char
+				i = text.find(char,o)
+				# If it is there and closer to the current offset than
+				# the previous escape character
+				if i != -1 and  i < escape_index:
+					# We look for the end
+					j = text.find(char,i + 1)
+					# If there is an end, we assign it as the current escape
+					if j != -1:
+						escape_index     = i
+						escape_index_end = j
+						escape_char      = char
+			# If we did not find an escape char
+			if escape_char == None:
+				res.append(text[o:])
+				o = end
+			else:
+				if o < escape_index:
+					res.append(text[o:escape_index])
+				res.append(text[escape_index:escape_index_end+1])
+				o = escape_index_end+1
+		return res
+
+	def _parseInclude( self, match, indent ):
+		"""An include rule is expressed as follows
+		%include PATH {NAME=VAL,...} +.class...(name=val,name,val)
+		"""
+		if not match: return False
+		# FIXME: This could be written better
+		path = match.group(2).strip()
+		subs = None
+		# If there is a paren, we extract the replacement
+		lparen = path.rfind("{")
+		offset = 0
+		if lparen >= 0:
+			subs    = {}
+			rparen  = path.rfind("}")
+			if rparen > lparen:
+				for replace in path[lparen+1:rparen].split(","):
+					name, value = replace.split("=",1)
+					value       = value.strip()
+					if value and value[0] in ["'", '"']: value = value[1:-1]
+					subs[name] = value
+				path = path[:lparen] + path[rparen+1:]
+		# FIXME: The + will be swallowed if after paren
+		plus = path.find("+")
+		if plus >= 0:
+			element = "div" + path[plus+1:]
+			path    = path[:plus].strip()
+			_, attributes, _, _ = self._parsePamelaElement(element)
+			self._writer.overrideAttributesForNextElement(attributes)
+		if path[0] in ['"',"'"]:path = path[1:-1]
+		path.replace("/", os.path.sep)
+		# Now we load the file
+		local_dir  = os.path.dirname(os.path.normpath(os.path.join(self.path())))
+		local_path = os.path.normpath(os.path.join(local_dir, path))
+		if   os.path.exists(local_path):
+			path = local_path
+		elif os.path.exists(local_path + ".paml"):
+			path = local_path + ".paml"
+		elif os.path.exists(path):
+			path = path
+		elif os.path.exists(path + ".paml"):
+			path = path + ".paml"
+		if not os.path.exists(path):
+			return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (local_path))
+		else:
+			self._paths.append(path)
+			f = file(path,'rb')
+			for l in f.readlines():
+				# FIXME: This does not work when I use tabs instead
+				l = l.decode("utf-8")
+				p = int(indent/4)
+				# We do the substituion
+				if subs: l = string.Template(l).safe_substitute(**subs)
+				self._parseLine(p * "\t" + l)
+			f.close()
+			self._paths.pop()
+		return True
 
 	def _pushStack(self, indent, type, mode=None):
 		self._elementStack.append((indent, type))
