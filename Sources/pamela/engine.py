@@ -937,8 +937,10 @@ class Parser:
 			path    = path[:plus].strip()
 			_, attributes, _, _ = self._parsePamelaElement(element)
 			self._writer.overrideAttributesForNextElement(attributes)
-		if path[0] in ['"',"'"]:path = path[1:-1]
-		path.replace("/", os.path.sep)
+		if path[0] in ['"',"'"]:
+			path = path[1:-1]
+		else:
+			path = path.strip()
 		# Now we load the file
 		local_dir  = os.path.dirname(os.path.normpath(os.path.join(self.path())))
 		local_path = os.path.normpath(os.path.join(local_dir, path))
