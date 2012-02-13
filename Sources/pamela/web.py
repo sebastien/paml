@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   19-Oct-2010
+# Last mod.         :   13-Feb-2012
 # -----------------------------------------------------------------------------
 import os, sys, re, subprocess, tempfile
 import engine
@@ -17,7 +17,8 @@ from retro.contrib import proxy
 
 CACHE    = SignatureCache()
 COMMANDS = dict(
-	sugar="sugar"
+	sugar="sugar",
+	coffee="coffee"
 )
 
 try:
@@ -36,7 +37,7 @@ def processCleverCSS( text, path ):
 	result = clevercss.convert(text)
 	return result, "text/css"
 
-def processSugar( sugarText, path, cache=True ):
+def _processsCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
 	timestamp = has_changed = data = None
 	is_same   = False
 	if cache:
@@ -45,19 +46,11 @@ def processSugar( sugarText, path, cache=True ):
 	if (not is_same) or (not cache):
 		if os.path.isdir(path):
 			temp_created = True
-			parent_path  = path
-			fd, path     = tempfile.mkstemp(suffix="sg",prefix="inlinesugar_")
-			os.write(fd, sugarText)
+			fd, path     = tempfile.mkstemp(suffix=tmpsuffix,prefix=tmpprefix)
+			os.write(fd, text)
 			os.close(fd)
 		else:
 			temp_created = False
-			parent_path  = os.path.dirname(os.path.abspath(path))
-		command = [
-			COMMANDS["sugar"],"-cljs",
-			"-L" + parent_path,
-			"-L" + os.path.join(parent_path, "lib", "js"),
-			path
-		]
 		cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		data    = cmd.stdout.read()
 		error   = cmd.stderr.read()
@@ -68,12 +61,32 @@ def processSugar( sugarText, path, cache=True ):
 			raise Exception(error)
 		if cache:
 			CACHE.set(path,timestamp,data)
-	return data, "text/plain"
+	return data
+
+def processSugar( sugarText, path, cache=True ):
+	if os.path.isdir(path):
+		parent_path  = path
+	else:
+		parent_path  = os.path.dirname(os.path.abspath(path))
+	command = [
+		COMMANDS["sugar"],"-cljs",
+		"-L" + parent_path,
+		"-L" + os.path.join(parent_path, "lib", "js"),
+		path
+	]
+	return _processsCommand(command, text, path, cache), "text/javascript"
+
+def processCoffeeScript( text, path, cache=True ):
+	command = [
+		COMMANDS["coffee"],"-cp",
+		path
+	]
+	return _processsCommand(command, text, path, cache), "text/javascript"
 
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
-	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS}
+	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS,"coffee":processCoffeeScript}
 
 def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
