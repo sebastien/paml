@@ -37,7 +37,7 @@ def processCleverCSS( text, path ):
 	result = clevercss.convert(text)
 	return result, "text/css"
 
-def _processsCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
+def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
 	timestamp = has_changed = data = None
 	is_same   = False
 	if cache:
@@ -49,6 +49,7 @@ def _processsCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefi
 			fd, path     = tempfile.mkstemp(suffix=tmpsuffix,prefix=tmpprefix)
 			os.write(fd, text)
 			os.close(fd)
+			command = command[:-1] + [path]
 		else:
 			temp_created = False
 		cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -63,7 +64,7 @@ def _processsCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefi
 			CACHE.set(path,timestamp,data)
 	return data
 
-def processSugar( sugarText, path, cache=True ):
+def processSugar( text, path, cache=True ):
 	if os.path.isdir(path):
 		parent_path  = path
 	else:
@@ -74,14 +75,14 @@ def processSugar( sugarText, path, cache=True ):
 		"-L" + os.path.join(parent_path, "lib", "js"),
 		path
 	]
-	return _processsCommand(command, text, path, cache), "text/javascript"
+	return _processCommand(command, text, path, cache), "text/javascript"
 
 def processCoffeeScript( text, path, cache=True ):
 	command = [
 		COMMANDS["coffee"],"-cp",
 		path
 	]
-	return _processsCommand(command, text, path, cache), "text/javascript"
+	return _processCommand(command, text, path, cache), "text/javascript"
 
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already

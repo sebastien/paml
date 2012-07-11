@@ -6,12 +6,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   20-Jan-2012
+# Last mod.         :   11-Jul-2012
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string
 
-__version__    = "0.5.7"
+__version__    = "0.6.0"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -87,6 +87,10 @@ HTML_DEFAULTS = {
 }
 
 HTML_EXCEPTIONS = {
+	"links":dict(NO_CLOSING=True),
+	"br"   :dict(NO_CLOSING=True),
+	"img"  :dict(NO_CLOSING=True),
+
 	"a":{
 		"NOT_EMPTY":" "
 	},
@@ -349,6 +353,12 @@ class Formatter:
 			source = u"".join(lines)
 			res, _ = pamela.web.processSugar(source, ".", cache=False)
 			element.content = [Text(res)]
+		if element.mode in ("coffeescript", "coffee"):
+			lines = element.contentAsLines()
+			import pamela.web
+			source = u"".join(lines)
+			res, _ = pamela.web.processCoffeeScript(source, ".", cache=False)
+			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
@@ -390,7 +400,10 @@ class Formatter:
 			self.popFlags()
 		# Otherwise it doesn't have any content
 		else:
-			text =  u"<%s%s />" % (element.name, attributes)
+			if exceptions and exceptions.get("NO_CLOSING"):
+				text =  u"<%s%s>" % (element.name, attributes)
+			else:
+				text =  u"<%s%s />" % (element.name, attributes)
 			# And if it's an inline, we don't add a newline
 			if not element.isInline: self.newLine()
 			self.writeTag(text)
