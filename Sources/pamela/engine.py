@@ -6,12 +6,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   11-Jul-2012
+# Last mod.         :   03-Apr-2013
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string
+import os, sys, re, string, json
 
-__version__    = "0.6.0"
+__version__    = "0.6.1"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -598,8 +598,9 @@ class JSHTMLFormatter( Formatter ):
 	def _formatContent( self, value ):
 		"""Formats the content of the given element. This uses the formatting
 		operations defined in this class."""
+		# FIXME: Should escape entities
 		if isinstance( value, Text ):
-			return  repr(value.content)
+			return  json.dumps(value.content)
 		elif isinstance( value, Element ):
 			element = value
 			if element.isPI: return ""
@@ -608,7 +609,7 @@ class JSHTMLFormatter( Formatter ):
 			if element.attributes:
 				attr = []
 				for name, value in element.attributes:
-					attr.append(u"%s:%s" % (repr(name), repr(value)))
+					attr.append(u"%s:%s" % (json.dumps(name), json.dumps(value)))
 				cnt.append(u"{%s}" % (u",".join(attr)))
 			for child in element.content:
 				cnt.append(self._formatContent(child))

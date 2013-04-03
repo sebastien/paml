@@ -107,7 +107,6 @@ def run( arguments, options={} ):
 	retro.command(
 		arguments,
 		app      = app,
-		sessions = False,
 		port     = int(options.get("port") or retro.DEFAULT_PORT)
 	)
 
