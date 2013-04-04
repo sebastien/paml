@@ -27,12 +27,32 @@ try:
 except:
 	HAS_TEMPLATING = None
 
-def processPamela( pamelaText, path ):
+def processPamela( pamelaText, path, request ):
 	parser = engine.Parser()
-	result = parser.parseString(pamelaText, path)
-	return result, "text/html"
+	if request.get("as") == "js":
+		parser._formatter = engine.JSHTMLFormatter()
+		result = parser.parseString(pamelaText, path)
+		assign = request.get("assign")
+		prefix = ""
+		suffix = ""
+		if assign:
+			if assign == "_": assign = os.path.basename(path).split(".")[0]
+			assign = assign.split(".")
+			prefix = "var "
+			suffix = ";"
+			for i,v in enumerate(assign):
+				if   i == 0:
+					prefix += v + "=("
+					suffix  = ")"    + suffix
+				else:
+					prefix += "{" + v + ":"
+					suffix = "}" + suffix
+		return prefix + result + suffix, "text/javascript"
+	else:
+		result = parser.parseString(pamelaText, path)
+		return result, "text/html"
 
-def processCleverCSS( text, path ):
+def processCleverCSS( text, path, request ):
 	import clevercss
 	result = clevercss.convert(text)
 	return result, "text/css"

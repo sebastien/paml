@@ -1159,8 +1159,10 @@ class Parser:
 #
 # -----------------------------------------------------------------------------
 
-def parse( text, path=None ):
-	return Parser().parseString(text, path=path)
+def parse( text, path=None, format="html" ):
+	parser = Parser()
+	if format == "js": parser._formatter = JSHTMLFormatter()
+	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):
 	parser = Parser()
