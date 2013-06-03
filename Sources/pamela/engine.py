@@ -168,7 +168,7 @@ class Element:
 	def contentAsLines( self ):
 		res = []
 		for e in self.content:
-			if type(e) in (str,unicode):
+			if type(e) in (str,str):
 				res.append(e)
 			else:
 				res.extend(e.contentAsLines())
@@ -178,16 +178,16 @@ class Element:
 		"""Returns the attributes as HTML"""
 		r = []
 		def escape(v):
-			if   v.find('"') == -1: v = u'"%s"' % (v)
-			elif v.find("'") == -1: v = u"'%s'" % (v)
-			else: v = u'"%s"' % (v.replace('"', '\\"'))
+			if   v.find('"') == -1: v = '"%s"' % (v)
+			elif v.find("'") == -1: v = "'%s'" % (v)
+			else: v = '"%s"' % (v.replace('"', '\\"'))
 			return v
 		for name, value in self.attributes:
 			if value is None:
-				r.append(u"%s" % (name))
+				r.append("%s" % (name))
 			else:
-				r.append(u"%s=%s" % (name,escape(value)))
-		r = u" ".join(r)
+				r.append("%s=%s" % (name,escape(value)))
+		r = " ".join(r)
 		if r: r= " "+r
 		return r
 
@@ -231,7 +231,7 @@ class Formatter:
 
 	def setDefaults( self, element, formatOptions=()):
 		"""Sets the formatting defaults for the given element name."""
-		assert type(element) in (str, unicode)
+		assert type(element) in (str, str)
 		assert type(formatOptions) in (list, tuple)
 		for f in formatOptions:
 			assert f in FORMAT_OPTIONS, "Unknown formatting option: %s" % (f)
@@ -244,7 +244,7 @@ class Formatter:
 	def pushFlags( self, *flags ):
 		"""Pushes the given flags (as varargs) on the flags queue."""
 		self.flags.append([])
-		map(self.setFlag, flags)
+		for _ in flags: self.setFlag(_)
 
 	def setFlag( self, flag ):
 		"""Sets the given flag."""
@@ -255,7 +255,7 @@ class Formatter:
 
 	def setFlags( self, *flags ):
 		"""Set the given flags, given as varargs."""
-		map(self.setFlag, flags)
+		for _ in flags: self.setFlag(_)
 
 	def popFlags( self ):
 		"""Pops the given flags from the flags queue."""
@@ -350,24 +350,24 @@ class Formatter:
 		if element.mode == "sugar":
 			lines = element.contentAsLines()
 			import pamela.web
-			source = u"".join(lines)
+			source = "".join(lines)
 			res, _ = pamela.web.processSugar(source, ".", cache=False)
 			element.content = [Text(res)]
 		if element.mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
 			import pamela.web
-			source = u"".join(lines)
+			source = "".join(lines)
 			res, _ = pamela.web.processCoffeeScript(source, ".", cache=False)
 			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
 				assert not attributes, "Processing instruction cannot have attributes"
-				start   = u"<?%s " % (element.name)
-				end     = u" ?>"
+				start   = "<?%s " % (element.name)
+				end     = " ?>"
 			else:
-				start   = u"<%s%s>" % (element.name, attributes)
-				end     = u"</%s>" % (element.name)
+				start   = "<%s%s>" % (element.name, attributes)
+				end     = "</%s>" % (element.name)
 			if self.hasFlag(FORMAT_INLINE):
 				if self._inlineCanSpanOneLine(element):
 					self.setFlag(FORMAT_SINGLE_LINE)
@@ -401,9 +401,9 @@ class Formatter:
 		# Otherwise it doesn't have any content
 		else:
 			if exceptions and exceptions.get("NO_CLOSING"):
-				text =  u"<%s%s>" % (element.name, attributes)
+				text =  "<%s%s>" % (element.name, attributes)
 			else:
-				text =  u"<%s%s />" % (element.name, attributes)
+				text =  "<%s%s />" % (element.name, attributes)
 			# And if it's an inline, we don't add a newline
 			if not element.isInline: self.newLine()
 			self.writeTag(text)
@@ -434,7 +434,7 @@ class Formatter:
 		"""Ensures that there is a new line."""
 		if not self._isNewLine():
 			if not  self._result:
-				self._result.append(u"")
+				self._result.append("")
 			else:
 				self._result[-1] = self._result[-1] + "\n"
 
@@ -489,7 +489,7 @@ class Formatter:
 					result.append(text)
 
 	def endWriting( self ):
-		res = u"".join(self._result)
+		res = "".join(self._result)
 		del self._result
 		return res
 
@@ -525,7 +525,7 @@ class Formatter:
 		words = []
 		for word in self._iterateOnWords(text):
 			words.append(word)
-		return u" ".join(words)
+		return " ".join(words)
 
 	# -------------------------------------------------------------------------
 	# TEXT MANIPULATION OPERATIONS
@@ -554,7 +554,7 @@ class Formatter:
 				result.append(prefix + line)
 			first_line = False
 			line_i += 1
-		result = u"\n".join(result)
+		result = "\n".join(result)
 		if end: result += "\n"
 		return result
 
@@ -591,7 +591,7 @@ class JSHTMLFormatter( Formatter ):
 	using the 'html.js' markup file."""
 
 	def format( self, document, indent=0 ):
-		elements = filter(lambda v:isinstance(v, Element), document.content)
+		elements = [v for v in document.content if isinstance(v, Element)]
 		assert len(elements) == len(document.content) == 1, "JSHTMLFormatter can only be used with one element"
 		return self._formatContent(elements[0])
 
@@ -604,18 +604,18 @@ class JSHTMLFormatter( Formatter ):
 		elif isinstance( value, Element ):
 			element = value
 			if element.isPI: return ""
-			res = [u"html.%s(" % (element.name)]
+			res = ["html.%s(" % (element.name)]
 			cnt = []
 			if element.attributes:
 				attr = []
 				for name, value in element.attributes:
-					attr.append(u"%s:%s" % (json.dumps(name), json.dumps(value)))
-				cnt.append(u"{%s}" % (u",".join(attr)))
+					attr.append("%s:%s" % (json.dumps(name), json.dumps(value)))
+				cnt.append("{%s}" % (",".join(attr)))
 			for child in element.content:
 				cnt.append(self._formatContent(child))
-			res.append(u",".join(cnt))
-			res.append(u")")
-			return u"".join(res)
+			res.append(",".join(cnt))
+			res.append(")")
+			return "".join(res)
 		else:
 			assert None, "Unrecognized value type: " + str(value)
 
@@ -715,7 +715,7 @@ class Writer:
 		self._modes.pop()
 
 	def mode( self ):
-		modes = filter(lambda x:x,self._modes)
+		modes = [x for x in self._modes if x]
 		if modes:
 			return modes[-1]
 		else:
@@ -789,7 +789,7 @@ class Parser:
 		if path: self._paths.append(path)
 		try:
 			text = text.decode("utf-8")
-		except UnicodeEncodeError, e:
+		except UnicodeEncodeError as e:
 			# FIXME: What should we do?
 			pass
 		self._writer.onDocumentStart()
@@ -1088,7 +1088,7 @@ class Parser:
 		if len(classes) > 1:
 			element = classes[0]
 			classes = classes[1:]
-			classes = u" ".join( classes)
+			classes = " ".join( classes)
 			append_attribute("class", classes, attributes, prepend=True)
 		else:
 			element = classes[0]

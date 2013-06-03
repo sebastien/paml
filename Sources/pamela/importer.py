@@ -20,17 +20,17 @@ class XML2Paml:
 
 	
 	def extractLines(self, text):
-		lines = map(lambda _:_.strip(),text.split("\n"))
-		return filter(lambda _:len(_.strip()) > 0, lines)
+		lines = [_.strip() for _ in text.split("\n")]
+		return [_ for _ in lines if len(_.strip()) > 0]
 
 	def convert( self, node, bodyOnly=False ):
-		if type(node) in (str,unicode):
+		if type(node) in (str,str):
 			node = minidom.parseString(node)
 		t = node.nodeType
 		if   t == node.DOCUMENT_NODE:
 			if bodyOnly:
-				html_node = filter(lambda n:n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "html", node.childNodes)
-				body_nodes = filter(lambda n:n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "body", html_node[0].childNodes)
+				html_node = [n for n in node.childNodes if n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "html"]
+				body_nodes = [n for n in html_node[0].childNodes if n.nodeType == node.ELEMENT_NODE and n.nodeName.lower() == "body"]
 				if body_nodes:
 					for n in body_nodes[0].childNodes:
 						self.convert(n)
@@ -38,18 +38,20 @@ class XML2Paml:
 				for n in node.childNodes:
 					self.convert(n)
 		elif t == node.COMMENT_NODE:
-			map(lambda _:self.output("# " + _), self.extractLines(node.nodeValue))
+			for line in self.extractLines(node.nodeValue):
+				self.output("# " + line)
 		elif t == node.TEXT_NODE:
-			map(self.output, self.extractLines(node.nodeValue))
+			for line in self.extractLines(node.nodeValue):
+				self.output(line)
 		elif t == node.ELEMENT_NODE:
 			classes    = ""
 			ids        = ""
 			attributes = []
-			for n,v in node.attributes.items():
+			for n,v in list(node.attributes.items()):
 				if   n == "class":
-					classes = "." + ".".join((map(lambda _:_.strip(),v.split(" "))))
+					classes = "." + ".".join(([_.strip() for _ in v.split(" ")]))
 				elif n == "id":
-					ids = "#" + (map(lambda _:_.strip(),v.split(" ")))[0]
+					ids = "#" + ([_.strip() for _ in v.split(" ")])[0]
 				else:
 					attributes.append("%s=\"%s\"" % (n,v))
 			if attributes:

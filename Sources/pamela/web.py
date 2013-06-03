@@ -9,7 +9,7 @@
 # Last mod.         :   13-Feb-2012
 # -----------------------------------------------------------------------------
 import os, sys, re, subprocess, tempfile
-import engine
+from . import engine
 import retro
 from retro.contrib.localfiles import LocalFiles
 from retro.contrib.cache import SignatureCache
@@ -120,7 +120,7 @@ def beforeRequest( request ):
 def run( arguments, options={} ):
 	files   = getLocalFiles()
 	comps   = [files]
-	proxies = map(lambda x:x[len("proxy:"):],filter(lambda x:x.startswith("proxy:"),arguments))
+	proxies = [x[len("proxy:"):] for x in [x for x in arguments if x.startswith("proxy:")]]
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
 	#app.onRequest(beforeRequest)
