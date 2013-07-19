@@ -17,7 +17,6 @@ class XML2Paml:
 	def __init__( self ):
 		self.indent = 0
 		self.result = ""
-
 	
 	def extractLines(self, text):
 		lines = [_.strip() for _ in text.split("\n")]

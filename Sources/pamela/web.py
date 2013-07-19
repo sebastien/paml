@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   13-Feb-2012
+# Last mod.         :   03-Jun-2012
 # -----------------------------------------------------------------------------
 import os, sys, re, subprocess, tempfile
-from . import engine
+from pamela import engine
 import retro
 from retro.contrib.localfiles import LocalFiles
 from retro.contrib.cache import SignatureCache
@@ -17,8 +17,8 @@ from retro.contrib import proxy
 
 CACHE    = SignatureCache()
 COMMANDS = dict(
-	sugar="sugar",
-	coffee="coffee"
+	sugar  = "sugar",
+	coffee = "coffee"
 )
 
 try:

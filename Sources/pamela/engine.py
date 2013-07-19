@@ -938,6 +938,7 @@ class Parser:
 			subs    = {}
 			rparen  = path.rfind("}")
 			if rparen > lparen:
+				# FIXME: Support "," in attributes
 				for replace in path[lparen+1:rparen].split(","):
 					name, value = replace.split("=",1)
 					value       = value.strip()
