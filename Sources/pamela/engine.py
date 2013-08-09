@@ -113,7 +113,7 @@ HTML_EXCEPTIONS = {
 		"NOT_EMPTY":" "
 	},
 	"div":{
-		"NOT_EMPTY":"&nbsp;"
+		"NOT_EMPTY":" "
 	},
 	"td":{
 		"NOT_EMPTY":"&nbsp;"
@@ -156,7 +156,7 @@ class Element:
 
 	def append(self,n):
 		self.content.append(n)
-	
+
 	def isTextOnly( self ):
 		if len(self.content) == 0:
 			return True
@@ -208,10 +208,10 @@ class Formatter:
 	as a state machine, and keeps track of the various formatting hints bound to
 	the Pamela XML/HTML elements to render the document in the most appropriate
 	way.
-	
+
 	If you instanciate a formatter, you'll have access to the following
 	attributes, which can influence the generated text:
-	
+
 	 - 'indent=0'
 	 - 'indentValue="  "'
 	 - 'textWidth=80'
@@ -496,7 +496,7 @@ class Formatter:
 	def _iterateOnWords( self, text ):
 		"""Splits the given text into words (separated by ' ', '\t' or '\n') and
 		returns an iterator on these words.
-		
+
 		This function is used by 'wrapText'."""
 		offset = 0
 		space  = None
@@ -682,7 +682,7 @@ class Writer:
 			self._override = None
 		self._node().append(element)
 		self._pushStack(element)
-	
+
 	def overrideAttributesForNextElement( self, attributes ):
 		self._override = []
 		self._override.extend(attributes)
@@ -993,7 +993,7 @@ class Parser:
 
 	def _parseContentLine( self, line ):
 		"""Parses a line that is data/text that is part of an element
-		content.""" 
+		content."""
 		offset = 0
 		# We look for elements in the content
 		while offset < len(line):
@@ -1068,7 +1068,7 @@ class Parser:
 			for a in attributes:
 				if a[0] == name:
 					a[1] = value
-					return 
+					return
 			attributes.append([name,value])
 		def append_attribute( name, value, attributes, prepend=False ):
 			a = has_attribute(name, attributes)
