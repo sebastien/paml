@@ -16,6 +16,7 @@ from retro.contrib.cache import SignatureCache
 from retro.contrib import proxy
 
 CACHE    = SignatureCache()
+PROCESSORS = {}
 COMMANDS = dict(
 	sugar  = "sugar",
 	coffee = "coffee"
@@ -27,9 +28,9 @@ try:
 except:
 	HAS_TEMPLATING = None
 
-def processPamela( pamelaText, path, request ):
+def processPamela( pamelaText, path, request=None ):
 	parser = engine.Parser()
-	if request.get("as") == "js":
+	if request and request.get("as") == "js":
 		parser._formatter = engine.JSHTMLFormatter()
 		result = parser.parseString(pamelaText, path)
 		assign = request.get("assign")
@@ -52,7 +53,7 @@ def processPamela( pamelaText, path, request ):
 		result = parser.parseString(pamelaText, path)
 		return result, "text/html"
 
-def processCleverCSS( text, path, request ):
+def processCleverCSS( text, path, request=None ):
 	import clevercss
 	result = clevercss.convert(text)
 	return result, "text/css"
@@ -107,7 +108,10 @@ def processCoffeeScript( text, path, cache=True ):
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
-	return {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS,"coffee":processCoffeeScript}
+	global PROCESSORS
+	if not PROCESSORS:
+		PROCESSORS = {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS,"coffee":processCoffeeScript}
+	return PROCESSORS
 
 def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela

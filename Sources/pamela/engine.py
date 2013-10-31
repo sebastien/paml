@@ -1167,7 +1167,9 @@ def parse( text, path=None, format="html" ):
 
 def run( arguments, input=None ):
 	parser = Parser()
-	if arguments[0] == "--to-html":
+	if not arguments:
+		input_file = "--"
+	elif arguments[0] == "--to-html":
 		input_file = arguments[1]
 	elif arguments[0] == "--to-js":
 		parser._formatter = JSHTMLFormatter()
