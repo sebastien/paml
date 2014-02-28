@@ -6,8 +6,9 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   03-Jun-2012
+# Last mod.         :   18-Dec-2013
 # -----------------------------------------------------------------------------
+
 import os, sys, re, subprocess, tempfile
 from pamela import engine
 import retro
@@ -15,12 +16,18 @@ from retro.contrib.localfiles import LocalFiles
 from retro.contrib.cache import SignatureCache
 from retro.contrib import proxy
 
-CACHE    = SignatureCache()
+CACHE      = SignatureCache()
 PROCESSORS = {}
-COMMANDS = dict(
-	sugar  = "sugar",
-	coffee = "coffee"
-)
+COMMANDS   = None
+
+def getCommands():
+	global COMMANDS
+	if not COMMANDS:
+		COMMANDS = dict(
+			sugar  = os.environ.get("SUGAR",  "sugar"),
+			coffee = os.environ.get("COFFEE", "coffee")
+		)
+	return COMMANDS
 
 try:
 	import templating
@@ -91,7 +98,7 @@ def processSugar( text, path, cache=True ):
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path))
 	command = [
-		COMMANDS["sugar"],"-cljs",
+		getCommands()["sugar"],"-cljs",
 		"-L" + parent_path,
 		"-L" + os.path.join(parent_path, "lib", "js"),
 		path
@@ -100,7 +107,7 @@ def processSugar( text, path, cache=True ):
 
 def processCoffeeScript( text, path, cache=True ):
 	command = [
-		COMMANDS["coffee"],"-cp",
+		getCommands()["coffee"],"-cp",
 		path
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"

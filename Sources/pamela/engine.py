@@ -807,7 +807,7 @@ class Parser:
 		elif indent is None:
 			return self._elementStack[-1][1] == T_EMBED
 		else:
-			return self._elementStack[-1][1] == T_EMBED and self._elementStack[-1][0] <= indent
+			return self._elementStack[-1][1] == T_EMBED and self._elementStack[-1][0] < indent
 
 	def _parseLine( self, line ):
 		"""Parses the given line of text.
@@ -827,7 +827,6 @@ class Parser:
 			# into account. Same for elements with greater indent.
 			return
 		is_comment     = RE_COMMENT.match(line)
-		# Is it a comment (# ....)
 		if is_comment and not self._isInEmbed(indent):
 			# FIXME: Integrate this
 			return
