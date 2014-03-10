@@ -6,12 +6,12 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   03-Apr-2013
+# Last mod.         :   10-Mar-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json
 
-__version__    = "0.6.1"
+__version__    = "0.6.2"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -53,6 +53,8 @@ T_EMBED        = "EM"
 #
 # -----------------------------------------------------------------------------
 
+# FIXME: This does not work. What we should have is
+# - compact: no leading or trailing whitepsace
 FORMAT_INLINE       = "i"
 FORMAT_INLINE_BLOCK = "ib"
 FORMAT_SINGLE_LINE  = "sl"
@@ -340,7 +342,7 @@ class Formatter:
 		operations defined in this class."""
 		attributes = element._attributesAsHTML()
 		exceptions = HTML_EXCEPTIONS.get(element.name)
-		content = element.content
+		content    = element.content
 		# FIXME: Flags are not properly supported
 		if exceptions:
 			not_empty = exceptions.get("NOT_EMPTY")
@@ -353,11 +355,23 @@ class Formatter:
 			source = "".join(lines)
 			res, _ = pamela.web.processSugar(source, ".", cache=False)
 			element.content = [Text(res)]
-		if element.mode in ("coffeescript", "coffee"):
+		elif element.mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = "".join(lines)
 			res, _ = pamela.web.processCoffeeScript(source, ".", cache=False)
+			element.content = [Text(res)]
+		elif element.mode  in ("clevercss", "ccss"):
+			lines = element.contentAsLines()
+			import pamela.web
+			source = "".join(lines)
+			res, _ = pamela.web.processCleverCSS(source, ".", cache=False)
+			element.content = [Text(res)]
+		elif element.mode == "texto":
+			lines = element.contentAsLines()
+			import texto
+			source = "".join(lines)
+			res = texto.toHTML()
 			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
