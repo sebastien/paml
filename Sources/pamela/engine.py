@@ -236,6 +236,7 @@ class Formatter:
 		self.defaults = {}
 		self.defaults = HTML_DEFAULTS
 		self.flags    = [[]]
+		self.useProcessCache = True
 
 	def setDefaults( self, element, formatOptions=()):
 		"""Sets the formatting defaults for the given element name."""
@@ -360,7 +361,7 @@ class Formatter:
 			import pamela.web
 			source = "".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processSugar(source, ".", cache=False)
+			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache)
 			logging.info("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode in ("coffeescript", "coffee"):
@@ -368,7 +369,7 @@ class Formatter:
 			import pamela.web
 			source = "".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processCoffeeScript(source, ".", cache=False)
+			res, _ = pamela.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.info("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode  in ("clevercss", "ccss"):

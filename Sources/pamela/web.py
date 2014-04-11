@@ -9,16 +9,17 @@
 # Last mod.         :   18-Dec-2013
 # -----------------------------------------------------------------------------
 
-import os, sys, re, subprocess, tempfile
+import os, sys, re, subprocess, tempfile, hashlib
 from pamela import engine
 import retro
 from retro.contrib.localfiles import LocalFiles
-from retro.contrib.cache import SignatureCache
+from retro.contrib.cache import SignatureCache, MemoryCache
 from retro.contrib import proxy
 
-CACHE      = SignatureCache()
-PROCESSORS = {}
-COMMANDS   = None
+CACHE         = SignatureCache ()
+MEMORY_CACHE  = MemoryCache ()
+PROCESSORS    = {}
+COMMANDS      = None
 
 def getCommands():
 	global COMMANDS
@@ -68,11 +69,19 @@ def processCleverCSS( text, path, request=None ):
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
 	timestamp = has_changed = data = None
 	is_same   = False
+	data      = None
 	if cache:
-		timestamp     = SignatureCache.mtime(path)
-		is_same, data = CACHE.get(path,timestamp)
+		if path:
+			timestamp     = SignatureCache.mtime(path)
+			is_same, data = CACHE.get(path,timestamp)
+			cache = CACHE
+		else:
+			sig     = hashlib.sha256(" ".join(command) + text).hexdigest()
+			cache   = MEMORY_CACHE
+			is_same = cache.has(sig)
+			data    = cache.get(sig)
 	if (not is_same) or (not cache):
-		if os.path.isdir(path):
+		if not path or os.path.isdir(path):
 			temp_created = True
 			fd, path     = tempfile.mkstemp(suffix=tmpsuffix,prefix=tmpprefix)
 			os.write(fd, text)
@@ -88,15 +97,17 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			os.unlink(path)
 		if not data:
 			raise Exception(error)
-		if cache:
-			CACHE.set(path,timestamp,data)
+		if cache is CACHE:
+			cache.set(path,timestamp,data)
+		elif cache is MEMORY_CACHE:
+			cache.set(sig,data)
 	return data
 
 def processSugar( text, path, cache=True ):
-	if os.path.isdir(path):
-		parent_path  = path
+	if os.path.isdir(path or "."):
+		parent_path  = path or "."
 	else:
-		parent_path  = os.path.dirname(os.path.abspath(path))
+		parent_path  = os.path.dirname(os.path.abspath(path or "."))
 	command = [
 		getCommands()["sugar"],"-cljs",
 		"-L" + parent_path,
