@@ -6,12 +6,17 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   10-Mar-2014
+# Last mod.         :   10-Apr-2014
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json
+import os, sys, re, string, json, time
 
-__version__    = "0.6.2"
+try:
+	import reporter as logging
+except:
+	import logging
+
+__version__    = "0.6.3"
 PAMELA_VERSION = __version__
 
 # -----------------------------------------------------------------------------
@@ -124,9 +129,10 @@ HTML_EXCEPTIONS = {
 		"NOT_EMPTY":"&nbsp;"
 	}
 }
+
 # -----------------------------------------------------------------------------
 #
-# Object Model
+# OBJECT MODEL
 #
 # -----------------------------------------------------------------------------
 
@@ -199,7 +205,7 @@ class Declaration(Element):
 
 # -----------------------------------------------------------------------------
 #
-# Formatting function (borrowed from LambdaFactory modelwriter module)
+# FORMATTING FUNCTION (BORROWED FROM LAMBDAFACTORY MODELWRITER MODULE)
 #
 # -----------------------------------------------------------------------------
 
@@ -353,19 +359,25 @@ class Formatter:
 			lines = element.contentAsLines()
 			import pamela.web
 			source = "".join(lines)
+			t = time.time()
 			res, _ = pamela.web.processSugar(source, ".", cache=False)
+			logging.info("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = "".join(lines)
+			t = time.time()
 			res, _ = pamela.web.processCoffeeScript(source, ".", cache=False)
+			logging.info("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode  in ("clevercss", "ccss"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = "".join(lines)
-			res, _ = pamela.web.processCleverCSS(source, ".", cache=False)
+			t = time.time()
+			res, _ = pamela.web.processCleverCSS(source, ".")
+			logging.info("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode == "texto":
 			lines = element.contentAsLines()
@@ -596,7 +608,7 @@ class Formatter:
 
 # -----------------------------------------------------------------------------
 #
-# JavaScript HTML formatter
+# JAVASCRIPT HTML FORMATTER
 #
 # -----------------------------------------------------------------------------
 
@@ -635,7 +647,7 @@ class JSHTMLFormatter( Formatter ):
 
 # -----------------------------------------------------------------------------
 #
-# Writer class
+# WRITER CLASS
 #
 # -----------------------------------------------------------------------------
 
@@ -737,7 +749,7 @@ class Writer:
 
 # -----------------------------------------------------------------------------
 #
-# Parser class
+# PARSER CLASS
 #
 # -----------------------------------------------------------------------------
 
@@ -1169,7 +1181,7 @@ class Parser:
 
 # -----------------------------------------------------------------------------
 #
-# Command-line interface
+# COMMAND-LINE INTERFACE
 #
 # -----------------------------------------------------------------------------
 
@@ -1193,11 +1205,13 @@ def run( arguments, input=None ):
 
 # -----------------------------------------------------------------------------
 #
-# Main
+# MAIN
 #
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
+	if hasattr(logging, "IS_REPORTER"):
+		logging.register(logging.ConsoleReporter())
 	sys.stdout.write( run(sys.argv[1:]).encode("utf-8") )
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
