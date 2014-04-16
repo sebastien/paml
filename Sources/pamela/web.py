@@ -76,7 +76,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			is_same, data = CACHE.get(path,timestamp)
 			cache = CACHE
 		else:
-			sig     = hashlib.sha256(" ".join(command) + text).hexdigest()
+			assert isinstance(text, unicode)
+			sig     = hashlib.sha256(u" ".join(command) + text).hexdigest()
 			cache   = MEMORY_CACHE
 			is_same = cache.has(sig)
 			data    = cache.get(sig)
@@ -111,7 +112,7 @@ def processSugar( text, path, cache=True ):
 	command = [
 		getCommands()["sugar"],"-cljs",
 		"-L" + parent_path,
-		"-L" + os.path.join(parent_path, "lib", "js"),
+		"-L" + os.path.join(parent_path, "lib", "sjs"),
 		path
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
