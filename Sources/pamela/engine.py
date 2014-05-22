@@ -962,7 +962,9 @@ class Parser:
 			assert equal >= 0, "Include subsitution without value: {0}".format(text)
 			name   = text[offset:equal]
 			offset = equal + 1
-			if text[offset] in  '\'"':
+			if offset == len(text):
+				value = ""
+			elif text[offset] in  '\'"':
 				# We test for quotes and escape it
 				quote = text[offset]
 				end_quote = text.find(quote, offset + 1)
