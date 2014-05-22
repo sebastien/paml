@@ -1,3 +1,5 @@
 <html
 	<body
-		%include "tag-textarea" {NAME=pouet,VALUE=asda}
+		%include tag-included {NAME=pouet,VALUE=asda}
+		%include tag-included {NAME=pouet,VALUE="value,with,comma"}
+		%include tag-included {NAME=pouet,VALUE="value with \""}

@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   10-Apr-2014
+# Last mod.         :   22-May-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
@@ -16,8 +16,11 @@ try:
 except:
 	import logging
 
-__version__    = "0.6.3"
+__version__    = "0.6.4"
 PAMELA_VERSION = __version__
+
+# TODO: Add an option to start a sugar compilation server and directly query
+# it, maybe using ZMQ.
 
 # -----------------------------------------------------------------------------
 #
@@ -949,6 +952,37 @@ class Parser:
 				o = escape_index_end+1
 		return res
 
+	def _parseIncludeSubstitutions( self, text ):
+		"""A simple parser that extract (key,value) from a string like
+		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
+		offset = 0
+		result = []
+		while offset < len(text):
+			equal  = text.find("=", offset)
+			assert equal >= 0, "Include subsitution without value: {0}".format(text)
+			name   = text[offset:equal]
+			offset = equal + 1
+			if text[offset] in  '\'"':
+				# We test for quotes and escape it
+				quote = text[offset]
+				end_quote = text.find(quote, offset + 1)
+				while end_quote >= 0 and text[end_quote - 1] == "\\":
+					end_quote = text.find(quote, end_quote + 1)
+				value  = text[offset+1:end_quote].replace("\\" + quote, quote)
+				offset = end_quote + 1
+				if offset < len(text) and text[offset] == ",": offset += 1
+			else:
+				# Or we look for a comma
+				comma  = text.find(",", offset)
+				if comma < 0:
+					value  = text[offset:]
+					offset = len(text)
+				else:
+					value  = text[offset:comma]
+					offset = comma + 1
+			result.append((name, value))
+		return result
+
 	def _parseInclude( self, match, indent ):
 		"""An include rule is expressed as follows
 		%include PATH {NAME=VAL,...} +.class...(name=val,name,val)
@@ -964,9 +998,7 @@ class Parser:
 			subs    = {}
 			rparen  = path.rfind("}")
 			if rparen > lparen:
-				# FIXME: Support "," in attributes
-				for replace in path[lparen+1:rparen].split(","):
-					name, value = replace.split("=",1)
+				for name, value in self._parseIncludeSubstitutions(path[lparen+1:rparen]):
 					value       = value.strip()
 					if value and value[0] in ["'", '"']: value = value[1:-1]
 					subs[name] = value
@@ -1212,7 +1244,7 @@ def run( arguments, input=None ):
 
 if __name__ == "__main__":
 	if hasattr(logging, "IS_REPORTER"):
-		logging.register(logging.ConsoleReporter())
+		logging.register(logging.StderrReporter())
 	sys.stdout.write( run(sys.argv[1:]).encode("utf-8") )
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
