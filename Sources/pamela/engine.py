@@ -982,7 +982,7 @@ class Parser:
 				else:
 					value  = text[offset:comma]
 					offset = comma + 1
-			result.append((name, value))
+			result.append((name.strip(), value))
 		return result
 
 	def _parseInclude( self, match, indent ):

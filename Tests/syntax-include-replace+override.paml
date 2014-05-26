@@ -1,3 +1,3 @@
 <html
 	<body
-		%include "tag-textarea" {NAME=pouet,VALUE=asda} +.new-class.other-class(data-attr-1=1,data-attr-2=2)
+		%include "tag-included" {NAME=pouet, VALUE=asda} +.new-class.other-class(data-attr-1=1,data-attr-2=2)
