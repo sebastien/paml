@@ -6,15 +6,15 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   01-Jun-2007
-# Last mod.         :   18-Dec-2013
+# Last mod.         :   04-Jul-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, subprocess, tempfile, hashlib
-from pamela import engine
+from   pamela import engine
 import retro
-from retro.contrib.localfiles import LocalFiles
-from retro.contrib.cache import SignatureCache, MemoryCache
-from retro.contrib import proxy
+from   retro.contrib.localfiles import LocalFiles
+from   retro.contrib.cache      import SignatureCache, MemoryCache
+from   retro.contrib            import proxy
 
 CACHE         = SignatureCache ()
 MEMORY_CACHE  = MemoryCache ()
@@ -104,18 +104,40 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			cache.set(sig,data)
 	return data
 
-def processSugar( text, path, cache=True ):
+def processSugar( text, path, cache=True, includeSource=False ):
 	if os.path.isdir(path or "."):
 		parent_path  = path or "."
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path or "."))
-	command = [
-		getCommands()["sugar"],"-cljs",
-		"-L" + parent_path,
-		"-L" + os.path.join(parent_path, "lib", "sjs"),
-		path
-	]
-	return _processCommand(command, text, path, cache), "text/javascript"
+	sugar2 = None
+	# try:
+	# 	import sugar2
+	# except ImportError, e:
+	# 	sugar2 = None
+	# 	pass
+	if sugar2:
+		# If Sugar2 is available, we'll use it
+		command = sugar2.SugarCommand("sugar2")
+		arguments = [
+			"-cljs",
+			"--cache",
+			"--include-source" if includeSource else ""
+			"-L" + parent_path,
+			"-L" + os.path.join(parent_path, "lib", "sjs"),
+			path
+		]
+		return command.runAsString (arguments), "text/javascript"
+	else:
+		# Otherwise we fallback to the regular Sugar, which has to be
+		# run through popen (so it's slower)
+		command = [
+			getCommands()["sugar"],
+			"-cSljs" if includeSource else "-cljs",
+			"-L" + parent_path,
+			"-L" + os.path.join(parent_path, "lib", "sjs"),
+			path
+		]
+		return _processCommand(command, text, path, cache), "text/javascript"
 
 def processCoffeeScript( text, path, cache=True ):
 	command = [

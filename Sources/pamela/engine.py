@@ -32,7 +32,7 @@ SYMBOL_NAME    = "\??([\w\d_-]+::)?[\w\d_-]+"
 SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
-SYMBOL_CONTENT = "@\w+"
+SYMBOL_CONTENT = "@\w[\w\d\-_\+]*"
 SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
@@ -359,12 +359,12 @@ class Formatter:
 			if not_empty != None and not content:
 				element.content.append(Text(not_empty))
 		# Does this element has any content ?
-		if element.mode == "sugar":
+		if element.mode and element.mode.startswith("sugar"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache)
+			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
 			logging.info("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode in ("coffeescript", "coffee"):
