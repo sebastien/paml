@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   22-May-2014
+# Last mod.         :   11-Jul-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
@@ -855,7 +855,14 @@ class Parser:
 			# FIXME: When you have an empty line followed by content which is
 			# text with same or greeater indent, the empty line  should be taken
 			# into account. Same for elements with greater indent.
-			return
+			if self._isInEmbed():
+				line_with_indent = "\n"
+				if len(line) > (self.indent()+4)/4:
+					line_with_indent = original_line[(self.indent()+4)/4:]
+				self._writer.onTextAdd(line_with_indent)
+				return
+			else:
+				return
 		is_comment     = RE_COMMENT.match(line)
 		if is_comment and not self._isInEmbed(indent):
 			# FIXME: Integrate this
