@@ -788,8 +788,8 @@ class Parser:
 				indent, line = parser._getLineIndent(line)
 				parser._parseInclude(m, indent, lambda l:lines.append(l))
 			else:
-				lines.append(line + "\n")
-		return "".join(lines)
+				lines.append(line + u"\n")
+		return u"".join(lines)
 
 	def __init__( self ):
 		self._tabsOnly   = False
