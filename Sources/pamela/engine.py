@@ -780,13 +780,19 @@ class Parser:
 	def ExpandIncludes( cls, text=None, path=None ):
 		lines  = []
 		parser = cls()
-		if text is None: text = open(path).read()
+		source_lines = None
+		if text is None:
+			with file(path) as f:
+				source_lines = [l.decode("utf-8") for l in f.readlines()]
+		else:
+			if isinstance(text, str): text = text.decode("utf-8")
+			source_lines = text.split("\n")
 		parser._paths.append(path or ".")
-		for line in text.split("\n"):
+		for line in source_lines:
 			m = RE_INCLUDE.match(line)
 			if m:
 				indent, line = parser._getLineIndent(line)
-				parser._parseInclude(m, indent, lambda l:lines.append(l))
+				parser._parseInclude(m, indent, lambda l:lines.append(l.decode("utf-8") if isinstance(l, str) else l))
 			else:
 				lines.append(line + u"\n")
 		return u"".join(lines)
