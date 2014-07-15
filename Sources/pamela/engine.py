@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   11-Jul-2014
+# Last mod.         :   15-Jul-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
@@ -16,7 +16,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.6.4"
+__version__    = "0.6.5"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -662,7 +662,7 @@ class Writer:
 	specific methods."""
 
 	def __init__( self ):
-		pass
+		self.onDocumentStart()
 
 	def onDocumentStart( self ):
 		self._modes     = []
@@ -775,6 +775,21 @@ class Parser:
 	- 'tabsWidth', to specify the width of a tab in spaces, which is only used
 	   when the parser accepts both tabs and spaces.
 	"""
+
+	@classmethod
+	def ExpandIncludes( cls, text=None, path=None ):
+		lines  = []
+		parser = cls()
+		if text is None: text = open(path).read()
+		parser._paths.append(path or ".")
+		for line in text.split("\n"):
+			m = RE_INCLUDE.match(line)
+			if m:
+				indent, line = parser._getLineIndent(line)
+				parser._parseInclude(m, indent, lambda l:lines.append(l))
+			else:
+				lines.append(line + "\n")
+		return "".join(lines)
 
 	def __init__( self ):
 		self._tabsOnly   = False
@@ -992,7 +1007,7 @@ class Parser:
 			result.append((name.strip(), value))
 		return result
 
-	def _parseInclude( self, match, indent ):
+	def _parseInclude( self, match, indent, parseLine=None ):
 		"""An include rule is expressed as follows
 		%include PATH {NAME=VAL,...} +.class...(name=val,name,val)
 		"""
@@ -1018,7 +1033,8 @@ class Parser:
 			element = "div" + path[plus+1:]
 			path    = path[:plus].strip()
 			_, attributes, _, _ = self._parsePamelaElement(element)
-			self._writer.overrideAttributesForNextElement(attributes)
+			if self._writer:
+				self._writer.overrideAttributesForNextElement(attributes)
 		if path[0] in ['"',"'"]:
 			path = path[1:-1]
 		else:
@@ -1035,7 +1051,11 @@ class Parser:
 		elif os.path.exists(path + ".paml"):
 			path = path + ".paml"
 		if not os.path.exists(path):
-			return self._writer.onTextAdd("ERROR: File not found <code>%s</code>" % (local_path))
+			error_line = "ERROR: File not found <code>%s</code>" % (local_path)
+			if parseLine:
+				parseLine(error_line)
+			else:
+				return self._writer.onTextAdd(error_line)
 		else:
 			self._paths.append(path)
 			f = file(path,'rb')
@@ -1045,7 +1065,7 @@ class Parser:
 				p = int(indent/4)
 				# We do the substituion
 				if subs: l = string.Template(l).safe_substitute(**subs)
-				self._parseLine(p * "\t" + l)
+				(parseLine or self._parseLine) (p * "\t" + l)
 			f.close()
 			self._paths.pop()
 		return True
