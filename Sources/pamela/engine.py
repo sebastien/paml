@@ -10,6 +10,7 @@
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
+IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
 	import reporter as logging
@@ -21,6 +22,18 @@ PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
 # it, maybe using ZMQ.
+
+def ensure_unicode( t, encoding="utf8" ):
+	if IS_PYTHON3:
+		return t if isinstance(t, str) else str(t, encoding)
+	else:
+		return t if isinstance(t, unicode) else t.decode(encoding)
+
+def ensure_bytes( t, encoding="utf8" ):
+	if IS_PYTHON3:
+		return t if isinstance(t, bytes) else bytes(t, encoding)
+	else:
+		return t
 
 # -----------------------------------------------------------------------------
 #
@@ -782,17 +795,17 @@ class Parser:
 		parser = cls()
 		source_lines = None
 		if text is None:
-			with file(path) as f:
-				source_lines = [l.decode("utf-8") for l in f.readlines()]
+			with open(path) as f:
+				source_lines = [ensure_unicode(l) for l in f.readlines()]
 		else:
-			if isinstance(text, str): text = text.decode("utf-8")
+			ensure_unicode(text)
 			source_lines = text.split("\n")
 		parser._paths.append(path or ".")
 		for line in source_lines:
 			m = RE_INCLUDE.match(line)
 			if m:
 				indent, line = parser._getLineIndent(line)
-				parser._parseInclude(m, indent, lambda l:lines.append(l.decode("utf-8") if isinstance(l, str) else l))
+				parser._parseInclude(m, indent, lambda l:lines.append(ensure_unicode(l) if isinstance(l, str) else l))
 			else:
 				lines.append(line + u"\n")
 		return u"".join(lines)
@@ -822,15 +835,18 @@ class Parser:
 	def parseFile( self, path ):
 		"""Parses the file with the given  path, and return the corresponding
 		HTML document."""
+		should_close = False
 		if path == "--":
 			f = sys.stdin
 		else:
 			# FIXME: File exists and is readable
-			f = file(path, "r")
+			f = open(path, "r")
+			should_close = True
 		self._paths.append(path)
 		self._writer.onDocumentStart()
 		for l in f.readlines():
-			self._parseLine(l.decode("utf-8"))
+			self._parseLine(ensure_unicode(l))
+		if should_close: f.close()
 		result = self._formatter.format(self._writer.onDocumentEnd())
 		self._paths.pop()
 		return result
@@ -839,7 +855,7 @@ class Parser:
 		"""Parses the given string and returns an HTML document."""
 		if path: self._paths.append(path)
 		try:
-			text = text.decode("utf-8")
+			text = ensure_unicode(text)
 		except UnicodeEncodeError as e:
 			# FIXME: What should we do?
 			pass
@@ -895,7 +911,7 @@ class Parser:
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
 		if self._isInEmbed(indent):
-			line_with_indent = original_line[(self.indent()+4)/4:]
+			line_with_indent = original_line[int((self.indent()+4)/4):]
 			self._writer.onTextAdd(line_with_indent)
 			return
 		# Is it a declaration ?
@@ -1064,15 +1080,14 @@ class Parser:
 				return self._writer.onTextAdd(error_line)
 		else:
 			self._paths.append(path)
-			f = file(path,'rb')
-			for l in f.readlines():
-				# FIXME: This does not work when I use tabs instead
-				l = l.decode("utf-8")
-				p = int(indent/4)
-				# We do the substituion
-				if subs: l = string.Template(l).safe_substitute(**subs)
-				(parseLine or self._parseLine) (p * "\t" + l)
-			f.close()
+			with open(path,'rb') as f:
+				for l in f.readlines():
+					# FIXME: This does not work when I use tabs instead
+					l = ensure_unicode(l)
+					p = int(indent/4)
+					# We do the substituion
+					if subs: l = string.Template(l).safe_substitute(**subs)
+					(parseLine or self._parseLine) (p * "\t" + l)
 			self._paths.pop()
 		return True
 

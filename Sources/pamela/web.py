@@ -76,8 +76,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			is_same, data = CACHE.get(path,timestamp)
 			cache = CACHE
 		else:
-			assert isinstance(text, unicode)
-			sig     = hashlib.sha256(u" ".join(command) + text).hexdigest()
+			text    = engine.ensure_unicode(text)
+			sig     = hashlib.sha256(bytes(u" ".join(command) + text, "utf8")).hexdigest()
 			cache   = MEMORY_CACHE
 			is_same = cache.has(sig)
 			data    = cache.get(sig)
@@ -85,7 +85,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 		if not path or os.path.isdir(path):
 			temp_created = True
 			fd, path     = tempfile.mkstemp(suffix=tmpsuffix,prefix=tmpprefix)
-			os.write(fd, text)
+			os.write(fd, engine.ensure_bytes(text))
 			os.close(fd)
 			command = command[:-1] + [path]
 		else:
@@ -102,7 +102,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			cache.set(path,timestamp,data)
 		elif cache is MEMORY_CACHE:
 			cache.set(sig,data)
-	return data
+	return engine.ensure_unicode(data)
 
 def processSugar( text, path, cache=True, includeSource=False ):
 	if os.path.isdir(path or "."):
