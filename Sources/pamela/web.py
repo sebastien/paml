@@ -77,7 +77,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			cache = CACHE
 		else:
 			text    = engine.ensure_unicode(text)
-			sig     = hashlib.sha256(bytes(u" ".join(command) + text, "utf8")).hexdigest()
+			sig     = hashlib.sha256(bytes(u" ".join(command) + text)).hexdigest()
 			cache   = MEMORY_CACHE
 			is_same = cache.has(sig)
 			data    = cache.get(sig)

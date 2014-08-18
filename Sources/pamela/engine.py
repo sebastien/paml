@@ -399,8 +399,8 @@ class Formatter:
 		elif element.mode == "texto":
 			lines = element.contentAsLines()
 			import texto
-			source = "".join(lines)
-			res = texto.toHTML()
+			source = u"".join(lines)
+			res    = ensure_unicode(texto.toHTML(source))
 			element.content = [Text(res)]
 		if element.content:
 			self.pushFlags(*self.getDefaults(element.name))
