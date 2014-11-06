@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   15-Jul-2014
+# Last mod.         :   06-Nov-2014
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
@@ -1052,7 +1052,7 @@ class Parser:
 		# FIXME: The + will be swallowed if after paren
 		plus = path.find("+")
 		if plus >= 0:
-			element = "div" + path[plus+1:]
+			element = "div" + path[plus+1:].strip()
 			path    = path[:plus].strip()
 			_, attributes, _, _ = self._parsePamelaElement(element)
 			if self._writer:
@@ -1062,7 +1062,7 @@ class Parser:
 		else:
 			path = path.strip()
 		# Now we load the file
-		local_dir  = os.path.dirname(os.path.normpath(os.path.join(self.path())))
+		local_dir  = os.path.dirname(os.path.abspath(os.path.normpath(self.path())))
 		local_path = os.path.normpath(os.path.join(local_dir, path))
 		if   os.path.exists(local_path):
 			path = local_path
