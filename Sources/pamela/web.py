@@ -5,8 +5,8 @@
 # Author            :   Sebastien Pierre                 <sebastien@type-z.org>
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
-# Creation date     :   01-Jun-2007
-# Last mod.         :   04-Jul-2014
+# Creation date     :   2007-Jun-01
+# Last mod.         :   2014-Dec-23
 # -----------------------------------------------------------------------------
 
 import os, sys, re, subprocess, tempfile, hashlib
@@ -25,8 +25,9 @@ def getCommands():
 	global COMMANDS
 	if not COMMANDS:
 		COMMANDS = dict(
-			sugar  = os.environ.get("SUGAR",  "sugar"),
-			coffee = os.environ.get("COFFEE", "coffee")
+			sugar       = os.environ.get("SUGAR",  "sugar"),
+			coffee      = os.environ.get("COFFEE", "coffee"),
+			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss")
 		)
 	return COMMANDS
 
@@ -65,6 +66,7 @@ def processCleverCSS( text, path, request=None ):
 	import clevercss
 	result = clevercss.convert(text)
 	return result, "text/css"
+
 
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
 	timestamp = has_changed = data = None
@@ -146,12 +148,29 @@ def processCoffeeScript( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
 
+def processPythonicCSS( text, path, cache=True ):
+	# NOTE: Disabled until memory leaks are fixes
+	# import pythoniccss
+	# result = pythoniccss.convert(text)
+	# return result, "text/css"
+	command = [
+		getCommands()["pythoniccss"],
+		path
+	]
+	return _processCommand(command, text, path, cache), "text/css"
+
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
 	global PROCESSORS
 	if not PROCESSORS:
-		PROCESSORS = {"paml":processPamela, "sjs":processSugar, "ccss":processCleverCSS,"coffee":processCoffeeScript}
+		PROCESSORS = {
+			"paml"  : processPamela,
+			"sjs"   : processSugar,
+			"ccss"  : processCleverCSS,
+			"coffee": processCoffeeScript,
+			"pcss"  : processPythonicCSS,
+		}
 	return PROCESSORS
 
 def getLocalFiles(root=""):
