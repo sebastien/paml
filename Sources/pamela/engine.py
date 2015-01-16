@@ -396,6 +396,14 @@ class Formatter:
 			res, _ = pamela.web.processCleverCSS(source, ".")
 			logging.info("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
+		elif element.mode  in ("pythoniccss", "pcss"):
+			lines = element.contentAsLines()
+			import pamela.web
+			source = u"".join(lines)
+			t = time.time()
+			res, _ = pamela.web.processPythonicCSS(source, ".")
+			logging.info("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			element.content = [Text(res)]
 		elif element.mode == "texto":
 			lines = element.contentAsLines()
 			import texto
