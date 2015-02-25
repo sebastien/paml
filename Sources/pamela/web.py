@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-Jun-01
-# Last mod.         :   2014-Dec-23
+# Last mod.         :   2015-Feb-25
 # -----------------------------------------------------------------------------
 
 import os, sys, re, subprocess, tempfile, hashlib
@@ -20,14 +20,23 @@ CACHE         = SignatureCache ()
 MEMORY_CACHE  = MemoryCache ()
 PROCESSORS    = {}
 COMMANDS      = None
+PANDOC_HEADER = """
+<html><head>
+<link rel=stylesheet href=lib/css/texto.css />
+<link rel=stylesheet href=lib/ccss/texto.ccss />
+<link rel=stylesheet href=lib/pcss/texto.pcss />
+</head><body class='use-base use-texto'><div class='document'>
+"""
+PANDOC_FOOTER = "</div></body></html>"
 
 def getCommands():
 	global COMMANDS
 	if not COMMANDS:
 		COMMANDS = dict(
-			sugar       = os.environ.get("SUGAR",  "sugar"),
-			coffee      = os.environ.get("COFFEE", "coffee"),
-			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss")
+			sugar       = os.environ.get("SUGAR",       "sugar"),
+			coffee      = os.environ.get("COFFEE",      "coffee"),
+			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss"),
+			pandoc      = os.environ.get("PANDOC",      "pandoc"),
 		)
 	return COMMANDS
 
@@ -66,7 +75,6 @@ def processCleverCSS( text, path, request=None ):
 	import clevercss
 	result = clevercss.convert(text)
 	return result, "text/css"
-
 
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
 	timestamp = has_changed = data = None
@@ -148,6 +156,13 @@ def processCoffeeScript( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
 
+def processPandoc( text, path, cache=True ):
+	command = [
+		getCommands()["pandoc"],
+		path
+	]
+	return PANDOC_HEADER + _processCommand(command, text, path, cache) + PANDOC_FOOTER, "text/html"
+
 def processPythonicCSS( text, path, cache=True ):
 	# NOTE: Disabled until memory leaks are fixes
 	# import pythoniccss
@@ -170,6 +185,7 @@ def getProcessors():
 			"ccss"  : processCleverCSS,
 			"coffee": processCoffeeScript,
 			"pcss"  : processPythonicCSS,
+			"md"    : processPandoc,
 		}
 	return PROCESSORS
 
