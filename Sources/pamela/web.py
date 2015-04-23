@@ -22,6 +22,7 @@ PROCESSORS    = {}
 COMMANDS      = None
 PANDOC_HEADER = """
 <html><head>
+<meta charset="utf-8" />
 <link rel=stylesheet href=lib/css/texto.css />
 <link rel=stylesheet href=lib/ccss/texto.ccss />
 <link rel=stylesheet href=lib/pcss/texto.pcss />
