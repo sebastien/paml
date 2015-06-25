@@ -113,7 +113,7 @@ HTML_EXCEPTIONS = {
 	"links":dict(NO_CLOSING=True),
 	"br"   :dict(NO_CLOSING=True),
 	"img"  :dict(NO_CLOSING=True),
-
+	"path" :dict(NO_CLOSING=True),
 	"a":{
 		"NOT_EMPTY":" "
 	},

@@ -194,7 +194,7 @@ def getProcessors():
 def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
-	return LocalFiles(root=root,processors=getProcessors(),optsuffix=[".paml",".html"])
+	return LocalFiles(root=root,processors=getProcessors(),optsuffix=[".paml",".html"], lastModified=False)
 
 def beforeRequest( request ):
 	pass
