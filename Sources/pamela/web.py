@@ -39,6 +39,7 @@ def getCommands():
 			coffee      = os.environ.get("COFFEE",      "coffee"),
 			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss"),
 			pandoc      = os.environ.get("PANDOC",      "pandoc"),
+			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
 		)
 	return COMMANDS
 
@@ -108,7 +109,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 		cmd.wait()
 		if temp_created:
 			os.unlink(path)
-		if not data:
+		if not data and error:
 			raise Exception(error)
 		if cache is CACHE:
 			cache.set(path,timestamp,data)
@@ -158,6 +159,21 @@ def processCoffeeScript( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
 
+def processTypeScript( text, path, cache=True ):
+	temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
+	command = [
+		getCommands()["typescript"], "--out", temp_path,
+		path
+	]
+	v = _processCommand(command, text, path, cache)
+	t = None
+	# NOTE: TypeScript does not support output to stdout
+	if os.path.exists(temp_path):
+		with file(temp_path) as f:
+			t = f.read()
+		os.unlink(temp_path)
+	return t,"text/javascript"
+
 def processPandoc( text, path, cache=True ):
 	command = [
 		getCommands()["pandoc"],
@@ -186,6 +202,7 @@ def getProcessors():
 			"sjs"   : processSugar,
 			"ccss"  : processCleverCSS,
 			"coffee": processCoffeeScript,
+			"ts"    : processTypeScript,
 			"pcss"  : processPythonicCSS,
 			"md"    : processPandoc,
 		}

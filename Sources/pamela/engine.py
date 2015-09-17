@@ -394,6 +394,14 @@ class Formatter:
 			res, _ = pamela.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.info("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
+		elif element.mode in ("typescript", "ts"):
+			lines = element.contentAsLines()
+			import pamela.web
+			source = u"".join(lines)
+			t = time.time()
+			res, _ = pamela.web.processTypeScript(source, "", cache=self.useProcessCacheFalse)
+			logging.info("Parsed TypeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			element.content = [Text(res)]
 		elif element.mode  in ("clevercss", "ccss"):
 			lines = element.contentAsLines()
 			import pamela.web
