@@ -109,10 +109,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 		cmd.wait()
 		if temp_created:
 			os.unlink(path)
-		if not data and error:
-			raise Exception(error)
 		if not data:
-			raise Exception("No data produced by command")
+			raise Exception(error or "No data")
 		if cache is CACHE:
 			cache.set(path,timestamp,data)
 		elif cache is MEMORY_CACHE:
