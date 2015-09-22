@@ -111,6 +111,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			os.unlink(path)
 		if not data and error:
 			raise Exception(error)
+		if not data:
+			raise Exception("No data produced by command")
 		if cache is CACHE:
 			cache.set(path,timestamp,data)
 		elif cache is MEMORY_CACHE:
@@ -165,7 +167,8 @@ def processTypeScript( text, path, cache=True ):
 		getCommands()["typescript"], "--out", temp_path,
 		path
 	]
-	v = _processCommand(command, text, path, cache)
+	# NOTE: We bypass caching for now
+	v = _processCommand(command, text, path, cache=False)
 	t = None
 	# NOTE: TypeScript does not support output to stdout
 	if os.path.exists(temp_path):
