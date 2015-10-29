@@ -40,6 +40,7 @@ def getCommands():
 			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss"),
 			pandoc      = os.environ.get("PANDOC",      "pandoc"),
 			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
+			babel       = os.environ.get("BABEL",       "babel"),
 		)
 	return COMMANDS
 
@@ -79,7 +80,7 @@ def processCleverCSS( text, path, request=None ):
 	result = clevercss.convert(text)
 	return result, "text/css"
 
-def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_"):
+def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None):
 	timestamp = has_changed = data = None
 	is_same   = False
 	data      = None
@@ -107,9 +108,13 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 		data    = cmd.stdout.read()
 		error   = cmd.stderr.read()
 		cmd.wait()
+		# If we have a resolveData attribute, we use it to resolve/correct the
+		# data
+		if not data and resolveData:
+			data = resolveData()
 		if temp_created:
 			os.unlink(path)
-		if not data:
+		if not data and not allowEmpty:
 			raise Exception(error or "No data")
 		if cache is CACHE:
 			cache.set(path,timestamp,data)
@@ -159,14 +164,26 @@ def processCoffeeScript( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
 
+def processBabelJS( text, path, cache=True ):
+	command = [
+		getCommands()["babel"],
+		path
+	]
+	return _processCommand(command, text, path, cache), "text/javascript"
+
 def processTypeScript( text, path, cache=True ):
 	temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
 	command = [
-		getCommands()["typescript"], "--out", temp_path,
+		getCommands()["typescript"], "--outFile", temp_path,
 		path
 	]
+	def read_file():
+		if os.path.exists(temp_path):
+			with file(temp_path) as f:
+				return f.read()
+		return None
 	# NOTE: We bypass caching for now
-	v = _processCommand(command, text, path, cache=False)
+	v = _processCommand(command, text, path, cache=True, resolveData=read_file)
 	t = None
 	# NOTE: TypeScript does not support output to stdout
 	if os.path.exists(temp_path):
@@ -201,6 +218,7 @@ def getProcessors():
 		PROCESSORS = {
 			"paml"  : processPamela,
 			"sjs"   : processSugar,
+			"js6"   : processBabelJS,
 			"ccss"  : processCleverCSS,
 			"coffee": processCoffeeScript,
 			"ts"    : processTypeScript,
