@@ -2,11 +2,11 @@
 # -----------------------------------------------------------------------------
 # Project           :   Pamela
 # -----------------------------------------------------------------------------
-# Author            :   Sebastien Pierre                 <sebastien@type-z.org>
+# Author            :   Sebastien Pierre           <sebastien.pierre@gmail.com>
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
-# Creation date     :   2007-Jun-01
-# Last mod.         :   2015-Feb-25
+# Creation date     :   2007-06-01
+# Last mod.         :   2015-10-30
 # -----------------------------------------------------------------------------
 
 import os, sys, re, subprocess, tempfile, hashlib
@@ -20,6 +20,7 @@ CACHE         = SignatureCache ()
 MEMORY_CACHE  = MemoryCache ()
 PROCESSORS    = {}
 COMMANDS      = None
+NOBRACKETS    = None
 PANDOC_HEADER = """
 <!DOCTYPE html>
 <html><head>
@@ -80,21 +81,26 @@ def processCleverCSS( text, path, request=None ):
 	result = clevercss.convert(text)
 	return result, "text/css"
 
-def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None):
-	timestamp = has_changed = data = None
-	is_same   = False
-	data      = None
+def cacheGet( text, path, cache ):
 	if cache:
 		if path:
 			timestamp     = SignatureCache.mtime(path)
 			is_same, data = CACHE.get(path,timestamp)
 			cache = CACHE
+			return cache, is_same, data, timestamp
 		else:
 			text    = engine.ensure_unicode(text)
 			sig     = hashlib.sha256(bytes(u" ".join(command) + text)).hexdigest()
 			cache   = MEMORY_CACHE
 			is_same = cache.has(sig)
 			data    = cache.get(sig)
+			return cache, is_same, data, sig
+	else:
+		return cache, False, None, None
+
+def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None):
+	timestamp = has_changed = data = None
+	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
 		if not path or os.path.isdir(path):
 			temp_created = True
@@ -210,6 +216,55 @@ def processPythonicCSS( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/css"
 
+def processNobrackets( text, path, cache=True ):
+	"""Processes the given `text` (that might come from the given path)
+	through nobrackets. Nobrackets will in turn invoke sub-processors
+	based on the `path` extension."""
+	# We ensure that NOBRACKETS references a nobrackets processor,
+	# and is properly initialized.
+	global NOBRACKETS
+	if not NOBRACKETS:
+		import nobrackets
+		p   = nobrackets.Processor()
+		p.registerExtensions(nobrackets)
+		NOBRACKETS = p
+	# Now we try to retrieve either the text or the path from
+	# the cache.
+	cache, is_same, data, cache_key = cacheGet (text, path, cache)
+	cache_path = path
+	if (not is_same) or (not cache):
+		# If the contents has changed, or if we did not cache, we'll
+		# process the text/path through nobrackets and create an output
+		assert path, "Nobrackets is only supported for files, for now"
+		res      = NOBRACKETS.processPath(path)
+		# We trim the path from the .nb extension, retrieve the actual
+		# extension and write the result to a temp file with the
+		# proper extension
+		path     = NOBRACKETS.trimExtension(path)
+		ext      = path.rsplit(".",1)[-1]
+		res_path = "{0}/temp-nobrackets-{1}".format(os.path.dirname(os.path.abspath(path)), os.path.basename(path))
+		with file(res_path, "w") as f: f.write(res)
+		# We not look in the processors for a matching processor
+		proc = getProcessors()
+		if ext in proc:
+			# We don't want to cache here as we're already doing the cachgin
+			res, content_type = proc[ext](res, res_path, cache=False)
+			os.unlink(res_path)
+		else:
+			content_type = "text/plain"
+		# Now for caching-friendlyness, we store the content_type in addition
+		# to the data
+		data = content_type + "\t" + res
+		if   cache is CACHE:
+			cache.set(cache_path, cache_key, data)
+		elif cache is MEMORY_CACHE:
+			cache.set(cache_key, data)
+		return res, content_type
+	else:
+		# We can retrieve the content from the cache
+		content_type, data = data.split("\t", 1)
+		return data, content_type
+
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
@@ -224,6 +279,7 @@ def getProcessors():
 			"ts"    : processTypeScript,
 			"pcss"  : processPythonicCSS,
 			"md"    : processPandoc,
+			"nb"    : processNobrackets,
 		}
 	return PROCESSORS
 
