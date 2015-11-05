@@ -98,7 +98,7 @@ def cacheGet( text, path, cache ):
 	else:
 		return cache, False, None, None
 
-def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None):
+def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None, allowEmpty=False):
 	timestamp = has_changed = data = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):

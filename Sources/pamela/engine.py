@@ -35,6 +35,9 @@ def ensure_bytes( t, encoding="utf8" ):
 	else:
 		return t
 
+DEFAULTS = {
+	"lib" : "lib",
+}
 # -----------------------------------------------------------------------------
 #
 # GRAMMAR
@@ -1022,7 +1025,7 @@ class Parser:
 		"""A simple parser that extract (key,value) from a string like
 		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
 		offset = 0
-		result = []
+		result = [] + DEFAULTS.items()
 		while offset < len(text):
 			equal  = text.find("=", offset)
 			assert equal >= 0, "Include subsitution without value: {0}".format(text)
