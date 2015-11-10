@@ -1,0 +1,7 @@
+# BEM elements start with
+<div.widget-.A
+	<ul.-list-.B
+		<li.-element.C:1
+		<li.-element.C:2
+		<li.-element.C:3
+# EOF

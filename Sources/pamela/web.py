@@ -6,22 +6,24 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2015-10-30
+# Last mod.         :   2015-11-05
 # -----------------------------------------------------------------------------
 
-import os, sys, re, subprocess, tempfile, hashlib
+import os, sys, re, json, subprocess, tempfile, hashlib, threading
 from   pamela import engine
 import retro
 from   retro.contrib.localfiles import LocalFiles
 from   retro.contrib.cache      import SignatureCache, MemoryCache
 from   retro.contrib            import proxy
 
-CACHE         = SignatureCache ()
-MEMORY_CACHE  = MemoryCache ()
-PROCESSORS    = {}
-COMMANDS      = None
-NOBRACKETS    = None
-PANDOC_HEADER = """
+CACHE           = SignatureCache ()
+MEMORY_CACHE    = MemoryCache ()
+PROCESSORS      = {}
+COMMANDS        = None
+NOBRACKETS      = None
+PAMELA_DEFAULTS = {}
+COMMAND_LOCK    = threading.Lock()
+PANDOC_HEADER   = """
 <!DOCTYPE html>
 <html><head>
 <meta charset="utf-8" />
@@ -53,6 +55,7 @@ except:
 
 def processPamela( pamelaText, path, request=None ):
 	parser = engine.Parser()
+	parser.setDefaults(PAMELA_DEFAULTS)
 	if request and request.get("as") == "js":
 		parser._formatter = engine.JSHTMLFormatter()
 		result = parser.parseString(pamelaText, path)
@@ -99,6 +102,8 @@ def cacheGet( text, path, cache ):
 		return cache, False, None, None
 
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None, allowEmpty=False):
+	# NOTE: The lock is super important when many requests can come
+	COMMAND_LOCK.acquire()
 	timestamp = has_changed = data = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
@@ -126,6 +131,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			cache.set(path,timestamp,data)
 		elif cache is MEMORY_CACHE:
 			cache.set(sig,data)
+	COMMAND_LOCK.release()
 	return engine.ensure_unicode(data)
 
 def processSugar( text, path, cache=True, includeSource=False ):
@@ -292,11 +298,18 @@ def beforeRequest( request ):
 	pass
 
 def run( arguments, options={} ):
+	# We can load defaults. This should be moved to a dedicated option.
+	global PAMELA_DEFAULTS
+	defaults_path = ".pamela-defaults"
+	if os.path.exists(defaults_path):
+		with open(defaults_path) as f:
+			PAMELA_DEFAULTS = json.load(f)
 	files   = getLocalFiles()
 	comps   = [files]
 	proxies = [x[len("proxy:"):] for x in [x for x in arguments if x.startswith("proxy:")]]
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
+
 	#app.onRequest(beforeRequest)
 	retro.command(
 		arguments,

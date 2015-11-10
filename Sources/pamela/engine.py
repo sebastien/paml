@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   06-Nov-2014
+# Last mod.         :   10-Nov-2015
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time
@@ -17,7 +17,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.6.5"
+__version__    = "0.7.0"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -35,9 +35,6 @@ def ensure_bytes( t, encoding="utf8" ):
 	else:
 		return t
 
-DEFAULTS = {
-	"lib" : "lib",
-}
 # -----------------------------------------------------------------------------
 #
 # GRAMMAR
@@ -73,7 +70,7 @@ T_EMBED        = "EM"
 
 # -----------------------------------------------------------------------------
 #
-# Formatting
+# FORMATTING
 #
 # -----------------------------------------------------------------------------
 
@@ -708,6 +705,7 @@ class Writer:
 		self._nodeStack = []
 		self._document  = Element("document")
 		self._override  = None
+		self._bemStack  = []
 
 	def onDocumentEnd( self ):
 		return self._document
@@ -744,12 +742,34 @@ class Writer:
 					else:
 						class_override[1] = value
 			attributes = self._override
+		# We expand BEM class attributes
+		# NOTE: I'm implementing it so that it can manage multiple prefixes,
+		# but I'm not sure if it's going to be actually useful.
+		new_attributes = []
+		bem_prefixes   = []
+		for attr in attributes:
+			if attr[0] != "class":
+				new_attributes.push(attr)
+				continue
+			class_attributes = attr[1].split()
+			value            = []
+			for i,_ in enumerate(class_attributes):
+				if _.endswith("-"):
+					bem_prefixes.append(_[0:-1])
+				elif _.startswith("-"):
+					_ = self._getBEMName(_)
+					value.append(_)
+				else:
+					value.append(_)
+			attr[1] = " ".join(value)
+		# We only want 0 or 1 BEM prefixes
+		assert len(bem_prefixes) <= 1
 		element = Element(name,attributes=attributes,isInline=isInline)
 		# We clear the override
 		if self._override:
 			self._override = None
 		self._node().append(element)
-		self._pushStack(element)
+		self._pushStack(element, bem_prefixes[0] if bem_prefixes else None)
 
 	def overrideAttributesForNextElement( self, attributes ):
 		self._override = []
@@ -765,12 +785,36 @@ class Writer:
 	def onDeclarationEnd( self ):
 		self._popStack()
 
-	def _pushStack( self, node ):
+	def _getBEMName( self, name ):
+		"""Returns the BEM fully qualified name of the given class. This
+		assumes that `name` starts with a dash."""
+		res = [name]
+		i   = len(self._bemStack) - 1
+		# The BEM stack is either a BEM prefix, or None. We start at the
+		# deepest level and walk back up. Whenever an element in the stack
+		# does not start with an `-`, we break the loop.
+		# NOTE: this algorithm only works if you have 0 or 1 BEM prefix
+		# per node.
+		while i >= 0:
+			prefix = self._bemStack[i]
+			if prefix:
+				res.insert(0, prefix)
+				# We break the loop if the prefix DOES NOT start with -
+				if prefix[0] != "-":
+					break
+			i -= 1
+		# We simply join the resulting array into a string
+		return "".join(res)
+
+	def _pushStack( self, node, bemPrefixes=None ):
 		node.setMode(self.mode())
 		self._nodeStack.append(node)
+		# NOTE: Might just as well store the bem prefixes in the node?
+		self._bemStack.append(bemPrefixes)
 
 	def _popStack(self):
 		self._nodeStack.pop()
+		self._bemStack.pop()
 
 	def _node( self ):
 		if not self._nodeStack: return self._document
@@ -843,6 +887,11 @@ class Parser:
 		self._writer = Writer()
 		self._formatter = Formatter()
 		self._paths     = []
+		self._defaults  = {}
+
+	def setDefaults( self, defaults ):
+		self._defaults = defaults
+		return self
 
 	def path( self ):
 		"""Returns the current path of the file being parsed, if any"""
@@ -1025,7 +1074,7 @@ class Parser:
 		"""A simple parser that extract (key,value) from a string like
 		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
 		offset = 0
-		result = [] + DEFAULTS.items()
+		result = [] + self._defaults.items()
 		while offset < len(text):
 			equal  = text.find("=", offset)
 			assert equal >= 0, "Include subsitution without value: {0}".format(text)
@@ -1299,7 +1348,7 @@ def parse( text, path=None, format="html" ):
 	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):
-	parser = Parser()
+	parser   = Parser()
 	if not arguments:
 		input_file = "--"
 	elif arguments[0] == "--to-html":
