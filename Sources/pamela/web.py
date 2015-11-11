@@ -16,13 +16,12 @@ from   retro.contrib.localfiles import LocalFiles
 from   retro.contrib.cache      import SignatureCache, MemoryCache
 from   retro.contrib            import proxy
 
-CACHE           = SignatureCache ()
+SIG_CACHE       = SignatureCache ()
 MEMORY_CACHE    = MemoryCache ()
 PROCESSORS      = {}
 COMMANDS        = None
 NOBRACKETS      = None
 PAMELA_DEFAULTS = {}
-COMMAND_LOCK    = threading.Lock()
 PANDOC_HEADER   = """
 <!DOCTYPE html>
 <html><head>
@@ -87,23 +86,25 @@ def processCleverCSS( text, path, request=None ):
 def cacheGet( text, path, cache ):
 	if cache:
 		if path:
+			cache = SIG_CACHE
 			timestamp     = SignatureCache.mtime(path)
-			is_same, data = CACHE.get(path,timestamp)
-			cache = CACHE
+			is_same, data = cache.get(path,timestamp)
+			print "GET FROM MTIME CACHE", timestamp, "PATH", path, ":", cache._cachedSig
 			return cache, is_same, data, timestamp
 		else:
 			text    = engine.ensure_unicode(text)
 			sig     = hashlib.sha256(bytes(u" ".join(command) + text)).hexdigest()
 			cache   = MEMORY_CACHE
+			print "GET FROM CONTENT CACHE", sig, ":", cache.has(sig)
 			is_same = cache.has(sig)
 			data    = cache.get(sig)
 			return cache, is_same, data, sig
 	else:
 		return cache, False, None, None
 
-def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix="pamela_", resolveData=None, allowEmpty=False):
+def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
+		tmpprefix="pamela_", resolveData=None, allowEmpty=False, cwd=None):
 	# NOTE: The lock is super important when many requests can come
-	COMMAND_LOCK.acquire()
 	timestamp = has_changed = data = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
@@ -115,7 +116,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			command = command[:-1] + [path]
 		else:
 			temp_created = False
-		cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE,
+				stderr=subprocess.PIPE, cwd=cwd)
 		data    = cmd.stdout.read()
 		error   = cmd.stderr.read()
 		cmd.wait()
@@ -127,18 +129,20 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp", tmpprefix
 			os.unlink(path)
 		if not data and not allowEmpty:
 			raise Exception(error or "No data")
-		if cache is CACHE:
-			cache.set(path,timestamp,data)
+		if cache is SIG_CACHE:
+			cache.set(path,cache_key,data)
+			assert cache.has(path, cache_key)
 		elif cache is MEMORY_CACHE:
-			cache.set(sig,data)
-	COMMAND_LOCK.release()
+			cache.set(cache_key,data)
+			assert cache.has(cache_key) == data
 	return engine.ensure_unicode(data)
 
-def processSugar( text, path, cache=True, includeSource=False ):
+def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	if os.path.isdir(path or "."):
 		parent_path  = path or "."
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path or "."))
+	print "SUGAR", path ,"cache",cache
 	sugar2 = None
 	# try:
 	# 	import sugar2
@@ -158,18 +162,26 @@ def processSugar( text, path, cache=True, includeSource=False ):
 		]
 		return command.runAsString (arguments), "text/javascript"
 	else:
+		# We create a temp dir to cd to, because sugar's DParser
+		# creates temp files in the current dir.
+		temp_path = tempfile.mkdtemp()
+		norm_path = lambda _:os.path.relpath(_, temp_path)
+		if not os.path.exists(temp_path): os.mkdir(temp_path)
 		# Otherwise we fallback to the regular Sugar, which has to be
 		# run through popen (so it's slower)
 		command = [
 			getCommands()["sugar"],
 			"-cSljs" if includeSource else "-cljs",
-			"-L" + parent_path,
-			"-L" + os.path.join(parent_path, "lib", "sjs"),
-			path
+			"-L" + norm_path(parent_path),
+			"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
+			norm_path(path)
 		]
-		return _processCommand(command, text, path, cache), "text/javascript"
+		res = _processCommand(command, text, path, cache, cwd=temp_path), "text/javascript"
+		# We clean up the temp dir
+		if os.path.exists(temp_path): os.rmdir(temp_path)
+		return res
 
-def processCoffeeScript( text, path, cache=True ):
+def processCoffeeScript( text, path, request=None, cache=True ):
 	command = [
 		getCommands()["coffee"],"-cp",
 		path
@@ -183,7 +195,7 @@ def processBabelJS( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/javascript"
 
-def processTypeScript( text, path, cache=True ):
+def processTypeScript( text, path, request=None, cache=True ):
 	temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
 	command = [
 		getCommands()["typescript"], "--outFile", temp_path,
@@ -204,14 +216,14 @@ def processTypeScript( text, path, cache=True ):
 		os.unlink(temp_path)
 	return t,"text/javascript"
 
-def processPandoc( text, path, cache=True ):
+def processPandoc( text, path, request=None, cache=True ):
 	command = [
 		getCommands()["pandoc"],
 		path
 	]
 	return PANDOC_HEADER + _processCommand(command, text, path, cache) + PANDOC_FOOTER, "text/html"
 
-def processPythonicCSS( text, path, cache=True ):
+def processPythonicCSS( text, path, request=None, cache=True ):
 	# NOTE: Disabled until memory leaks are fixes
 	# import pythoniccss
 	# result = pythoniccss.convert(text)
@@ -222,7 +234,7 @@ def processPythonicCSS( text, path, cache=True ):
 	]
 	return _processCommand(command, text, path, cache), "text/css"
 
-def processNobrackets( text, path, cache=True ):
+def processNobrackets( text, path, request=None, cache=True ):
 	"""Processes the given `text` (that might come from the given path)
 	through nobrackets. Nobrackets will in turn invoke sub-processors
 	based on the `path` extension."""

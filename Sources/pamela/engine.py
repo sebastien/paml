@@ -749,7 +749,7 @@ class Writer:
 		bem_prefixes   = []
 		for attr in attributes:
 			if attr[0] != "class":
-				new_attributes.push(attr)
+				new_attributes.append(attr)
 				continue
 			class_attributes = attr[1].split()
 			value            = []
