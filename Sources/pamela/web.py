@@ -89,13 +89,11 @@ def cacheGet( text, path, cache ):
 			cache = SIG_CACHE
 			timestamp     = SignatureCache.mtime(path)
 			is_same, data = cache.get(path,timestamp)
-			print "GET FROM MTIME CACHE", timestamp, "PATH", path, ":", cache._cachedSig
 			return cache, is_same, data, timestamp
 		else:
 			text    = engine.ensure_unicode(text)
 			sig     = hashlib.sha256(bytes(u" ".join(command) + text)).hexdigest()
 			cache   = MEMORY_CACHE
-			print "GET FROM CONTENT CACHE", sig, ":", cache.has(sig)
 			is_same = cache.has(sig)
 			data    = cache.get(sig)
 			return cache, is_same, data, sig

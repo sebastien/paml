@@ -1,6 +1,6 @@
 # BEM elements start with
 <div.widget-.A
-	<ul.-list-.B
+	<ul.-list.-list-.B
 		<li.-element.C:1
 		<li.-element.C:2
 		<li.-element.C:3
