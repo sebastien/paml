@@ -140,7 +140,6 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		parent_path  = path or "."
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path or "."))
-	print "SUGAR", path ,"cache",cache
 	sugar2 = None
 	# try:
 	# 	import sugar2
@@ -162,6 +161,12 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	else:
 		# We create a temp dir to cd to, because sugar's DParser
 		# creates temp files in the current dir.
+		temp_output = None
+		if not path:
+			temp_output = tempfile.mktemp()
+			path        = temp_output
+			with open(temp_output, "w") as f:
+				f.write(text)
 		temp_path = tempfile.mkdtemp()
 		norm_path = lambda _:os.path.relpath(_, temp_path)
 		if not os.path.exists(temp_path): os.mkdir(temp_path)
@@ -177,6 +182,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		res = _processCommand(command, text, path, cache, cwd=temp_path), "text/javascript"
 		# We clean up the temp dir
 		if os.path.exists(temp_path): os.rmdir(temp_path)
+		if temp_output and os.path.exists(temp_output): os.unlink(temp_output)
 		return res
 
 def processCoffeeScript( text, path, request=None, cache=True ):
@@ -271,7 +277,7 @@ def processNobrackets( text, path, request=None, cache=True ):
 		# Now for caching-friendlyness, we store the content_type in addition
 		# to the data
 		data = content_type + "\t" + res
-		if   cache is CACHE:
+		if   cache is SIG_CACHE:
 			cache.set(cache_path, cache_key, data)
 		elif cache is MEMORY_CACHE:
 			cache.set(cache_key, data)
