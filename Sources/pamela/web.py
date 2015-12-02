@@ -102,7 +102,6 @@ def cacheGet( text, path, cache ):
 
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		tmpprefix="pamela_", resolveData=None, allowEmpty=False, cwd=None):
-	# NOTE: The lock is super important when many requests can come
 	timestamp = has_changed = data = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
@@ -133,6 +132,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		elif cache is MEMORY_CACHE:
 			cache.set(cache_key,data)
 			assert cache.has(cache_key) == data
+	assert data is not None, "pamela.web._processCommand: None returned by {0}".format(command)
 	return engine.ensure_unicode(data)
 
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
@@ -271,7 +271,8 @@ def processNobrackets( text, path, request=None, cache=True ):
 		if ext in proc:
 			# We don't want to cache here as we're already doing the cachgin
 			res, content_type = proc[ext](res, res_path, cache=False)
-			os.unlink(res_path)
+			if os.path.exists(res_path):
+				os.unlink(res_path)
 		else:
 			content_type = "text/plain"
 		# Now for caching-friendlyness, we store the content_type in addition
