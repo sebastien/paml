@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2015-11-05
+# Last mod.         :   2015-12-07
 # -----------------------------------------------------------------------------
 
-import os, sys, re, json, subprocess, tempfile, hashlib, threading
+import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes
 from   pamela import engine
 import retro
 from   retro.contrib.localfiles import LocalFiles
@@ -271,10 +271,13 @@ def processNobrackets( text, path, request=None, cache=True ):
 		if ext in proc:
 			# We don't want to cache here as we're already doing the cachgin
 			res, content_type = proc[ext](res, res_path, cache=False)
-			if os.path.exists(res_path):
-				os.unlink(res_path)
+			content_type      = content_type or "text/plain"
 		else:
-			content_type = "text/plain"
+			content_type = mimetypes.guess_type(path)
+			content_type = (content_type[0] if content_type else None) or "text/plain"
+		assert content_type
+		# We cleanup the temp file
+		# if os.path.exists(res_path): os.unlink(res_path)
 		# Now for caching-friendlyness, we store the content_type in addition
 		# to the data
 		data = content_type + "\t" + res

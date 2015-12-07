@@ -9,7 +9,7 @@
 # Last mod.         :   07-Dec-2015
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json, time, glob
+import os, sys, re, string, json, time, glob, tempfile
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
@@ -200,7 +200,6 @@ class Macro:
 		for f in params.split(","):
 			f = f.strip()
 			p = Macro.Require(f, patterns)
-			print f, p
 			if p:
 				parser._parseLine(template.format(indent * "\t", p))
 
@@ -494,6 +493,20 @@ class Formatter:
 			t = time.time()
 			res, _ = pamela.web.processPythonicCSS(source, ".")
 			logging.info("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			element.content = [Text(res)]
+		elif element.mode and element.mode.endswith("nobrackets"):
+			lines = element.contentAsLines()
+			import pamela.web
+			source = u"".join(lines)
+			t = time.time()
+			prefix = element.mode[0:0-(len("nobrackets"))]
+			suffix = ".nb"
+			if prefix: suffix = "." + prefix + suffix
+			p = tempfile.mktemp(suffix=suffix)
+			with open(p, "w") as f: f.write(source)
+			res, _ = pamela.web.processNobrackets(source, p)
+			if os.path.exists(p): os.unlink(p)
+			logging.info("Parsed Nobrackets: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode == "texto":
 			lines = element.contentAsLines()
