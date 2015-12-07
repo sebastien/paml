@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   10-Nov-2015
+# Last mod.         :   07-Dec-2015
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json, time
+import os, sys, re, string, json, time, glob
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
@@ -59,6 +59,7 @@ RE_EMPTY       = re.compile("^\s*$")
 RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
 RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
 RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
+RE_MACRO       = re.compile("^(\s)*(@\w+(:\w+)?)\s*\(([^\)]+)\)\s*$")
 RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
@@ -151,6 +152,82 @@ HTML_EXCEPTIONS = {
 		"NOT_EMPTY":"&nbsp;"
 	}
 }
+
+
+# -----------------------------------------------------------------------------
+#
+# MACRO
+#
+# -----------------------------------------------------------------------------
+
+class Macro:
+	"""A collection of macros used by the parser. The `CATALOGUE` can
+	be updated live to register more macros."""
+
+	CSS_PATTERNS = (
+		"lib/pcss/{0}.pcss",
+		"lib/ccss/{0}.ccss",
+		"lib/css/{0}.css",
+		"lib/css/{0}-*.css",
+	)
+
+	JS_PATTERNS = (
+		"lib/sjs/{0}.sjs",
+		"lib/ts/{0}.ts",
+		"lib/js/{0}.js",
+		"lib/js/{0}-*.js",
+	)
+
+	@classmethod
+	def Get( cls, name ):
+		return cls.CATALOGUE.get(name)
+
+	@staticmethod
+	def Require( name, paths=[]):
+		"""Globs the given expressions replacing `{0}` with the given `name`"""
+		for p in paths:
+			p = p.format(name)
+			l = glob.glob(p)
+			if l:
+				return sorted(l)[-1]
+		return None
+
+	@staticmethod
+	def RequireExpand( parser, params, indent, patterns, template ):
+		"""A helper function that is used by `Require{CSS,JS}`, iterates
+		on the hte given parameters, and injecting the template
+		when files are found matching the patterns."""
+		for f in params.split(","):
+			f = f.strip()
+			p = Macro.Require(f, patterns)
+			print f, p
+			if p:
+				parser._parseLine(template.format(indent * "\t", p))
+
+	def RequireCSS( parser, params, indent ):
+		"""The `require:css(name,...)` macro looks for files in the
+		paths defined by `CSS_PATTERNS` for the given `name`s and
+		replaces them by `<link>` tags."""
+		Macro.RequireExpand(
+			parser, params, indent,
+			Macro.CSS_PATTERNS,
+			"{0}<link(rel=stylesheet,type=text/css,href={1})"
+		)
+
+	def RequireJS( parser, params, indent ):
+		"""The `require:js(name,...)` macro looks for files in the
+		paths defined by `JS` for the given `name`s and
+		replaces them by `<script>` tags."""
+		Macro.RequireExpand(
+			parser, params, indent,
+			Macro.JS_PATTERNS,
+			"{0}<script(type=text/javascript,src={1})"
+		)
+
+	CATALOGUE = {
+		"require:css":RequireCSS,
+		"require:js" :RequireJS,
+	}
 
 # -----------------------------------------------------------------------------
 #
@@ -858,26 +935,27 @@ class Parser:
 	   when the parser accepts both tabs and spaces.
 	"""
 
-	@classmethod
-	def ExpandIncludes( cls, text=None, path=None ):
-		lines  = []
-		parser = cls()
-		source_lines = None
-		if text is None:
-			with open(path) as f:
-				source_lines = [ensure_unicode(l) for l in f.readlines()]
-		else:
-			ensure_unicode(text)
-			source_lines = text.split("\n")
-		parser._paths.append(path or ".")
-		for line in source_lines:
-			m = RE_INCLUDE.match(line)
-			if m:
-				indent, line = parser._getLineIndent(line)
-				parser._parseInclude(m, indent, lambda l:lines.append(ensure_unicode(l) if isinstance(l, str) else l))
-			else:
-				lines.append(line + u"\n")
-		return u"".join(lines)
+	# NOTE: Does not seem to be used, deprecating it
+	# @classmethod
+	# def ExpandIncludes( cls, text=None, path=None ):
+	# 	lines  = []
+	# 	parser = cls()
+	# 	source_lines = None
+	# 	if text is None:
+	# 		with open(path) as f:
+	# 			source_lines = [ensure_unicode(l) for l in f.readlines()]
+	# 	else:
+	# 		ensure_unicode(text)
+	# 		source_lines = text.split("\n")
+	# 	parser._paths.append(path or ".")
+	# 	for line in source_lines:
+	# 		m = RE_INCLUDE.match(line)
+	# 		if m:
+	# 			indent, line = parser._getLineIndent(line)
+	# 			parser._parseInclude(m, indent, lambda l:lines.append(ensure_unicode(l) if isinstance(l, str) else l))
+	# 		else:
+	# 			lines.append(line + u"\n")
+	# 	return u"".join(lines)
 
 	def __init__( self ):
 		self._tabsOnly   = False
@@ -981,6 +1059,9 @@ class Parser:
 			return self._writer.onComment(line)
 		# Is it an include element (%include ...)
 		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
+			return
+		# Is it a macro element (%macro ...)
+		if self._parseMacro( RE_MACRO.match(original_line), indent ):
 			return
 		self._gotoParentElement(indent)
 		# Is the parent an embedded element ?
@@ -1163,6 +1244,15 @@ class Parser:
 					if subs: l = string.Template(l).safe_substitute(**subs)
 					(parseLine or self._parseLine) (p * "\t" + l)
 			self._paths.pop()
+		return True
+
+	def _parseMacro( self, match, indent, parseLine=None ):
+		if not match: return False
+		name   = match.group(2)[1:]
+		params = match.group(4)
+		macro  = Macro.Get(name)
+		assert macro, "Undefined macro: {0}".format(macro)
+		macro(self, params, indent)
 		return True
 
 	def _pushStack(self, indent, type, mode=None):
