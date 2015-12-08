@@ -46,11 +46,13 @@ SYMBOL_ID_CLS  = "(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
 SYMBOL_CONTENT = "@\w[\w\d\-_\+]*"
-SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?\:?" % (
+SYMBOL_HINTS   = "\|[a-z](\+[a-z])*"
+SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
 	SYMBOL_ID_CLS,
 	SYMBOL_ATTRS,
+	SYMBOL_HINTS,
 	SYMBOL_CONTENT
 )
 RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
@@ -303,6 +305,531 @@ class Declaration(Element):
 
 # -----------------------------------------------------------------------------
 #
+# PARSER CLASS
+#
+# -----------------------------------------------------------------------------
+
+class Parser:
+	"""Implements a parser that will turn a Pamela document into an HTML
+	document, returned as a string.
+
+	The main methods that you should use are
+
+	- 'parseFile' to parse file identified by the given path
+	- 'parseString' to parse a string given as parameter
+
+	You can configure the parser by using the following methods:
+
+	- 'acceptTabsOnly', to tell that the parser will only accept tabs.
+	- 'acceptSpacesOnly', to tell that the parser will only accept spaces.
+	- 'acceptTabsAndSpaces', to tell that the parser will accept both tabs and
+	   spaces.
+	- 'tabsWidth', to specify the width of a tab in spaces, which is only used
+	   when the parser accepts both tabs and spaces.
+	"""
+
+	# NOTE: Does not seem to be used, deprecating it
+	# @classmethod
+	# def ExpandIncludes( cls, text=None, path=None ):
+	# 	lines  = []
+	# 	parser = cls()
+	# 	source_lines = None
+	# 	if text is None:
+	# 		with open(path) as f:
+	# 			source_lines = [ensure_unicode(l) for l in f.readlines()]
+	# 	else:
+	# 		ensure_unicode(text)
+	# 		source_lines = text.split("\n")
+	# 	parser._paths.append(path or ".")
+	# 	for line in source_lines:
+	# 		m = RE_INCLUDE.match(line)
+	# 		if m:
+	# 			indent, line = parser._getLineIndent(line)
+	# 			parser._parseInclude(m, indent, lambda l:lines.append(ensure_unicode(l) if isinstance(l, str) else l))
+	# 		else:
+	# 			lines.append(line + u"\n")
+	# 	return u"".join(lines)
+
+	def __init__( self ):
+		self._tabsOnly   = False
+		self._spacesOnly = False
+		self._tabsWidth  = 4
+		self._elementStack = []
+		self._writer = Writer()
+		self._formatter = Formatter()
+		self._paths     = []
+		self._defaults  = {}
+
+	def setDefaults( self, defaults ):
+		self._defaults = defaults
+		return self
+
+	def path( self ):
+		"""Returns the current path of the file being parsed, if any"""
+		if not self._paths or self._paths[-1] == "--":
+			return "."
+		else:
+			return self._paths[-1]
+
+	def indent( self ):
+		if self._elementStack:
+			return self._elementStack[-1][0]
+		else:
+			return 0
+
+	def parseFile( self, path ):
+		"""Parses the file with the given  path, and return the corresponding
+		HTML document."""
+		should_close = False
+		if path == "--":
+			f = sys.stdin
+		else:
+			# FIXME: File exists and is readable
+			f = open(path, "r")
+			should_close = True
+		self._paths.append(path)
+		self._writer.onDocumentStart()
+		for l in f.readlines():
+			self._parseLine(ensure_unicode(l))
+		if should_close: f.close()
+		result = self._formatter.format(self._writer.onDocumentEnd())
+		self._paths.pop()
+		return result
+
+	def parseString( self, text, path=None ):
+		"""Parses the given string and returns an HTML document."""
+		if path: self._paths.append(path)
+		try:
+			text = ensure_unicode(text)
+		except UnicodeEncodeError as e:
+			# FIXME: What should we do?
+			pass
+		self._writer.onDocumentStart()
+		for line in text.split("\n"):
+			self._parseLine(line + "\n")
+		res = self._formatter.format(self._writer.onDocumentEnd())
+		if path: self._paths.pop()
+		return res
+
+	def _isInEmbed( self, indent=None ):
+		"""Tells if the current element is an embed element (like
+		CSS,PHP,etc)"""
+		if not self._elementStack:
+			return False
+		elif indent is None:
+			return self._elementStack[-1][1] == T_EMBED
+		else:
+			return self._elementStack[-1][1] == T_EMBED and self._elementStack[-1][0] < indent
+
+	def _parseLine( self, line ):
+		"""Parses the given line of text.
+		This is an internal method that you should not really use directly."""
+		# FIXME: This function is WAY TOO BIG, it should be broken down in
+		# _parse<element>
+		original_line = line
+		indent, line = self._getLineIndent(line)
+		# First, we make sure we close the elements that may be outside of the
+		# scope of this
+		# FIXME: Empty lines may have an indent < than the current element they
+		# are bound to
+		is_empty       = RE_EMPTY.match(line)
+		if is_empty:
+			# FIXME: When you have an empty line followed by content which is
+			# text with same or greeater indent, the empty line  should be taken
+			# into account. Same for elements with greater indent.
+			if self._isInEmbed():
+				line_with_indent = "\n"
+				if len(line) > (self.indent()+4)/4:
+					line_with_indent = original_line[(self.indent()+4)/4:]
+				self._writer.onTextAdd(line_with_indent)
+				return
+			else:
+				return
+		is_comment     = RE_COMMENT.match(line)
+		if is_comment and not self._isInEmbed(indent):
+			# FIXME: Integrate this
+			return
+			return self._writer.onComment(line)
+		# Is it an include element (%include ...)
+		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
+			return
+		# Is it a macro element (%macro ...)
+		if self._parseMacro( RE_MACRO.match(original_line), indent ):
+			return
+		self._gotoParentElement(indent)
+		# Is the parent an embedded element ?
+		if self._isInEmbed(indent):
+			line_with_indent = original_line[int((self.indent()+4)/4):]
+			self._writer.onTextAdd(line_with_indent)
+			return
+		# Is it a declaration ?
+		is_declaration = RE_DECLARATION.match(line)
+		if is_declaration:
+			self._pushStack(indent, T_DECLARATION)
+			declared_name = is_declaration.group(1)
+			self._writer.onDeclarationStart(declared_name)
+			return
+		# Is it an element ?
+		is_element = RE_ELEMENT.match(line)
+		# It may be an inline element, like:
+		# <a(href=/about):about> | <a(href=/sitemap):sitemap>
+		if is_element:
+			at_index    = is_element.group().rfind("@")
+			paren_index = is_element.group().rfind(")")
+			is_embed    = (at_index > paren_index)
+			closing = line.find(">", is_element.end())
+			opening = line.find("<", is_element.end())
+			if closing == -1:
+				inline_element = False
+			elif opening == -1:
+				inline_element = True
+			elif closing < opening:
+				inline_element = True
+			else:
+				inline_element = False
+			if is_embed:
+				inline_element = False
+		else:
+			inline_element = False
+		if is_element and not inline_element:
+			# The element is an embedded element, we use this to make sure we
+			# don't interpret the content as Pamela
+			if is_embed:
+				language = is_element.group()[at_index+1:]
+				if language[-1] == ":":language = language[:-1]
+				self._pushStack(indent, T_EMBED, language)
+			else:
+				self._pushStack(indent, T_ELEMENT)
+			group  = is_element.group()[1:]
+			rest   = line[len(is_element.group()):]
+			name,attributes,embed,hints=self._parsePamelaElement(group)
+			# Element is a single line if it ends with ':'
+			self._writer.onElementStart(name, attributes, isInline=False)
+			if group[-1] == ":" and rest:
+				self._parseContentLine(rest)
+		else:
+			# Otherwise it's data
+			self._parseContentLine(line)
+
+	def _tokenize( self, text, escape="\"'" ):
+		res = []
+		o   = 0
+		end = len(text)
+		while o < end:
+			escape_index     = end + 1
+			escape_index_end = -1
+			escape_char      = None
+			# We look for the closest matching escape character
+			for char in escape:
+				# We find the occurence of the escape char
+				i = text.find(char,o)
+				# If it is there and closer to the current offset than
+				# the previous escape character
+				if i != -1 and  i < escape_index:
+					# We look for the end
+					j = text.find(char,i + 1)
+					# If there is an end, we assign it as the current escape
+					if j != -1:
+						escape_index     = i
+						escape_index_end = j
+						escape_char      = char
+			# If we did not find an escape char
+			if escape_char == None:
+				res.append(text[o:])
+				o = end
+			else:
+				if o < escape_index:
+					res.append(text[o:escape_index])
+				res.append(text[escape_index:escape_index_end+1])
+				o = escape_index_end+1
+		return res
+
+	def _parseIncludeSubstitutions( self, text ):
+		"""A simple parser that extract (key,value) from a string like
+		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
+		offset = 0
+		result = [] + self._defaults.items()
+		while offset < len(text):
+			equal  = text.find("=", offset)
+			assert equal >= 0, "Include subsitution without value: {0}".format(text)
+			name   = text[offset:equal]
+			offset = equal + 1
+			if offset == len(text):
+				value = ""
+			elif text[offset] in  '\'"':
+				# We test for quotes and escape it
+				quote = text[offset]
+				end_quote = text.find(quote, offset + 1)
+				while end_quote >= 0 and text[end_quote - 1] == "\\":
+					end_quote = text.find(quote, end_quote + 1)
+				value  = text[offset+1:end_quote].replace("\\" + quote, quote)
+				offset = end_quote + 1
+				if offset < len(text) and text[offset] == ",": offset += 1
+			else:
+				# Or we look for a comma
+				comma  = text.find(",", offset)
+				if comma < 0:
+					value  = text[offset:]
+					offset = len(text)
+				else:
+					value  = text[offset:comma]
+					offset = comma + 1
+			result.append((name.strip(), value))
+		return result
+
+	def _parseInclude( self, match, indent, parseLine=None ):
+		"""An include rule is expressed as follows
+		%include PATH {NAME=VAL,...} +.class...(name=val,name,val)
+		"""
+		if not match: return False
+		# FIXME: This could be written better
+		path = match.group(2).strip()
+		subs = None
+		# If there is a paren, we extract the replacement
+		lparen = path.rfind("{")
+		offset = 0
+		if lparen >= 0:
+			subs    = {}
+			rparen  = path.rfind("}")
+			if rparen > lparen:
+				for name, value in self._parseIncludeSubstitutions(path[lparen+1:rparen]):
+					value       = value.strip()
+					if value and value[0] in ["'", '"']: value = value[1:-1]
+					subs[name] = value
+				path = path[:lparen] + path[rparen+1:]
+		# FIXME: The + will be swallowed if after paren
+		plus = path.find("+")
+		if plus >= 0:
+			element = "div" + path[plus+1:].strip()
+			path    = path[:plus].strip()
+			_, attributes, _, _ = self._parsePamelaElement(element)
+			if self._writer:
+				self._writer.overrideAttributesForNextElement(attributes)
+		if path[0] in ['"',"'"]:
+			path = path[1:-1]
+		else:
+			path = path.strip()
+		# Now we load the file
+		local_dir  = os.path.dirname(os.path.abspath(os.path.normpath(self.path())))
+		local_path = os.path.normpath(os.path.join(local_dir, path))
+		if   os.path.exists(local_path):
+			path = local_path
+		elif os.path.exists(local_path + ".paml"):
+			path = local_path + ".paml"
+		elif os.path.exists(path):
+			path = path
+		elif os.path.exists(path + ".paml"):
+			path = path + ".paml"
+		if not os.path.exists(path):
+			error_line = "ERROR: File not found <code>%s</code>" % (local_path)
+			if parseLine:
+				parseLine(error_line)
+			else:
+				return self._writer.onTextAdd(error_line)
+		else:
+			self._paths.append(path)
+			with open(path,'rb') as f:
+				for l in f.readlines():
+					# FIXME: This does not work when I use tabs instead
+					l = ensure_unicode(l)
+					p = int(indent/4)
+					# We do the substituion
+					if subs: l = string.Template(l).safe_substitute(**subs)
+					(parseLine or self._parseLine) (p * "\t" + l)
+			self._paths.pop()
+		return True
+
+	def _parseMacro( self, match, indent, parseLine=None ):
+		if not match: return False
+		name   = match.group(2)[1:]
+		params = match.group(4)
+		macro  = Macro.Get(name)
+		assert macro, "Undefined macro: {0}".format(macro)
+		macro(self, params, indent)
+		return True
+
+	def _pushStack(self, indent, type, mode=None):
+		self._elementStack.append((indent, type))
+		self._writer.pushMode(mode)
+
+	def _popStack(self):
+		self._elementStack.pop()
+		self._writer.popMode()
+
+	def _parseContentLine( self, line ):
+		"""Parses a line that is data/text that is part of an element
+		content."""
+		offset = 0
+		# We look for elements in the content
+		while offset < len(line):
+			element = RE_INLINE.search(line, offset)
+			if not element:
+				break
+			closing = line.find(">", element.end())
+			# Elements must have a closing
+			if closing == -1:
+				raise Exception("Unclosed inline tag: '%s'" % (line))
+			# We prepend the text from the offset to the eleemnt
+			text = line[offset:element.start()]
+			if text:
+				self._writer.onTextAdd(text)
+			# And we append the element itself
+			group = element.group()[1:]
+			name,attributes,embed, hints=self._parsePamelaElement(group)
+			self._writer.onElementStart(name, attributes, isInline=True)
+			text = line[element.end():closing]
+			if text: self._writer.onTextAdd(text)
+			self._writer.onElementEnd()
+			offset = closing + 1
+		# We add the remaining text
+		if offset < len(line):
+			text = line[offset:]
+			# We remove the trainling EOL at the end of the line. This might not
+			# be the best way to do it, though.
+			if text and text[-1] == "\n": text = text[:-1] + " "
+			if text: self._writer.onTextAdd(text)
+
+	def _parsePamelaElement( self, element ):
+		"""Parses the declaration of a Pamela element, which is like the
+		following examples:
+
+		>	html
+		>	title:
+		>	body#main.body(onclick=load)|c:
+
+		basically, it is what lies between '<' and the ':' (or '\n'), which can
+		be summmed up as:
+
+		>	(#ID | NAME #ID?) .CLASS* ATTRIBUTES? |HINTS? :?
+
+		where attributes is a command-separated sequence of this, surrounded by
+		parens:
+
+		>	NAME=(VALUE|'VALUE'|"VALUE")
+
+		This function returns a triple (name, attributes, hints)
+		representing the parsed element. Attributes are stored as an ordered
+		list of couples '(name, value'), hints are given as a list of strings."""
+		original = element
+		if element[-1] == ":": element = element[:-1]
+		# We look for the attributes list
+		parens_start = element.find("(")
+		pipe_start   = element.rfind("|")
+		at_start     = element.rfind("@")
+		rest         = None
+		if parens_start != -1:
+			parens_end = element.rfind(")")
+			if at_start < parens_end: at_start = -1
+			attributes_list = element[parens_start+1:parens_end]
+			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
+			attributes = self._parsePamelaAttributes(attributes_list)
+			element = element[:parens_start]
+			rest    = element[parens_end:]
+		else:
+			attributes = []
+		# Useful functions to manage attributes
+		def has_attribute( name, attributes ):
+			for a in attributes:
+				if a[0] == name: return a
+			return None
+		def set_attribute( name, value, attribtues ):
+			for a in attributes:
+				if a[0] == name:
+					a[1] = value
+					return
+			attributes.append([name,value])
+		def append_attribute( name, value, attributes, prepend=False ):
+			a = has_attribute(name, attributes)
+			if a:
+				if prepend:
+					a[1] = value + " " + a[1]
+				else:
+					a[1] = a[1] + " " + value
+			else:
+				set_attribute(name, value, attributes)
+		# We take care of embeds
+		if at_start != -1:
+			embed   = element[at_start+1:]
+			element = element[:at_start]
+		else:
+			embed = None
+		# We take care of hints
+		hints = []
+		if pipe_start != -1:
+			hints   = (original[pipe_start+1:].rsplit("@", 1)[0]).split("+")
+			element = element[:pipe_start]
+		# We look for the classes
+		classes = element.split(".")
+		if len(classes) > 1:
+			element = classes[0]
+			classes = classes[1:]
+			classes = " ".join( classes)
+			append_attribute("class", classes, attributes, prepend=True)
+		else:
+			element = classes[0]
+		eid = element.split("#")
+		# FIXME: If attributes or ids are already defined, we should look for it
+		# and do something appropriate
+		if len(eid) > 1:
+			assert len(eid) == 2, "More than one id given: %s" % (original)
+			if has_attribute("id", attributes):
+				raise Exception("Id already given as element attribute")
+			attributes.insert(0,["id", eid[1]])
+			element = eid[0]
+		else:
+			element = eid[0]
+		# handle '::' syntax for namespaces
+		element = element.replace("::",":")
+		return (element, attributes, embed, hints)
+
+	def _parsePamelaAttributes( self, attributes ):
+		"""Parses a string representing Pamela attributes and returns a list of
+		couples '[name, value]' representing the attributes."""
+		result = []
+		original = attributes
+		while attributes:
+			match  = RE_ATTRIBUTE.match(attributes)
+			assert match, "Given attributes are malformed: %s" % (attributes)
+			name  = match.group(1)
+			value = match.group(4)
+			# handles '::' syntax for namespaces
+			name = name.replace("::",":")
+			if value and value[0] == value[-1] and value[0] in ("'", '"'):
+				value = value[1:-1]
+			result.append([name, value])
+			attributes = attributes[match.end():]
+			if attributes:
+				assert attributes[0] == ",", "Attributes must be comma-separated: %s" % (attributes)
+				attributes = attributes[1:]
+				assert attributes, "Trailing comma with no remaining attributes: %s" % (original)
+		return result
+
+	def _gotoParentElement( self, currentIndent ):
+		"""Finds the parent element that has an identation lower than the given
+		'currentIndent'."""
+		while self._elementStack and self._elementStack[-1][0] >= currentIndent:
+			self._popStack()
+			self._writer.onElementEnd()
+
+	def _getLineIndent( self, line ):
+		"""Returns the line indentation as a number. It takes into account the
+		fact that tabs may be requried or not, and also takes into account the
+		'tabsWith' property."""
+		tabs = RE_LEADING_TAB.match(line)
+		spaces = RE_LEADING_SPC.match(line)
+		if self._tabsOnly and spaces:
+			raise Exception("Tabs are expected, your lines are indented with spaces")
+		if self._spacesOnly and tabs:
+			raise Exception("Spaces are expected, your lines are indented with tabs")
+		if tabs and len(tabs.group()) > 0:
+			return len(tabs.group()) * self._tabsWidth, line[len(tabs.group()):]
+		elif spaces and len(spaces.group()) > 0:
+			return len(spaces.group()), line[len(spaces.group()):]
+		else:
+			return 0, line
+
+# -----------------------------------------------------------------------------
+#
 # FORMATTING FUNCTION (BORROWED FROM LAMBDAFACTORY MODELWRITER MODULE)
 #
 # -----------------------------------------------------------------------------
@@ -351,7 +878,12 @@ class Formatter:
 	def pushFlags( self, *flags ):
 		"""Pushes the given flags (as varargs) on the flags queue."""
 		self.flags.append([])
-		for _ in flags: self.setFlag(_)
+		for _ in flags:
+			if isinstance(_,list) or isinstance(_,tuple):
+				for f in _:
+					self.setFlag(f)
+			else:
+				self.setFlag(_)
 
 	def setFlag( self, flag ):
 		"""Sets the given flag."""
@@ -442,6 +974,7 @@ class Formatter:
 					return False
 			return True
 
+	# FIXME: This should probably be moved to the parser
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
@@ -453,7 +986,7 @@ class Formatter:
 			not_empty = exceptions.get("NOT_EMPTY")
 			if not_empty != None and not content:
 				element.content.append(Text(not_empty))
-		# Does this element has any content ?
+		# Does this element has any content that needs to be pre-processed?
 		if element.mode and element.mode.startswith("sugar"):
 			lines = element.contentAsLines()
 			import pamela.web
@@ -514,7 +1047,9 @@ class Formatter:
 			source = u"".join(lines)
 			res    = ensure_unicode(texto.toHTML(source))
 			element.content = [Text(res)]
+		# If the element has any content, then we apply it
 		if element.content:
+			print "ELEMENT", element.flags
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
 				assert not attributes, "Processing instruction cannot have attributes"
@@ -528,7 +1063,7 @@ class Formatter:
 					self.setFlag(FORMAT_SINGLE_LINE)
 			# If the element is an inline, we enter the SINGLE_LINE formatting
 			# mode, without adding an new line
-			# FIXME: isInline is wlaways false
+			# FIXME: isInline is always false
 			if element.isInline:
 				self.pushFlags(FORMAT_SINGLE_LINE)
 				self.writeTag(start)
@@ -562,19 +1097,6 @@ class Formatter:
 			# And if it's an inline, we don't add a newline
 			if not element.isInline: self.newLine()
 			self.writeTag(text)
-
-	def formatText( self, text ):
-		"""Returns the given text properly formatted according to
-		this formatted configuration."""
-		if not self.hasFlag(FORMAT_PRESERVE):
-			if self.hasFlag(FORMAT_NORMALIZE):
-				text = self.normalizeText(text)
-			if self.hasFlag(FORMAT_STRIP):
-				text = self.stripText(text)
-			if not self.hasFlag(FORMAT_SINGLE_LINE):
-				compact = self.hasFlag(FORMAT_COMPACT)
-				text    = self.indentString(text, start=not compact, end=not compact)
-		return text
 
 	# -------------------------------------------------------------------------
 	# TEXT OUTPUT COMMANDS
@@ -618,6 +1140,7 @@ class Formatter:
 
 	def writeText( self, text ):
 		result = self._result
+		text   = self.formatText(text)
 		if self.hasFlag(FORMAT_PRESERVE):
 			#print "APPEND ",repr(text)
 			result.append(text)
@@ -642,6 +1165,19 @@ class Formatter:
 					result.append(self.wrapText(text, len(result[-1])))
 				else:
 					result.append(text)
+
+	def formatText( self, text ):
+		"""Returns the given text properly formatted according to
+		this formatted configuration."""
+		if not self.hasFlag(FORMAT_PRESERVE):
+			if self.hasFlag(FORMAT_NORMALIZE):
+				text = self.normalizeText(text)
+			if self.hasFlag(FORMAT_STRIP):
+				text = self.stripText(text)
+			if not self.hasFlag(FORMAT_SINGLE_LINE):
+				compact = self.hasFlag(FORMAT_COMPACT)
+				text    = self.indentString(text, start=not compact, end=not compact)
+		return text
 
 	def endWriting( self ):
 		res = "".join(self._result)
@@ -922,522 +1458,6 @@ class Writer:
 			return modes[-1]
 		else:
 			return None
-
-# -----------------------------------------------------------------------------
-#
-# PARSER CLASS
-#
-# -----------------------------------------------------------------------------
-
-class Parser:
-	"""Implements a parser that will turn a Pamela document into an HTML
-	document, returned as a string.
-
-	The main methods that you should use are
-
-	- 'parseFile' to parse file identified by the given path
-	- 'parseString' to parse a string given as parameter
-
-	You can configure the parser by using the following methods:
-
-	- 'acceptTabsOnly', to tell that the parser will only accept tabs.
-	- 'acceptSpacesOnly', to tell that the parser will only accept spaces.
-	- 'acceptTabsAndSpaces', to tell that the parser will accept both tabs and
-	   spaces.
-	- 'tabsWidth', to specify the width of a tab in spaces, which is only used
-	   when the parser accepts both tabs and spaces.
-	"""
-
-	# NOTE: Does not seem to be used, deprecating it
-	# @classmethod
-	# def ExpandIncludes( cls, text=None, path=None ):
-	# 	lines  = []
-	# 	parser = cls()
-	# 	source_lines = None
-	# 	if text is None:
-	# 		with open(path) as f:
-	# 			source_lines = [ensure_unicode(l) for l in f.readlines()]
-	# 	else:
-	# 		ensure_unicode(text)
-	# 		source_lines = text.split("\n")
-	# 	parser._paths.append(path or ".")
-	# 	for line in source_lines:
-	# 		m = RE_INCLUDE.match(line)
-	# 		if m:
-	# 			indent, line = parser._getLineIndent(line)
-	# 			parser._parseInclude(m, indent, lambda l:lines.append(ensure_unicode(l) if isinstance(l, str) else l))
-	# 		else:
-	# 			lines.append(line + u"\n")
-	# 	return u"".join(lines)
-
-	def __init__( self ):
-		self._tabsOnly   = False
-		self._spacesOnly = False
-		self._tabsWidth  = 4
-		self._elementStack = []
-		self._writer = Writer()
-		self._formatter = Formatter()
-		self._paths     = []
-		self._defaults  = {}
-
-	def setDefaults( self, defaults ):
-		self._defaults = defaults
-		return self
-
-	def path( self ):
-		"""Returns the current path of the file being parsed, if any"""
-		if not self._paths or self._paths[-1] == "--":
-			return "."
-		else:
-			return self._paths[-1]
-
-	def indent( self ):
-		if self._elementStack:
-			return self._elementStack[-1][0]
-		else:
-			return 0
-
-	def parseFile( self, path ):
-		"""Parses the file with the given  path, and return the corresponding
-		HTML document."""
-		should_close = False
-		if path == "--":
-			f = sys.stdin
-		else:
-			# FIXME: File exists and is readable
-			f = open(path, "r")
-			should_close = True
-		self._paths.append(path)
-		self._writer.onDocumentStart()
-		for l in f.readlines():
-			self._parseLine(ensure_unicode(l))
-		if should_close: f.close()
-		result = self._formatter.format(self._writer.onDocumentEnd())
-		self._paths.pop()
-		return result
-
-	def parseString( self, text, path=None ):
-		"""Parses the given string and returns an HTML document."""
-		if path: self._paths.append(path)
-		try:
-			text = ensure_unicode(text)
-		except UnicodeEncodeError as e:
-			# FIXME: What should we do?
-			pass
-		self._writer.onDocumentStart()
-		for line in text.split("\n"):
-			self._parseLine(line + "\n")
-		res = self._formatter.format(self._writer.onDocumentEnd())
-		if path: self._paths.pop()
-		return res
-
-	def _isInEmbed( self, indent=None ):
-		"""Tells if the current element is an embed element (like
-		CSS,PHP,etc)"""
-		if not self._elementStack:
-			return False
-		elif indent is None:
-			return self._elementStack[-1][1] == T_EMBED
-		else:
-			return self._elementStack[-1][1] == T_EMBED and self._elementStack[-1][0] < indent
-
-	def _parseLine( self, line ):
-		"""Parses the given line of text.
-		This is an internal method that you should not really use directly."""
-		# FIXME: This function is WAY TOO BIG, it should be broken down in
-		# _parse<element>
-		original_line = line
-		indent, line = self._getLineIndent(line)
-		# First, we make sure we close the elements that may be outside of the
-		# scope of this
-		# FIXME: Empty lines may have an indent < than the current element they
-		# are bound to
-		is_empty       = RE_EMPTY.match(line)
-		if is_empty:
-			# FIXME: When you have an empty line followed by content which is
-			# text with same or greeater indent, the empty line  should be taken
-			# into account. Same for elements with greater indent.
-			if self._isInEmbed():
-				line_with_indent = "\n"
-				if len(line) > (self.indent()+4)/4:
-					line_with_indent = original_line[(self.indent()+4)/4:]
-				self._writer.onTextAdd(line_with_indent)
-				return
-			else:
-				return
-		is_comment     = RE_COMMENT.match(line)
-		if is_comment and not self._isInEmbed(indent):
-			# FIXME: Integrate this
-			return
-			return self._writer.onComment(line)
-		# Is it an include element (%include ...)
-		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
-			return
-		# Is it a macro element (%macro ...)
-		if self._parseMacro( RE_MACRO.match(original_line), indent ):
-			return
-		self._gotoParentElement(indent)
-		# Is the parent an embedded element ?
-		if self._isInEmbed(indent):
-			line_with_indent = original_line[int((self.indent()+4)/4):]
-			self._writer.onTextAdd(line_with_indent)
-			return
-		# Is it a declaration ?
-		is_declaration = RE_DECLARATION.match(line)
-		if is_declaration:
-			self._pushStack(indent, T_DECLARATION)
-			declared_name = is_declaration.group(1)
-			self._writer.onDeclarationStart(declared_name)
-			return
-		# Is it an element ?
-		is_element = RE_ELEMENT.match(line)
-		# It may be an inline element, like:
-		# <a(href=/about):about> | <a(href=/sitemap):sitemap>
-		if is_element:
-			at_index    = is_element.group().rfind("@")
-			paren_index = is_element.group().rfind(")")
-			is_embed    = (at_index > paren_index)
-			closing = line.find(">", is_element.end())
-			opening = line.find("<", is_element.end())
-			if closing == -1:
-				inline_element = False
-			elif opening == -1:
-				inline_element = True
-			elif closing < opening:
-				inline_element = True
-			else:
-				inline_element = False
-			if is_embed:
-				inline_element = False
-		else:
-			inline_element = False
-		if is_element and not inline_element:
-			# The element is an embedded element, we use this to make sure we
-			# don't interpret the content as Pamela
-			if is_embed:
-				language = is_element.group()[at_index+1:]
-				if language[-1] == ":":language = language[:-1]
-				self._pushStack(indent, T_EMBED, language)
-			else:
-				self._pushStack(indent, T_ELEMENT)
-			group  = is_element.group()[1:]
-			rest   = line[len(is_element.group()):]
-			name,attributes,embed, hints=self._parsePamelaElement(group)
-			# Element is a single line if it ends with ':'
-			self._writer.onElementStart(name, attributes, isInline=False)
-			if group[-1] == ":" and rest:
-				self._parseContentLine(rest)
-		else:
-			# Otherwise it's data
-			self._parseContentLine(line)
-
-	def _tokenize( self, text, escape="\"'" ):
-		res = []
-		o   = 0
-		end = len(text)
-		while o < end:
-			escape_index     = end + 1
-			escape_index_end = -1
-			escape_char      = None
-			# We look for the closest matching escape character
-			for char in escape:
-				# We find the occurence of the escape char
-				i = text.find(char,o)
-				# If it is there and closer to the current offset than
-				# the previous escape character
-				if i != -1 and  i < escape_index:
-					# We look for the end
-					j = text.find(char,i + 1)
-					# If there is an end, we assign it as the current escape
-					if j != -1:
-						escape_index     = i
-						escape_index_end = j
-						escape_char      = char
-			# If we did not find an escape char
-			if escape_char == None:
-				res.append(text[o:])
-				o = end
-			else:
-				if o < escape_index:
-					res.append(text[o:escape_index])
-				res.append(text[escape_index:escape_index_end+1])
-				o = escape_index_end+1
-		return res
-
-	def _parseIncludeSubstitutions( self, text ):
-		"""A simple parser that extract (key,value) from a string like
-		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
-		offset = 0
-		result = [] + self._defaults.items()
-		while offset < len(text):
-			equal  = text.find("=", offset)
-			assert equal >= 0, "Include subsitution without value: {0}".format(text)
-			name   = text[offset:equal]
-			offset = equal + 1
-			if offset == len(text):
-				value = ""
-			elif text[offset] in  '\'"':
-				# We test for quotes and escape it
-				quote = text[offset]
-				end_quote = text.find(quote, offset + 1)
-				while end_quote >= 0 and text[end_quote - 1] == "\\":
-					end_quote = text.find(quote, end_quote + 1)
-				value  = text[offset+1:end_quote].replace("\\" + quote, quote)
-				offset = end_quote + 1
-				if offset < len(text) and text[offset] == ",": offset += 1
-			else:
-				# Or we look for a comma
-				comma  = text.find(",", offset)
-				if comma < 0:
-					value  = text[offset:]
-					offset = len(text)
-				else:
-					value  = text[offset:comma]
-					offset = comma + 1
-			result.append((name.strip(), value))
-		return result
-
-	def _parseInclude( self, match, indent, parseLine=None ):
-		"""An include rule is expressed as follows
-		%include PATH {NAME=VAL,...} +.class...(name=val,name,val)
-		"""
-		if not match: return False
-		# FIXME: This could be written better
-		path = match.group(2).strip()
-		subs = None
-		# If there is a paren, we extract the replacement
-		lparen = path.rfind("{")
-		offset = 0
-		if lparen >= 0:
-			subs    = {}
-			rparen  = path.rfind("}")
-			if rparen > lparen:
-				for name, value in self._parseIncludeSubstitutions(path[lparen+1:rparen]):
-					value       = value.strip()
-					if value and value[0] in ["'", '"']: value = value[1:-1]
-					subs[name] = value
-				path = path[:lparen] + path[rparen+1:]
-		# FIXME: The + will be swallowed if after paren
-		plus = path.find("+")
-		if plus >= 0:
-			element = "div" + path[plus+1:].strip()
-			path    = path[:plus].strip()
-			_, attributes, _, _ = self._parsePamelaElement(element)
-			if self._writer:
-				self._writer.overrideAttributesForNextElement(attributes)
-		if path[0] in ['"',"'"]:
-			path = path[1:-1]
-		else:
-			path = path.strip()
-		# Now we load the file
-		local_dir  = os.path.dirname(os.path.abspath(os.path.normpath(self.path())))
-		local_path = os.path.normpath(os.path.join(local_dir, path))
-		if   os.path.exists(local_path):
-			path = local_path
-		elif os.path.exists(local_path + ".paml"):
-			path = local_path + ".paml"
-		elif os.path.exists(path):
-			path = path
-		elif os.path.exists(path + ".paml"):
-			path = path + ".paml"
-		if not os.path.exists(path):
-			error_line = "ERROR: File not found <code>%s</code>" % (local_path)
-			if parseLine:
-				parseLine(error_line)
-			else:
-				return self._writer.onTextAdd(error_line)
-		else:
-			self._paths.append(path)
-			with open(path,'rb') as f:
-				for l in f.readlines():
-					# FIXME: This does not work when I use tabs instead
-					l = ensure_unicode(l)
-					p = int(indent/4)
-					# We do the substituion
-					if subs: l = string.Template(l).safe_substitute(**subs)
-					(parseLine or self._parseLine) (p * "\t" + l)
-			self._paths.pop()
-		return True
-
-	def _parseMacro( self, match, indent, parseLine=None ):
-		if not match: return False
-		name   = match.group(2)[1:]
-		params = match.group(4)
-		macro  = Macro.Get(name)
-		assert macro, "Undefined macro: {0}".format(macro)
-		macro(self, params, indent)
-		return True
-
-	def _pushStack(self, indent, type, mode=None):
-		self._elementStack.append((indent, type))
-		self._writer.pushMode(mode)
-
-	def _popStack(self):
-		self._elementStack.pop()
-		self._writer.popMode()
-
-	def _parseContentLine( self, line ):
-		"""Parses a line that is data/text that is part of an element
-		content."""
-		offset = 0
-		# We look for elements in the content
-		while offset < len(line):
-			element = RE_INLINE.search(line, offset)
-			if not element:
-				break
-			closing = line.find(">", element.end())
-			# Elements must have a closing
-			if closing == -1:
-				raise Exception("Unclosed inline tag: '%s'" % (line))
-			# We prepend the text from the offset to the eleemnt
-			text = line[offset:element.start()]
-			if text:
-				self._writer.onTextAdd(text)
-			# And we append the element itself
-			group = element.group()[1:]
-			name,attributes,embed, hints=self._parsePamelaElement(group)
-			self._writer.onElementStart(name, attributes, isInline=True)
-			text = line[element.end():closing]
-			if text: self._writer.onTextAdd(text)
-			self._writer.onElementEnd()
-			offset = closing + 1
-		# We add the remaining text
-		if offset < len(line):
-			text = line[offset:]
-			# We remove the trainling EOL at the end of the line. This might not
-			# be the best way to do it, though.
-			if text and text[-1] == "\n": text = text[:-1] + " "
-			if text: self._writer.onTextAdd(text)
-
-	def _parsePamelaElement( self, element ):
-		"""Parses the declaration of a Pamela element, which is like the
-		following examples:
-
-		>	html
-		>	title:
-		>	body#main.body(onclick=load)|c:
-
-		basically, it is what lies between '<' and the ':' (or '\n'), which can
-		be summmed up as:
-
-		>	(#ID | NAME #ID?) .CLASS* ATTRIBUTES? |HINTS? :?
-
-		where attributes is a command-separated sequence of this, surrounded by
-		parens:
-
-		>	NAME=(VALUE|'VALUE'|"VALUE")
-
-		This function returns a triple (name, attributes, hints)
-		representing the parsed element. Attributes are stored as an ordered
-		list of couples '(name, value'), hints are given as a list of strings."""
-		original = element
-		if element[-1] == ":": element = element[:-1]
-		# We look for the attributes list
-		parens_start = element.find("(")
-		at_start     = element.rfind("@")
-		if parens_start != -1:
-			parens_end = element.rfind(")")
-			if at_start < parens_end: at_start = -1
-			attributes_list = element[parens_start+1:parens_end]
-			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
-			attributes = self._parsePamelaAttributes(attributes_list)
-			element = element[:parens_start]
-		else:
-			attributes = []
-		# Useful functions to manage attributes
-		def has_attribute( name, attributes ):
-			for a in attributes:
-				if a[0] == name: return a
-			return None
-		def set_attribute( name, value, attribtues ):
-			for a in attributes:
-				if a[0] == name:
-					a[1] = value
-					return
-			attributes.append([name,value])
-		def append_attribute( name, value, attributes, prepend=False ):
-			a = has_attribute(name, attributes)
-			if a:
-				if prepend:
-					a[1] = value + " " + a[1]
-				else:
-					a[1] = a[1] + " " + value
-			else:
-				set_attribute(name, value, attributes)
-		# We look for the classes
-		if at_start != -1:
-			embed = element[at_start+1:]
-			element = element[:at_start]
-		else:
-			embed = None
-		classes = element.split(".")
-		if len(classes) > 1:
-			element = classes[0]
-			classes = classes[1:]
-			classes = " ".join( classes)
-			append_attribute("class", classes, attributes, prepend=True)
-		else:
-			element = classes[0]
-		eid = element.split("#")
-		# FIXME: If attributes or ids are already defined, we should look for it
-		# and do something appropriate
-		if len(eid) > 1:
-			assert len(eid) == 2, "More than one id given: %s" % (original)
-			if has_attribute("id", attributes):
-				raise Exception("Id already given as element attribute")
-			attributes.insert(0,["id", eid[1]])
-			element = eid[0]
-		else:
-			element = eid[0]
-		# handle '::' syntax for namespaces
-		element = element.replace("::",":")
-		return (element, attributes, embed, [])
-
-	def _parsePamelaAttributes( self, attributes ):
-		"""Parses a string representing Pamela attributes and returns a list of
-		couples '[name, value]' representing the attributes."""
-		result = []
-		original = attributes
-		while attributes:
-			match  = RE_ATTRIBUTE.match(attributes)
-			assert match, "Given attributes are malformed: %s" % (attributes)
-			name  = match.group(1)
-			value = match.group(4)
-			# handles '::' syntax for namespaces
-			name = name.replace("::",":")
-			if value and value[0] == value[-1] and value[0] in ("'", '"'):
-				value = value[1:-1]
-			result.append([name, value])
-			attributes = attributes[match.end():]
-			if attributes:
-				assert attributes[0] == ",", "Attributes must be comma-separated: %s" % (attributes)
-				attributes = attributes[1:]
-				assert attributes, "Trailing comma with no remaining attributes: %s" % (original)
-		return result
-
-	def _gotoParentElement( self, currentIndent ):
-		"""Finds the parent element that has an identation lower than the given
-		'currentIndent'."""
-		while self._elementStack and self._elementStack[-1][0] >= currentIndent:
-			self._popStack()
-			self._writer.onElementEnd()
-
-	def _getLineIndent( self, line ):
-		"""Returns the line indentation as a number. It takes into account the
-		fact that tabs may be requried or not, and also takes into account the
-		'tabsWith' property."""
-		tabs = RE_LEADING_TAB.match(line)
-		spaces = RE_LEADING_SPC.match(line)
-		if self._tabsOnly and spaces:
-			raise Exception("Tabs are expected, your lines are indented with spaces")
-		if self._spacesOnly and tabs:
-			raise Exception("Spaces are expected, your lines are indented with tabs")
-		if tabs and len(tabs.group()) > 0:
-			return len(tabs.group()) * self._tabsWidth, line[len(tabs.group()):]
-		elif spaces and len(spaces.group()) > 0:
-			return len(spaces.group()), line[len(spaces.group()):]
-		else:
-			return 0, line
 
 # -----------------------------------------------------------------------------
 #
