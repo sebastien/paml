@@ -1047,9 +1047,12 @@ class Formatter:
 			source = u"".join(lines)
 			res    = ensure_unicode(texto.toHTML(source))
 			element.content = [Text(res)]
+		elif element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
+			for text in element.content:
+				if isinstance(text, Text):
+					text.content = text.content.replace("<", "&lt").replace(">", "&gt")
 		# If the element has any content, then we apply it
 		if element.content:
-			print "ELEMENT", element.flags
 			self.pushFlags(*self.getDefaults(element.name))
 			if element.isPI:
 				assert not attributes, "Processing instruction cannot have attributes"
