@@ -122,10 +122,10 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		# data
 		if not data and resolveData:
 			data = resolveData()
-		if temp_created:
-			os.unlink(path)
+		# if temp_created:
+		# 	os.unlink(path)
 		if not data and not allowEmpty:
-			raise Exception(error or "No data")
+			raise Exception(error or u"No data processing `{0}`".format(u" ".join(command)))
 		if cache is SIG_CACHE:
 			cache.set(path,cache_key,data)
 			assert cache.has(path, cache_key)
@@ -136,6 +136,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 	return engine.ensure_unicode(data)
 
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
+	text    = engine.ensure_unicode(text)
 	if os.path.isdir(path or "."):
 		parent_path  = path or "."
 	else:
@@ -166,7 +167,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 			temp_output = tempfile.mktemp()
 			path        = temp_output
 			with open(temp_output, "w") as f:
-				f.write(text)
+				f.write(text.encode("utf-8"))
 		temp_path = tempfile.mkdtemp()
 		norm_path = lambda _:os.path.relpath(_, temp_path)
 		if not os.path.exists(temp_path): os.mkdir(temp_path)
