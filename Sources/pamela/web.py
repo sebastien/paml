@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2015-12-07
+# Last mod.         :   2016-01-08
 # -----------------------------------------------------------------------------
 
-import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes
+import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
 from   pamela import engine
 import retro
 from   retro.contrib.localfiles import LocalFiles
@@ -22,6 +22,7 @@ PROCESSORS      = {}
 COMMANDS        = None
 NOBRACKETS      = None
 PAMELA_DEFAULTS = {}
+LOCKS           = {}
 PANDOC_HEADER   = """
 <!DOCTYPE html>
 <html><head>
@@ -52,6 +53,24 @@ try:
 except:
 	HAS_TEMPLATING = None
 
+
+def locked(f):
+	"""Ensures that the wrapped function is not executed concurrently."""
+	def wrapper(*a, **kwa):
+		name = f.__name__
+		if name not in LOCKS: LOCKS[name] = threading.Lock()
+		lock = LOCKS[name] ; lock.acquire()
+		try:
+			res = f(*a, **kwa)
+			lock.release()
+			return res
+		except Exception as e:
+			lock.release()
+			return None
+	functools.update_wrapper(wrapper, f)
+	return wrapper
+
+@locked
 def processPamela( pamelaText, path, request=None ):
 	parser = engine.Parser()
 	parser.setDefaults(PAMELA_DEFAULTS)
@@ -135,6 +154,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 	assert data is not None, "pamela.web._processCommand: None returned by {0}".format(command)
 	return engine.ensure_unicode(data)
 
+
+@locked
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	text    = engine.ensure_unicode(text)
 	if os.path.isdir(path or "."):
@@ -228,6 +249,8 @@ def processPandoc( text, path, request=None, cache=True ):
 	]
 	return PANDOC_HEADER + _processCommand(command, text, path, cache) + PANDOC_FOOTER, "text/html"
 
+
+@locked
 def processPythonicCSS( text, path, request=None, cache=True ):
 	# NOTE: Disabled until memory leaks are fixes
 	# import pythoniccss
