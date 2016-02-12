@@ -13,7 +13,8 @@ import os, sys, re, string, json, time, glob, tempfile
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
-	import reporter as logging
+	import reporter
+	logging = reporter.bind("pamela")
 except:
 	import logging
 

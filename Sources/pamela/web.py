@@ -137,6 +137,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		data    = cmd.stdout.read()
 		error   = cmd.stderr.read()
 		cmd.wait()
+		# DEBUG:
 		# If we have a resolveData attribute, we use it to resolve/correct the
 		# data
 		if not data and resolveData:
@@ -252,7 +253,7 @@ def processPandoc( text, path, request=None, cache=True ):
 
 @locked
 def processPythonicCSS( text, path, request=None, cache=True ):
-	# NOTE: Disabled until memory leaks are fixes
+	# NOTE: Disabled until memory leaks are fixed
 	# import pythoniccss
 	# result = pythoniccss.convert(text)
 	# return result, "text/css"
@@ -260,7 +261,7 @@ def processPythonicCSS( text, path, request=None, cache=True ):
 		getCommands()["pythoniccss"],
 		path
 	]
-	return _processCommand(command, text, path, cache), "text/css"
+	return _processCommand(command, text, path, cache, allowEmpty=False), "text/css"
 
 def processNobrackets( text, path, request=None, cache=True ):
 	"""Processes the given `text` (that might come from the given path)
@@ -353,7 +354,6 @@ def run( arguments, options={} ):
 	proxies = [x[len("proxy:"):] for x in [x for x in arguments if x.startswith("proxy:")]]
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
-
 	#app.onRequest(beforeRequest)
 	retro.command(
 		arguments,
