@@ -72,6 +72,8 @@ T_ELEMENT      = "EL"
 T_DECLARATION  = "DC"
 T_EMBED        = "EM"
 
+TAB_WIDTH      = 4
+
 # -----------------------------------------------------------------------------
 #
 # FORMATTING
@@ -200,11 +202,12 @@ class Macro:
 		"""A helper function that is used by `Require{CSS,JS}`, iterates
 		on the hte given parameters, and injecting the template
 		when files are found matching the patterns."""
+		indent = "\t" * (indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
 		for f in params.split(","):
 			f = f.strip()
 			p = Macro.Require(f, patterns)
 			if p:
-				parser._parseLine(template.format(indent * "\t", p))
+				parser._parseLine(template.format(indent, p))
 
 	def RequireCSS( parser, params, indent ):
 		"""The `require:css(name,...)` macro looks for files in the
@@ -354,7 +357,7 @@ class Parser:
 	def __init__( self ):
 		self._tabsOnly   = False
 		self._spacesOnly = False
-		self._tabsWidth  = 4
+		self._tabsWidth  = TAB_WIDTH
 		self._elementStack = []
 		self._writer = Writer()
 		self._formatter = Formatter()
@@ -645,6 +648,7 @@ class Parser:
 		name   = match.group(2)[1:]
 		params = match.group(4)
 		macro  = Macro.Get(name)
+		print "INDENT", indent
 		assert macro, "Undefined macro: {0}".format(macro)
 		macro(self, params, indent)
 		return True
@@ -816,7 +820,7 @@ class Parser:
 		"""Returns the line indentation as a number. It takes into account the
 		fact that tabs may be requried or not, and also takes into account the
 		'tabsWith' property."""
-		tabs = RE_LEADING_TAB.match(line)
+		tabs   = RE_LEADING_TAB.match(line)
 		spaces = RE_LEADING_SPC.match(line)
 		if self._tabsOnly and spaces:
 			raise Exception("Tabs are expected, your lines are indented with spaces")
