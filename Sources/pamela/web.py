@@ -369,8 +369,8 @@ def run( arguments, options={} ):
 
 if __name__ == "__main__":
 	options = {}
-	if hasattr(engine.logging, "REPORTER"):
-		engine.logging.register(engine.logging.StderrReporter())
+	if hasattr(engine, "reporter") and getattr(engine, "reporter"):
+		engine.reporter.register(engine.reporter.StderrReporter())
 	for a in sys.argv[1:]:
 		a=a.split("=",1)
 		if len(a) == 1: v=True
