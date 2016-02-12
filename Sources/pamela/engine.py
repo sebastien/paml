@@ -648,7 +648,6 @@ class Parser:
 		name   = match.group(2)[1:]
 		params = match.group(4)
 		macro  = Macro.Get(name)
-		print "INDENT", indent
 		assert macro, "Undefined macro: {0}".format(macro)
 		macro(self, params, indent)
 		return True
