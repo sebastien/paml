@@ -11,10 +11,13 @@
 
 import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
 from   pamela import engine
-import retro
-from   retro.contrib.localfiles import LocalFiles
-from   retro.contrib.cache      import SignatureCache, MemoryCache
-from   retro.contrib            import proxy
+try:
+	import retro
+	from   retro.contrib.localfiles import LocalFiles
+	from   retro.contrib.cache      import SignatureCache, MemoryCache
+	from   retro.contrib            import proxy
+except ImportError as e:
+	pass
 
 SIG_CACHE       = SignatureCache ()
 MEMORY_CACHE    = MemoryCache ()
@@ -70,7 +73,6 @@ def locked(f):
 	functools.update_wrapper(wrapper, f)
 	return wrapper
 
-@locked
 def processPamela( pamelaText, path, request=None ):
 	parser = engine.Parser()
 	parser.setDefaults(PAMELA_DEFAULTS)
@@ -251,7 +253,6 @@ def processPandoc( text, path, request=None, cache=True ):
 	return PANDOC_HEADER + _processCommand(command, text, path, cache) + PANDOC_FOOTER, "text/html"
 
 
-@locked
 def processPythonicCSS( text, path, request=None, cache=True ):
 	# NOTE: Disabled until memory leaks are fixed
 	# import pythoniccss
@@ -369,8 +370,6 @@ def run( arguments, options={} ):
 
 if __name__ == "__main__":
 	options = {}
-	if hasattr(engine, "reporter") and getattr(engine, "reporter"):
-		engine.reporter.register(engine.reporter.StderrReporter())
 	for a in sys.argv[1:]:
 		a=a.split("=",1)
 		if len(a) == 1: v=True

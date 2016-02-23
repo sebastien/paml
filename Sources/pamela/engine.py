@@ -1497,8 +1497,6 @@ def run( arguments, input=None ):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	if hasattr(logging, "IS_REPORTER"):
-		logging.register(logging.StderrReporter())
 	sys.stdout.write( run(sys.argv[1:]).encode("utf-8") )
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
