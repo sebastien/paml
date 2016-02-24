@@ -997,7 +997,7 @@ class Formatter:
 			source = u"".join(lines)
 			t = time.time()
 			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
-			logging.info("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
@@ -1005,7 +1005,7 @@ class Formatter:
 			source = u"".join(lines)
 			t = time.time()
 			res, _ = pamela.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
-			logging.info("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode in ("typescript", "ts"):
 			lines = element.contentAsLines()
@@ -1013,7 +1013,7 @@ class Formatter:
 			source = u"".join(lines)
 			t = time.time()
 			res, _ = pamela.web.processTypeScript(source, "", cache=self.useProcessCacheFalse)
-			logging.info("Parsed TypeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed TypeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode  in ("clevercss", "ccss"):
 			lines = element.contentAsLines()
@@ -1021,7 +1021,7 @@ class Formatter:
 			source = u"".join(lines)
 			t = time.time()
 			res, _ = pamela.web.processCleverCSS(source, ".")
-			logging.info("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode  in ("pythoniccss", "pcss"):
 			lines = element.contentAsLines()
@@ -1029,7 +1029,7 @@ class Formatter:
 			source = u"".join(lines)
 			t = time.time()
 			res, _ = pamela.web.processPythonicCSS(source, ".")
-			logging.info("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode and element.mode.endswith("nobrackets"):
 			lines = element.contentAsLines()
@@ -1043,7 +1043,7 @@ class Formatter:
 			with open(p, "w") as f: f.write(source)
 			res, _ = pamela.web.processNobrackets(source, p)
 			if os.path.exists(p): os.unlink(p)
-			logging.info("Parsed Nobrackets: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			logging.trace("Parsed Nobrackets: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode == "texto":
 			lines = element.contentAsLines()

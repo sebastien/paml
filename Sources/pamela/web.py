@@ -69,6 +69,7 @@ def locked(f):
 			return res
 		except Exception as e:
 			lock.release()
+			raise e
 			return None
 	functools.update_wrapper(wrapper, f)
 	return wrapper
@@ -156,7 +157,6 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			assert cache.has(cache_key) == data
 	assert data is not None, "pamela.web._processCommand: None returned by {0}".format(command)
 	return engine.ensure_unicode(data)
-
 
 @locked
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
