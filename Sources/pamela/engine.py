@@ -1484,7 +1484,7 @@ def run( arguments, input=None ):
 	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js"))
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
-	env       = dict(_.split("=",1) for _ in args.var)
+	env       = dict(_.split("=",1) for _ in args.var or ())
 	formatter = JSFormatter() if args.format == "js" else HTMLFormatter()
 	parser    = Parser(formatter=formatter, defaults=env)
 	return parser.parseFile(args.file or "--")
