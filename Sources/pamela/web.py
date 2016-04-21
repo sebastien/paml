@@ -344,6 +344,13 @@ def beforeRequest( request ):
 	pass
 
 def run( arguments, options={} ):
+	import argparse
+	p = argparse.ArgumentParser(description="Starts a web server that translates PAML files")
+	p.add_argument("values",  type=str, nargs="*")
+	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
+	args      = p.parse_args(arguments)
+	options.update(dict(_.split("=",1) for _ in args.var))
+	options.update(dict(_.split("=",1) for _ in args.values if not _.startswith("proxy:")))
 	# We can load defaults. This should be moved to a dedicated option.
 	global PAMELA_DEFAULTS
 	defaults_path = ".pamela-defaults"
@@ -352,12 +359,12 @@ def run( arguments, options={} ):
 			PAMELA_DEFAULTS = json.load(f)
 	files   = getLocalFiles()
 	comps   = [files]
-	proxies = [x[len("proxy:"):] for x in [x for x in arguments if x.startswith("proxy:")]]
+	proxies = [x[len("proxy:"):] for x in [x for x in args.values if x.startswith("proxy:")]]
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
 	#app.onRequest(beforeRequest)
 	retro.command(
-		arguments,
+		[_ for _ in args.values],
 		app      = app,
 		port     = int(options.get("port") or retro.DEFAULT_PORT)
 	)
@@ -370,11 +377,11 @@ def run( arguments, options={} ):
 
 if __name__ == "__main__":
 	options = {}
-	for a in sys.argv[1:]:
-		a=a.split("=",1)
-		if len(a) == 1: v=True
-		else: v=a[1];a=a[0]
-		options[a.lower()] = v
+	#for a in sys.argv[1:]:
+	#	a=a.split("=",1)
+	#	if len(a) == 1: v=True
+	#	else: v=a[1];a=a[0]
+	#	options[a.lower()] = v
 	run(sys.argv[1:], options)
 
 # EOF - vim: tw=80 ts=4 sw=4 noet
