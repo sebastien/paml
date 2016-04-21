@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   07-Dec-2015
+# Last mod.         :   21-Apr-2016
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json, time, glob, tempfile
+import os, sys, re, string, json, time, glob, tempfile, argparse
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
@@ -18,7 +18,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.7.0"
+__version__    = "0.8.0"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -355,15 +355,15 @@ class Parser:
 	# 			lines.append(line + u"\n")
 	# 	return u"".join(lines)
 
-	def __init__( self ):
+	def __init__( self, formatter=None, defaults=None ):
 		self._tabsOnly   = False
 		self._spacesOnly = False
 		self._tabsWidth  = TAB_WIDTH
 		self._elementStack = []
 		self._writer = Writer()
-		self._formatter = Formatter()
+		self._formatter = formatter or HTMLFormatter()
 		self._paths     = []
-		self._defaults  = {}
+		self._defaults  = defaults or {}
 
 	def setDefaults( self, defaults ):
 		self._defaults = defaults
@@ -841,7 +841,7 @@ class Parser:
 
 RE_SPACES = re.compile("\s")
 
-class Formatter:
+class HTMLFormatter:
 	"""Formats the elements of the Pamela object model. A formatter really acts
 	as a state machine, and keeps track of the various formatting hints bound to
 	the Pamela XML/HTML elements to render the document in the most appropriate
@@ -1285,7 +1285,7 @@ class Formatter:
 #
 # -----------------------------------------------------------------------------
 
-class JSHTMLFormatter( Formatter ):
+class JSFormatter( HTMLFormatter ):
 	"""Formats the given Pamela document to a JavaScript source code
 	using the 'html.js' markup file."""
 
@@ -1475,21 +1475,19 @@ class Writer:
 
 def parse( text, path=None, format="html" ):
 	parser = Parser()
-	if format == "js": parser._formatter = JSHTMLFormatter()
+	if format == "js": parser._formatter = JSFormatter()
 	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):
-	parser   = Parser()
-	if not arguments:
-		input_file = "--"
-	elif arguments[0] == "--to-html":
-		input_file = arguments[1]
-	elif arguments[0] == "--to-js":
-		parser._formatter = JSHTMLFormatter()
-		input_file = arguments[1]
-	else:
-		input_file = arguments[0]
-	return parser.parseFile(input_file)
+	p = argparse.ArgumentParser(description="Processes PAML files")
+	p.add_argument("file",  type=str, help="File to process", nargs="?")
+	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js"))
+	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
+	args      = p.parse_args(arguments)
+	env       = dict(_.split("=",1) for _ in args.var)
+	formatter = JSFormatter() if args.format == "js" else HTMLFormatter()
+	parser    = Parser(formatter=formatter, defaults=env)
+	return parser.parseFile(args.file or "--")
 
 # -----------------------------------------------------------------------------
 #
