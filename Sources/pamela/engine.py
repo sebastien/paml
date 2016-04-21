@@ -119,7 +119,8 @@ HTML_EXCEPTIONS = {
 	"links":dict(NO_CLOSING=True),
 	"br"   :dict(NO_CLOSING=True),
 	"img"  :dict(NO_CLOSING=True),
-	"path" :dict(NO_CLOSING=True),
+	# FIXME: No idea why there was a no closing, but this is wrong
+	#"path" :dict(NO_CLOSING=True),
 	"ol":{
 		"NOT_EMPTY":" "
 	},
