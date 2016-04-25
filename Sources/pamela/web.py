@@ -349,8 +349,8 @@ def run( arguments, options={} ):
 	p.add_argument("values",  type=str, nargs="*")
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
-	options.update(dict(_.split("=",1) for _ in args.var))
-	options.update(dict(_.split("=",1) for _ in args.values if not _.startswith("proxy:")))
+	options.update(dict(_.split("=",1) for _ in args.var or ""))
+	options.update(dict(_.split("=",1) for _ in args.values or "" if not _.startswith("proxy:")))
 	# We can load defaults. This should be moved to a dedicated option.
 	global PAMELA_DEFAULTS
 	defaults_path = ".pamela-defaults"
