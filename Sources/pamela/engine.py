@@ -208,6 +208,8 @@ class Macro:
 			f = f.strip()
 			p = Macro.Require(f, patterns)
 			if p:
+				# We make the path relative if there file has a different path
+				if parser._paths: p = os.path.relpath(p, parser._paths[-1])
 				parser._parseLine(template.format(indent, p))
 
 	def RequireCSS( parser, params, indent ):
