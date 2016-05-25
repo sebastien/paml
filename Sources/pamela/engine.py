@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   21-Apr-2016
+# Last mod.         :   25-May-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse
@@ -1057,6 +1057,12 @@ class HTMLFormatter:
 			import texto
 			source = u"".join(lines)
 			res    = ensure_unicode(texto.toHTML(source))
+			element.content = [Text(res)]
+		elif element.mode == "hjson":
+			lines = element.contentAsLines()
+			import hjson
+			source = u"".join(lines)
+			res    = ensure_unicode(hjson.dumpsJSON(hjson.loads(source)))
 			element.content = [Text(res)]
 		elif element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
 			for text in element.content:
