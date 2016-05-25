@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-01-08
+# Last mod.         :   2016-05-25
 # -----------------------------------------------------------------------------
 
 import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
@@ -47,6 +47,7 @@ def getCommands():
 			pandoc      = os.environ.get("PANDOC",      "pandoc"),
 			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
 			babel       = os.environ.get("BABEL",       "babel"),
+			hjson       = os.environ.get("HJSON",       "hjson"),
 		)
 	return COMMANDS
 
@@ -264,6 +265,12 @@ def processPythonicCSS( text, path, request=None, cache=True ):
 	]
 	return _processCommand(command, text, path, cache, allowEmpty=False), "text/css"
 
+def processHJSON( text, path, request=None, cache=True ):
+	# NOTE: Disabled until memory leaks are fixed
+	import hjson
+	result = hjson.loads(text)
+	return hjson.dumpsJSON(result), "application/json"
+
 def processNobrackets( text, path, request=None, cache=True ):
 	"""Processes the given `text` (that might come from the given path)
 	through nobrackets. Nobrackets will in turn invoke sub-processors
@@ -328,6 +335,7 @@ def getProcessors():
 			"js6"   : processBabelJS,
 			"ccss"  : processCleverCSS,
 			"coffee": processCoffeeScript,
+			"hjson" : processHJSON,
 			"ts"    : processTypeScript,
 			"pcss"  : processPythonicCSS,
 			"md"    : processPandoc,
