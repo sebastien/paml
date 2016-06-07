@@ -1,11 +1,13 @@
-# PROBLEM:
-# Some inline tags were displayed as
-# <ahref="/sitemap">sitemap</a> 
-# and this was related to the wrap function
-<html
-	<head
-		<title:Ivy - Main page
-	<body
-		<div#header
-			<a(href=/about):about> | <a(href=/sitemap):sitemap> 
-			<div.search:<input.search(type=text,size=20)><input(type=button,value=Search)>
+<header#Header
+	<section.Connection
+		<h1.logo:artnet
+		<p.FIXME
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id
+			libero diam, vitae hendrerit dui. Suspendisse ullamcorper quam nec
+			nunc blandit posuere.
+		<form
+			<input.in(name=username,type=text,data-label="${T:en=User name,fr=Nom d'utilisateur}")
+			<input.in(name=password,type=password,data-label="${T:en=Password,fr=Mot de passe")
+		#	<a.internal(href=#forgotpassword):${T:en=Forgot your password,fr=Mot de passe oublié}
+			<button.do.small(data-action=connect)
+				<span:Connection &rarr;

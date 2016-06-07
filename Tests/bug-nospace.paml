@@ -1,0 +1,6 @@
+<html
+	<body
+		<p
+			Here is an example of VAS code using <strong:space>,
+			<strong:axis>, <strong:data>, <strong:map>, <strong:disc>
+			and <strong:label> directives.
