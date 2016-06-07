@@ -136,11 +136,24 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			command = command[:-1] + [path]
 		else:
 			temp_created = False
-		cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE,
-				stderr=subprocess.PIPE, cwd=cwd)
-		data    = cmd.stdout.read()
-		error   = cmd.stderr.read()
-		cmd.wait()
+		# FIXME: Honestly, I have so many problems with popen it's unbelievable.
+		# I sometimes get sugar to freeze without any reason. I'm keeping the
+		# following snipped for reference of what not to do.
+		# ---
+		# cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE,
+		# 		stderr=subprocess.PIPE, cwd=cwd)
+		# data    = cmd.stdout.read()
+		# error   = cmd.stderr.read()
+		# print ("  data",  repr(data))
+		# print ("  error", repr(error))
+		# print ("waiting...")
+		# cmd.wait()
+		# ---
+		# Here the `shell` means single-line comman,d
+		p  = subprocess.Popen(" ".join(command), shell=True,
+				stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True,
+				cwd=cwd)
+		data, error = p.communicate()
 		# DEBUG:
 		# If we have a resolveData attribute, we use it to resolve/correct the
 		# data
