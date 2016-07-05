@@ -239,25 +239,35 @@ def processBabelJS( text, path, cache=True ):
 	return _processCommand(command, text, path, cache), "text/javascript"
 
 def processTypeScript( text, path, request=None, cache=True ):
-	temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
-	command = [
-		getCommands()["typescript"], "--outFile", temp_path,
-		path
-	]
-	def read_file():
+	timestamp = has_changed = data = None
+	cache, is_same, data, cache_key = cacheGet( text, path, cache)
+	if (not is_same) or (not cache):
+		# We get the process through `tsc`
+		temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
+		command = [
+			getCommands()["typescript"], "--outFile", temp_path, "--module", "amd", path
+		]
+		def read_file():
+			if os.path.exists(temp_path):
+				with file(temp_path) as f:
+					return f.read()
+			return None
+		# We bypass the cache
+		v    = _processCommand(command, text, path, cache=None, resolveData=read_file)
+		data = None
+		# NOTE: TypeScript does not support output to stdout
 		if os.path.exists(temp_path):
 			with file(temp_path) as f:
-				return f.read()
-		return None
-	# NOTE: We bypass caching for now
-	v = _processCommand(command, text, path, cache=True, resolveData=read_file)
-	t = None
-	# NOTE: TypeScript does not support output to stdout
-	if os.path.exists(temp_path):
-		with file(temp_path) as f:
-			t = f.read()
-		os.unlink(temp_path)
-	return t,"text/javascript"
+				data = f.read()
+			os.unlink(temp_path)
+		# Now we retrieve the cache
+		if cache is SIG_CACHE:
+			cache.set(path,cache_key,data)
+			assert cache.has(path, cache_key)
+		elif cache is MEMORY_CACHE:
+			cache.set(cache_key,data)
+			assert cache.has(cache_key) == data
+	return data,"text/javascript"
 
 def processPandoc( text, path, request=None, cache=True ):
 	command = [
