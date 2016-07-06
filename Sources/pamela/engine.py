@@ -64,6 +64,7 @@ RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
 RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_MACRO       = re.compile("^(\s)*(@\w+(:\w+)?)\s*\(([^\)]+)\)\s*$")
 RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
+RE_PI          = re.compile("^(\s)*\<\?.+\?\>\s*$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
@@ -461,6 +462,10 @@ class Parser:
 			# FIXME: Integrate this
 			return
 			return self._writer.onComment(line)
+		is_pi = RE_PI.match(line)
+		if is_pi:
+			self._writer.onTextAdd(line)
+			return
 		# Is it an include element (%include ...)
 		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
 			return

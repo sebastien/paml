@@ -253,13 +253,18 @@ def processTypeScript( text, path, request=None, cache=True ):
 					return f.read()
 			return None
 		# We bypass the cache
-		v    = _processCommand(command, text, path, cache=None, resolveData=read_file)
-		data = None
+		error = _processCommand(command, text, path, cache=None, resolveData=read_file)
+		data  = None
+		# We don't expect to have an error there
+		# if error.strip():
+		# 	return "<html><body><pre>%s</pre></body></html>".format(error), "text/html"
 		# NOTE: TypeScript does not support output to stdout
 		if os.path.exists(temp_path):
 			with file(temp_path) as f:
 				data = f.read()
 			os.unlink(temp_path)
+		if error and error != data:
+			data = "\n//\t".join(["// ERROR: {0}\n//".format(" ".join(command))] + error.split("\n")) + data
 		# Now we retrieve the cache
 		if cache is SIG_CACHE:
 			cache.set(path,cache_key,data)
@@ -366,10 +371,21 @@ def getProcessors():
 		}
 	return PROCESSORS
 
+def resolveFile( component, request, path ):
+	"""A custom path resolution function that will alias `.ts.js` files
+	to `.ts` files."""
+	p = component._resolvePath(path)
+	if not os.path.exists(p):
+		if p.endswith(".ts.js"):
+			return p[0:-3]
+		elif p.endswith(".js"):
+			return p[0:-3] + ".ts"
+	return p
+
 def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
-	return LocalFiles(root=root,processors=getProcessors(),optsuffix=[".paml",".html"], lastModified=False)
+	return LocalFiles(root=root,processors=getProcessors(),resolver=resolveFile,optsuffix=[".paml",".html"], lastModified=False)
 
 def beforeRequest( request ):
 	pass
@@ -402,7 +418,7 @@ def run( arguments, options={} ):
 
 # -----------------------------------------------------------------------------
 #
-# Main
+# MAIN
 #
 # -----------------------------------------------------------------------------
 
