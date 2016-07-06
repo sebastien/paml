@@ -101,6 +101,10 @@ def processPamela( pamelaText, path, request=None ):
 		result = parser.parseString(pamelaText, path)
 		return result, "text/html"
 
+def processPamelaXML( pamelaText, path, request=None ):
+	result, type = processPamela( pamelaText, path, request )
+	return result, "text/xml" if type == "text/html" else type
+
 def processCleverCSS( text, path, request=None ):
 	import clevercss
 	result = clevercss.convert(text)
@@ -358,16 +362,18 @@ def getProcessors():
 	global PROCESSORS
 	if not PROCESSORS:
 		PROCESSORS = {
-			"paml"  : processPamela,
-			"sjs"   : processSugar,
-			"js6"   : processBabelJS,
-			"ccss"  : processCleverCSS,
-			"coffee": processCoffeeScript,
-			"hjson" : processHJSON,
-			"ts"    : processTypeScript,
-			"pcss"  : processPythonicCSS,
-			"md"    : processPandoc,
-			"nb"    : processNobrackets,
+			"xml.paml" : processPamelaXML,
+			"xsl.paml" : processPamelaXML,
+			"paml"     : processPamela,
+			"sjs"      : processSugar,
+			"js6"      : processBabelJS,
+			"ccss"     : processCleverCSS,
+			"coffee"   : processCoffeeScript,
+			"hjson"    : processHJSON,
+			"ts"       : processTypeScript,
+			"pcss"     : processPythonicCSS,
+			"md"       : processPandoc,
+			"nb"       : processNobrackets,
 		}
 	return PROCESSORS
 
@@ -378,8 +384,10 @@ def resolveFile( component, request, path ):
 	if not os.path.exists(p):
 		if p.endswith(".ts.js"):
 			return p[0:-3]
-		elif p.endswith(".js"):
+		if p.endswith(".js"):
 			return p[0:-3] + ".ts"
+		if p.endswith(".xml") or p.endswith(".xsl") and os.path.exists(p + ".paml"):
+			return p + ".paml"
 	return p
 
 def getLocalFiles(root=""):
