@@ -268,7 +268,7 @@ def processTypeScript( text, path, request=None, cache=True ):
 				data = f.read()
 			os.unlink(temp_path)
 		if error and error != data:
-			data = "\n//\t".join(["// ERROR: {0}\n//".format(" ".join(command))] + error.split("\n")) + data
+			data = "\n//\t".join(["// ERROR: {0}\n//".format(" ".join(command))] + error.split("\n")) + "\n" + data
 		# Now we retrieve the cache
 		if cache is SIG_CACHE:
 			cache.set(path,cache_key,data)
@@ -385,7 +385,10 @@ def resolveFile( component, request, path ):
 		if p.endswith(".ts.js"):
 			return p[0:-3]
 		if p.endswith(".js"):
-			return p[0:-3] + ".ts"
+			_ = p[0:-3]
+			for e in (".ts", ".sjs"):
+				if os.path.exists(_ + e):
+					return _ + e
 		if p.endswith(".xml") or p.endswith(".xsl") and os.path.exists(p + ".paml"):
 			return p + ".paml"
 	return p
