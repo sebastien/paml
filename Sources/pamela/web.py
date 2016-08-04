@@ -367,6 +367,7 @@ def getProcessors():
 			"paml"     : processPamela,
 			"sjs"      : processSugar,
 			"js6"      : processBabelJS,
+			"es6.js"   : processBabelJS,
 			"ccss"     : processCleverCSS,
 			"coffee"   : processCoffeeScript,
 			"hjson"    : processHJSON,
@@ -382,6 +383,7 @@ def resolveFile( component, request, path ):
 	to `.ts` files."""
 	p = component._resolvePath(path)
 	if not os.path.exists(p):
+		name = p.rsplit(".", 1)[0]
 		if p.endswith(".ts.js"):
 			return p[0:-3]
 		if p.endswith(".js"):
@@ -389,8 +391,12 @@ def resolveFile( component, request, path ):
 			for e in (".ts", ".sjs"):
 				if os.path.exists(_ + e):
 					return _ + e
+		# Automatically adds paml suffix
 		if p.endswith(".xml") or p.endswith(".xsl") and os.path.exists(p + ".paml"):
 			return p + ".paml"
+		# We alias .hsjon to .json if there is no .json
+		if p.endswith(".json") and os.path.exists(name + ".hjson"):
+			return name + ".hjson"
 	return p
 
 def getLocalFiles(root=""):
