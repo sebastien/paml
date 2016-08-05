@@ -391,6 +391,8 @@ def resolveFile( component, request, path ):
 			for e in (".ts", ".sjs"):
 				if os.path.exists(_ + e):
 					return _ + e
+		if p.endswith(".css") and os.path.exists(name + ".pcss"):
+			return name + ".pcss"
 		# Automatically adds paml suffix
 		if p.endswith(".xml") or p.endswith(".xsl") and os.path.exists(p + ".paml"):
 			return p + ".paml"
@@ -402,7 +404,7 @@ def resolveFile( component, request, path ):
 def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
-	return LocalFiles(root=root,processors=getProcessors(),resolver=resolveFile,optsuffix=[".paml",".html"], lastModified=False)
+	return LocalFiles(root=root,processors=getProcessors(),resolver=resolveFile,optsuffix=[".paml",".html"], lastModified=False, writable=True)
 
 def beforeRequest( request ):
 	pass
