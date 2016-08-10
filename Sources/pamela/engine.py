@@ -68,6 +68,7 @@ RE_PI          = re.compile("^(\s)*\<\?.+\?\>\s*$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
+RE_PROCESSING_INSTRUCTION = re.compile("^\s*\<\?.+\?\>\s*$")
 
 T_ELEMENT      = "EL"
 T_DECLARATION  = "DC"
@@ -646,6 +647,7 @@ class Parser:
 			self._paths.append(path)
 			with open(path,'rb') as f:
 				for l in f.readlines():
+					if RE_PROCESSING_INSTRUCTION.match(l): continue
 					# FIXME: This does not work when I use tabs instead
 					l = ensure_unicode(l)
 					p = int(indent/4)
