@@ -30,9 +30,9 @@ PANDOC_HEADER   = """
 <!DOCTYPE html>
 <html><head>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="http://ffctn.com/doc/css/base.css" />
-<link rel="stylesheet" href="http://ffctn.com/doc/css/typography.css" />
-<link rel="stylesheet" href="http://ffctn.com/doc/css/texto.css" />
+<link rel="stylesheet" href="http://ffctn.com/l/css/base.css" />
+<link rel="stylesheet" href="http://ffctn.com/l/css/typography.css" />
+<link rel="stylesheet" href="http://ffctn.com/l/css/texto.css" />
 </head><body class='use-base use-texto'><div class='document'>
 """
 PANDOC_FOOTER = "</div></body></html>"

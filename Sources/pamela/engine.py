@@ -906,7 +906,7 @@ class HTMLFormatter:
 	def setFlag( self, flag ):
 		"""Sets the given flag."""
 		if flag == FORMAT_SINGLE_LINE:
-			self.setFlags(FORMAT_STRIP, FORMAT_NORMALIZE)
+			self.setFlags(FORMAT_NORMALIZE)
 		if flag not in self.flags[-1]:
 			self.flags[-1].append(flag)
 
@@ -993,6 +993,7 @@ class HTMLFormatter:
 			return True
 
 	# FIXME: This should probably be moved to the parser
+	# FIXME: Yes, it should DEFINITELY be moved above
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
@@ -1243,6 +1244,7 @@ class HTMLFormatter:
 		words = []
 		for word in self._iterateOnWords(text):
 			words.append(word)
+		print ("WRAPPED", text, words)
 		return " ".join(words)
 
 	# -------------------------------------------------------------------------
@@ -1343,6 +1345,7 @@ class JSFormatter( HTMLFormatter ):
 #
 # -----------------------------------------------------------------------------
 
+# TODO: rename AbstractWriter
 class Writer:
 	"""The Writer class implements a simple SAX-like interface to create the
 	resulting HTML/XML document. This is not API-compatible with SAX because
