@@ -1244,7 +1244,6 @@ class HTMLFormatter:
 		words = []
 		for word in self._iterateOnWords(text):
 			words.append(word)
-		print ("WRAPPED", text, words)
 		return " ".join(words)
 
 	# -------------------------------------------------------------------------
