@@ -388,7 +388,7 @@ def resolveFile( component, request, path ):
 			return p[0:-3]
 		if p.endswith(".js"):
 			_ = p[0:-3]
-			for e in (".ts", ".sjs"):
+			for e in (".ts", ".sjs", ".es6.js"):
 				if os.path.exists(_ + e):
 					return _ + e
 		if p.endswith(".css") and os.path.exists(name + ".pcss"):
@@ -405,9 +405,6 @@ def getLocalFiles(root=""):
 	"""Returns a Retro LocalFile component initialized with the Pamela
 	processor."""
 	return LocalFiles(root=root,processors=getProcessors(),resolver=resolveFile,optsuffix=[".paml",".html"], lastModified=False, writable=True)
-
-def beforeRequest( request ):
-	pass
 
 def run( arguments, options={} ):
 	import argparse
@@ -428,7 +425,6 @@ def run( arguments, options={} ):
 	proxies = [x[len("proxy:"):] for x in [x for x in args.values if x.startswith("proxy:")]]
 	comps.extend(proxy.createProxies(proxies))
 	app     = retro.Application(components=comps)
-	#app.onRequest(beforeRequest)
 	retro.command(
 		[_ for _ in args.values],
 		app      = app,
