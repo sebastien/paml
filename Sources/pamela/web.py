@@ -96,8 +96,13 @@ def processPamela( pamelaText, path, request=None ):
 					suffix = "}" + suffix
 		return prefix + result + suffix, "text/javascript"
 	else:
+		type = "text/html"
+		if path.endswith(".xsl.paml"):
+			type = "text/xsl"
+		elif path.endswith(".xml.paml"):
+			type = "text/xml"
 		result = parser.parseString(pamelaText, path)
-		return result, "text/html"
+		return result, type
 
 def processPamelaXML( pamelaText, path, request=None ):
 	result, type = processPamela( pamelaText, path, request )
