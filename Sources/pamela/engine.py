@@ -1082,11 +1082,11 @@ class HTMLFormatter:
 			element.content = [Text(res)]
 		elif element.mode == "raw":
 			element.setFormat(FORMAT_PRESERVE)
-		elif element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
+		# NOTE: This is a post-processor
+		if element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
 			for text in element.content:
 				if isinstance(text, Text):
-					text.content = text.content.replace("<", "&lt").replace(">", "&gt")
-
+					text.content = text.content.replace("<", "&lt;").replace(">", "&gt;")
 		# If the element has any content, then we apply it
 		if element.content:
 			flags = element.getFormatFlags() + list(self.getDefaults(element.name))
