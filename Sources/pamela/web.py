@@ -19,6 +19,8 @@ try:
 except ImportError as e:
 	pass
 
+# FIXME: Should have a context
+
 SIG_CACHE       = SignatureCache ()
 MEMORY_CACHE    = MemoryCache ()
 PROCESSORS      = {}
@@ -424,6 +426,10 @@ def run( arguments, options={} ):
 	if os.path.exists(defaults_path):
 		with open(defaults_path) as f:
 			PAMELA_DEFAULTS = json.load(f)
+	processors = getProcessors()
+	if "plain" in options:
+		for v in options["plain"].split(","):
+			del processors[v.strip()]
 	files   = getLocalFiles()
 	comps   = [files]
 	proxies = [x[len("proxy:"):] for x in [x for x in args.values if x.startswith("proxy:")]]
