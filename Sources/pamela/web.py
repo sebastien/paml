@@ -98,7 +98,8 @@ def processPamela( pamelaText, path, request=None ):
 	else:
 		type = "text/html"
 		if path.endswith(".xsl.paml"):
-			type = "text/xsl"
+			# NOTE: Use text/xsl does not work in FF
+			type = "text/xml"
 		elif path.endswith(".xml.paml"):
 			type = "text/xml"
 		result = parser.parseString(pamelaText, path)

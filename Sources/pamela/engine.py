@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   25-May-2016
+# Last mod.         :   06-Sep-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse
@@ -18,7 +18,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.8.0"
+__version__    = "0.8.1"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -271,6 +271,14 @@ class Element:
 		if name[0] == "?":
 			self.isPI = True
 			self.name = name[1:]
+
+	def setFormat( self, option):
+		if option not in self.formatOptions:
+			self.formatOptions.append(option)
+		return self
+
+	def getFormatFlags( self ):
+		return self.formatOptions or []
 
 	def setMode( self, mode):
 		self.mode = mode
@@ -1072,13 +1080,17 @@ class HTMLFormatter:
 			source = u"".join(lines)
 			res    = ensure_unicode(hjson.dumpsJSON(hjson.loads(source)))
 			element.content = [Text(res)]
+		elif element.mode == "raw":
+			element.setFormat(FORMAT_PRESERVE)
 		elif element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
 			for text in element.content:
 				if isinstance(text, Text):
 					text.content = text.content.replace("<", "&lt").replace(">", "&gt")
+
 		# If the element has any content, then we apply it
 		if element.content:
-			self.pushFlags(*self.getDefaults(element.name))
+			flags = element.getFormatFlags() + list(self.getDefaults(element.name))
+			self.pushFlags(*flags)
 			if element.isPI:
 				assert not attributes, "Processing instruction cannot have attributes"
 				start   = "<?%s " % (element.name)
