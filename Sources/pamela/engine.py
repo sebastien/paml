@@ -1008,13 +1008,14 @@ class HTMLFormatter:
 		attributes = element._attributesAsHTML()
 		exceptions = HTML_EXCEPTIONS.get(element.name)
 		content    = element.content
+		mode       = element.mode.split("+")[0] if element.mode else None
 		# FIXME: Flags are not properly supported
 		if exceptions:
 			not_empty = exceptions.get("NOT_EMPTY")
 			if not_empty != None and not content:
 				element.content.append(Text(not_empty))
 		# Does this element has any content that needs to be pre-processed?
-		if element.mode and element.mode.startswith("sugar"):
+		if mode == "sugar":
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
@@ -1022,7 +1023,7 @@ class HTMLFormatter:
 			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
 			logging.trace("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
-		elif element.mode in ("coffeescript", "coffee"):
+		elif mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
@@ -1030,7 +1031,7 @@ class HTMLFormatter:
 			res, _ = pamela.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.trace("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
-		elif element.mode in ("typescript", "ts"):
+		elif mode in ("typescript", "ts"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
@@ -1038,7 +1039,7 @@ class HTMLFormatter:
 			res, _ = pamela.web.processTypeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.trace("Parsed TypeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
-		elif element.mode  in ("clevercss", "ccss"):
+		elif mode  in ("clevercss", "ccss"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
@@ -1046,7 +1047,7 @@ class HTMLFormatter:
 			res, _ = pamela.web.processCleverCSS(source, ".")
 			logging.trace("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
-		elif element.mode  in ("pythoniccss", "pcss"):
+		elif mode  in ("pythoniccss", "pcss"):
 			lines = element.contentAsLines()
 			import pamela.web
 			source = u"".join(lines)
@@ -1068,19 +1069,19 @@ class HTMLFormatter:
 			if os.path.exists(p): os.unlink(p)
 			logging.trace("Parsed Nobrackets: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
-		elif element.mode == "texto":
+		elif mode == "texto":
 			lines = element.contentAsLines()
 			import texto
 			source = u"".join(lines)
 			res    = ensure_unicode(texto.toHTML(source))
 			element.content = [Text(res)]
-		elif element.mode == "hjson":
+		elif mode == "hjson":
 			lines = element.contentAsLines()
 			import hjson
 			source = u"".join(lines)
 			res    = ensure_unicode(hjson.dumpsJSON(hjson.loads(source)))
 			element.content = [Text(res)]
-		elif element.mode == "raw":
+		elif mode == "raw":
 			element.setFormat(FORMAT_PRESERVE)
 		# NOTE: This is a post-processor
 		if element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
