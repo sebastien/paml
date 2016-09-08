@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-05-25
+# Last mod.         :   2016-09-08
 # -----------------------------------------------------------------------------
 
 import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
@@ -167,18 +167,21 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		# DEBUG:
 		# If we have a resolveData attribute, we use it to resolve/correct the
 		# data
+		if temp_created:
+			os.unlink(path)
 		if not data and resolveData:
 			data = resolveData()
-		# if temp_created:
-		# 	os.unlink(path)
 		if not data and not allowEmpty:
 			raise Exception(error or u"No data processing `{0}`".format(u" ".join(command)))
-		if cache is SIG_CACHE:
-			cache.set(path,cache_key,data)
-			assert cache.has(path, cache_key)
-		elif cache is MEMORY_CACHE:
-			cache.set(cache_key,data)
-			assert cache.has(cache_key) == data
+		if not temp_created:
+			# We don't cache temp files. Temp files are only created when
+			# we don't have a path.
+			if cache is SIG_CACHE:
+				cache.set(path,cache_key,data)
+				assert cache.has(path, cache_key)
+			elif cache is MEMORY_CACHE:
+				cache.set(cache_key,data)
+				assert cache.has(cache_key) == data
 	assert data is not None, "pamela.web._processCommand: None returned by {0}".format(command)
 	return engine.ensure_unicode(data)
 
