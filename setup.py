@@ -15,7 +15,7 @@ import sys ; sys.path.insert(0, "Sources")
 from distutils.core import setup
 import pamela.engine
 
-SUMMARY     = "Brings the pleasure back to HTML and XML !"
+SUMMARY     = "A Pythonic transpiler for HTML/XML"
 DESCRIPTION = """\
 Pamela is a simple HTML/XML shorthand syntax in the same spirit as HAML or SLIP.
 It was designed to be faithful to the HTML/XML syntax while reducing the
@@ -32,7 +32,6 @@ supports advanced formatting options to get exactly the HTML you want to have.
 setup(
     name         = "Pamela",
     version      = pamela.engine.__version__,
-
     author       = "Sebastien Pierre", author_email = "sebastien@ivy.fr",
     description   = SUMMARY, long_description  = DESCRIPTION,
     license      = "Revised BSD License",

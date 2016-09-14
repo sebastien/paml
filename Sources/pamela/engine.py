@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   06-Sep-2016
+# Last mod.         :   13-Sep-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse
@@ -18,7 +18,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.8.1"
+__version__    = "0.8.2"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
