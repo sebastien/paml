@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -----------------------------------------------------------------------------
-# Project           :   Pamela
+# Project           :   PAML
 # -----------------------------------------------------------------------------
 # Author            :   Sebastien Pierre                 <sebastien@type-z.org>
 # License           :   Lesser GNU Public License

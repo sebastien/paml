@@ -1,4 +1,4 @@
-# Pamela single and multi-line elements hint information
+# PAML single and multi-line elements hint information
 <html
 	<body
 		# We test an empty inline without attributes, and then with attributes

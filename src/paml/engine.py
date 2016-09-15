@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -----------------------------------------------------------------------------
-# Project           :   Pamela
+# Project           :   PAML
 # -----------------------------------------------------------------------------
 # Author            :   Sebastien Pierre                  <sebastien@ffctn.com>
 # License           :   Lesser GNU Public License
@@ -331,7 +331,7 @@ class Declaration(Element):
 # -----------------------------------------------------------------------------
 
 class Parser:
-	"""Implements a parser that will turn a Pamela document into an HTML
+	"""Implements a parser that will turn a PAML document into an HTML
 	document, returned as a string.
 
 	The main methods that you should use are
@@ -518,7 +518,7 @@ class Parser:
 			inline_element = False
 		if is_element and not inline_element:
 			# The element is an embedded element, we use this to make sure we
-			# don't interpret the content as Pamela
+			# don't interpret the content as PAML
 			if is_embed:
 				language = is_element.group()[at_index+1:]
 				if language[-1] == ":":language = language[:-1]
@@ -527,7 +527,7 @@ class Parser:
 				self._pushStack(indent, T_ELEMENT)
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
-			name,attributes,embed,hints=self._parsePamelaElement(group)
+			name,attributes,embed,hints=self._parsePAMLElement(group)
 			# Element is a single line if it ends with ':'
 			self._writer.onElementStart(name, attributes, isInline=False)
 			if group[-1] == ":" and rest:
@@ -627,7 +627,7 @@ class Parser:
 		if plus >= 0:
 			element = "div" + path[plus+1:].strip()
 			path    = path[:plus].strip()
-			_, attributes, _, _ = self._parsePamelaElement(element)
+			_, attributes, _, _ = self._parsePAMLElement(element)
 			if self._writer:
 				self._writer.overrideAttributesForNextElement(attributes)
 		if path[0] in ['"',"'"]:
@@ -701,7 +701,7 @@ class Parser:
 				self._writer.onTextAdd(text)
 			# And we append the element itself
 			group = element.group()[1:]
-			name,attributes,embed, hints=self._parsePamelaElement(group)
+			name,attributes,embed, hints=self._parsePAMLElement(group)
 			self._writer.onElementStart(name, attributes, isInline=True)
 			text = line[element.end():closing]
 			if text: self._writer.onTextAdd(text)
@@ -715,8 +715,8 @@ class Parser:
 			if text and text[-1] == "\n": text = text[:-1] + " "
 			if text: self._writer.onTextAdd(text)
 
-	def _parsePamelaElement( self, element ):
-		"""Parses the declaration of a Pamela element, which is like the
+	def _parsePAMLElement( self, element ):
+		"""Parses the declaration of a PAML element, which is like the
 		following examples:
 
 		>	html
@@ -748,7 +748,7 @@ class Parser:
 			if at_start < parens_end: at_start = -1
 			attributes_list = element[parens_start+1:parens_end]
 			if attributes_list[-1] == ")": attributes_list = attributes_list[:-1]
-			attributes = self._parsePamelaAttributes(attributes_list)
+			attributes = self._parsePAMLAttributes(attributes_list)
 			element = element[:parens_start]
 			rest    = element[parens_end:]
 		else:
@@ -808,8 +808,8 @@ class Parser:
 		element = element.replace("::",":")
 		return (element, attributes, embed, hints)
 
-	def _parsePamelaAttributes( self, attributes ):
-		"""Parses a string representing Pamela attributes and returns a list of
+	def _parsePAMLAttributes( self, attributes ):
+		"""Parses a string representing PAML attributes and returns a list of
 		couples '[name, value]' representing the attributes."""
 		result = []
 		original = attributes
@@ -863,9 +863,9 @@ class Parser:
 RE_SPACES = re.compile("\s")
 
 class HTMLFormatter:
-	"""Formats the elements of the Pamela object model. A formatter really acts
+	"""Formats the elements of the PAML object model. A formatter really acts
 	as a state machine, and keeps track of the various formatting hints bound to
-	the Pamela XML/HTML elements to render the document in the most appropriate
+	the PAML XML/HTML elements to render the document in the most appropriate
 	way.
 
 	If you instanciate a formatter, you'll have access to the following
@@ -1319,7 +1319,7 @@ class HTMLFormatter:
 # -----------------------------------------------------------------------------
 
 class JSFormatter( HTMLFormatter ):
-	"""Formats the given Pamela document to a JavaScript source code
+	"""Formats the given PAML document to a JavaScript source code
 	using the 'html.js' markup file."""
 
 	def format( self, document, indent=0 ):
@@ -1361,7 +1361,7 @@ class JSFormatter( HTMLFormatter ):
 class Writer:
 	"""The Writer class implements a simple SAX-like interface to create the
 	resulting HTML/XML document. This is not API-compatible with SAX because
-	Pamela has slightly different information than what SAX offers, which requires
+	PAML has slightly different information than what SAX offers, which requires
 	specific methods."""
 
 	def __init__( self ):

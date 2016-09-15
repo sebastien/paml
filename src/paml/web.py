@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -----------------------------------------------------------------------------
-# Project           :   Pamela
+# Project           :   PAML
 # -----------------------------------------------------------------------------
 # Author            :   Sebastien Pierre           <sebastien.pierre@gmail.com>
 # License           :   Lesser GNU Public License
@@ -75,7 +75,7 @@ def locked(f):
 	functools.update_wrapper(wrapper, f)
 	return wrapper
 
-def processPamela( pamelaText, path, request=None ):
+def processPAML( pamelaText, path, request=None ):
 	parser = engine.Parser()
 	parser.setDefaults(PAMELA_DEFAULTS)
 	if request and request.get("as") == "js":
@@ -107,8 +107,8 @@ def processPamela( pamelaText, path, request=None ):
 		result = parser.parseString(pamelaText, path)
 		return result, type
 
-def processPamelaXML( pamelaText, path, request=None ):
-	result, type = processPamela( pamelaText, path, request )
+def processPAMLXML( pamelaText, path, request=None ):
+	result, type = processPAML( pamelaText, path, request )
 	return result, "text/xml" if type == "text/html" else type
 
 def processCleverCSS( text, path, request=None ):
@@ -371,9 +371,9 @@ def getProcessors():
 	global PROCESSORS
 	if not PROCESSORS:
 		PROCESSORS = {
-			"xml.paml" : processPamelaXML,
-			"xsl.paml" : processPamelaXML,
-			"paml"     : processPamela,
+			"xml.paml" : processPAMLXML,
+			"xsl.paml" : processPAMLXML,
+			"paml"     : processPAML,
 			"sjs"      : processSugar,
 			"js6"      : processBabelJS,
 			"es6.js"   : processBabelJS,
@@ -411,7 +411,7 @@ def resolveFile( component, request, path ):
 	return p
 
 def getLocalFiles(root=""):
-	"""Returns a Retro LocalFile component initialized with the Pamela
+	"""Returns a Retro LocalFile component initialized with the PAML
 	processor."""
 	return LocalFiles(root=root,processors=getProcessors(),resolver=resolveFile,optsuffix=[".paml",".html"], lastModified=False, writable=True)
 

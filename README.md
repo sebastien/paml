@@ -1,4 +1,4 @@
-== Pamela
+== Paml
 == Brings the pleasure back to HTML and XML !
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
 -- Date:     03-Oct-2009

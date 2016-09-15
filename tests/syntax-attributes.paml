@@ -1,5 +1,5 @@
-#!/bin/env pamela -p 
-# Pamela: Attributes test case
+#!/bin/env paml -p 
+# PAML: Attributes test case
 <html
 	<meta
 		# This is an element with multiple attributes

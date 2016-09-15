@@ -1,5 +1,5 @@
-#!/bin/env pamela -p 
-# Pamela: Classes test case
+#!/bin/env paml -p 
+# PAML: Classes test case
 <html
 	<body.body
 		# Single class

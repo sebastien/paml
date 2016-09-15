@@ -1,5 +1,5 @@
-#!/bin/env pamela -p 
-# Pamela: IDs test case
+#!/bin/env paml -p 
+# PAML: IDs test case
 <html
 	<body#mainBody
 		# We define an element with an IDj
