@@ -14,7 +14,7 @@ IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
 	import reporter
-	logging = reporter.bind("pamela")
+	logging = reporter.bind("paml")
 except:
 	import logging
 
@@ -1017,47 +1017,47 @@ class HTMLFormatter:
 		# Does this element has any content that needs to be pre-processed?
 		if mode == "sugar":
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
+			res, _ = paml.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
 			logging.trace("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif mode in ("coffeescript", "coffee"):
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
+			res, _ = paml.web.processCoffeeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.trace("Parsed CoffeeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif mode in ("typescript", "ts"):
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processTypeScript(source, "", cache=self.useProcessCacheFalse)
+			res, _ = paml.web.processTypeScript(source, "", cache=self.useProcessCacheFalse)
 			logging.trace("Parsed TypeScript: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif mode  in ("clevercss", "ccss"):
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processCleverCSS(source, ".")
+			res, _ = paml.web.processCleverCSS(source, ".")
 			logging.trace("Parsed CleverCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif mode  in ("pythoniccss", "pcss"):
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = pamela.web.processPythonicCSS(source, ".")
+			res, _ = paml.web.processPythonicCSS(source, ".")
 			logging.trace("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode and element.mode.endswith("nobrackets"):
 			lines = element.contentAsLines()
-			import pamela.web
+			import paml.web
 			source = u"".join(lines)
 			t = time.time()
 			prefix = element.mode[0:0-(len("nobrackets"))]
@@ -1065,7 +1065,7 @@ class HTMLFormatter:
 			if prefix: suffix = "." + prefix + suffix
 			p = tempfile.mktemp(suffix=suffix)
 			with open(p, "w") as f: f.write(source)
-			res, _ = pamela.web.processNobrackets(source, p)
+			res, _ = paml.web.processNobrackets(source, p)
 			if os.path.exists(p): os.unlink(p)
 			logging.trace("Parsed Nobrackets: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]

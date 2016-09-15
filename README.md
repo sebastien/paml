@@ -336,7 +336,7 @@ Dive into Pamela
   document. It is a good practice to collect some library of snippets that can
   be easily be re-used among your various HTML documents.
 
-  You can also specify *replacement values* for variables declared in the included pamela
+  You can also specify *replacement values* for variables declared in the included paml
   file as '${VARIABLE}'. For instance:
 
   >   %include widget/datepicker {ID=mywidget,TITLE="Start date"}

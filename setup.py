@@ -13,7 +13,7 @@
 
 import sys ; sys.path.insert(0, "Sources")
 from distutils.core import setup
-import pamela.engine
+import paml.engine
 
 SUMMARY     = "A Pythonic transpiler for HTML/XML"
 DESCRIPTION = """\
@@ -30,16 +30,16 @@ supports advanced formatting options to get exactly the HTML you want to have.
 # ------------------------------------------------------------------------------
 
 setup(
-    name         = "PAML",
-    version      = pamela.engine.__version__,
+    name         = "paml",
+    version      = paml.engine.__version__,
     author       = "Sebastien Pierre", author_email = "sebastien.pierre@gmail.com",
     description   = SUMMARY, long_description  = DESCRIPTION,
     license      = "Revised BSD License",
     keywords     = "XML, HTML, syntax, pre-processor, web",
-    url          = "http://www.github.com/sebastien/pamela",
+    url          = "http://www.github.com/sebastien/paml",
     package_dir  = { "": "Sources" },
-    packages     = ["pamela"],
-    scripts      = ["Scripts/pamela", "Scripts/pamela-web"]
+    packages     = ["paml"],
+    scripts      = ["Scripts/paml", "Scripts/paml-web"]
 )
 
 # EOF

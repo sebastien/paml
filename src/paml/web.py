@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 
 import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
-from   pamela import engine
+from   paml import engine
 try:
 	import retro
 	from   retro.contrib.localfiles import LocalFiles
@@ -75,12 +75,12 @@ def locked(f):
 	functools.update_wrapper(wrapper, f)
 	return wrapper
 
-def processPAML( pamelaText, path, request=None ):
+def processPAML( pamlText, path, request=None ):
 	parser = engine.Parser()
 	parser.setDefaults(PAMELA_DEFAULTS)
 	if request and request.get("as") == "js":
 		parser._formatter = engine.JSHTMLFormatter()
-		result = parser.parseString(pamelaText, path)
+		result = parser.parseString(pamlText, path)
 		assign = request.get("assign")
 		prefix = ""
 		suffix = ""
@@ -104,11 +104,11 @@ def processPAML( pamelaText, path, request=None ):
 			type = "text/xml"
 		elif path.endswith(".xml.paml"):
 			type = "text/xml"
-		result = parser.parseString(pamelaText, path)
+		result = parser.parseString(pamlText, path)
 		return result, type
 
-def processPAMLXML( pamelaText, path, request=None ):
-	result, type = processPAML( pamelaText, path, request )
+def processPAMLXML( pamlText, path, request=None ):
+	result, type = processPAML( pamlText, path, request )
 	return result, "text/xml" if type == "text/html" else type
 
 def processCleverCSS( text, path, request=None ):
@@ -134,7 +134,7 @@ def cacheGet( text, path, cache ):
 		return cache, False, None, None
 
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
-		tmpprefix="pamela_", resolveData=None, allowEmpty=False, cwd=None):
+		tmpprefix="paml_", resolveData=None, allowEmpty=False, cwd=None):
 	timestamp = has_changed = data = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
@@ -182,7 +182,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			elif cache is MEMORY_CACHE:
 				cache.set(cache_key,data)
 				assert cache.has(cache_key) == data
-	assert data is not None, "pamela.web._processCommand: None returned by {0}".format(command)
+	assert data is not None, "paml.web._processCommand: None returned by {0}".format(command)
 	return engine.ensure_unicode(data)
 
 @locked
@@ -256,7 +256,7 @@ def processTypeScript( text, path, request=None, cache=True ):
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
 		# We get the process through `tsc`
-		temp_path = tempfile.mktemp(prefix="pamelaweb-", suffix=".ts.js")
+		temp_path = tempfile.mktemp(prefix="pamlweb-", suffix=".ts.js")
 		command = [
 			getCommands()["typescript"], "--outFile", temp_path, "--module", "amd", path
 		]
@@ -425,7 +425,7 @@ def run( arguments, options={} ):
 	options.update(dict((_.split("=",1)[0].lower(), _.split("=",1)[1]) for _ in args.values or "" if not _.startswith("proxy:")))
 	# We can load defaults. This should be moved to a dedicated option.
 	global PAMELA_DEFAULTS
-	defaults_path = ".pamela-defaults"
+	defaults_path = ".paml-defaults"
 	if os.path.exists(defaults_path):
 		with open(defaults_path) as f:
 			PAMELA_DEFAULTS = json.load(f)
