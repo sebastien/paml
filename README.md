@@ -1,5 +1,5 @@
 == Paml
-== Brings the pleasure back to HTML and XML !
+== A Pythonic transpiler for HTML/XML
 -- Author: Sébastien Pierre <sebastien@ivy.fr>
 -- Date:     03-Oct-2009
 -- Creation: 24-Aug-2007
