@@ -87,7 +87,8 @@ TAB_WIDTH      = 4
 FORMAT_INLINE       = "i"
 FORMAT_INLINE_BLOCK = "ib"
 FORMAT_SINGLE_LINE  = "sl"
-FORMAT_PRESERVE     = "p"
+FORMAT_PRESERVE     = "P"
+FORMAT_PREFORMATTED = "p"
 FORMAT_NORMALIZE    = "n"
 FORMAT_STRIP        = "s"
 FORMAT_COMPACT      = "c"
@@ -1082,7 +1083,7 @@ class HTMLFormatter:
 			res    = ensure_unicode(hjson.dumpsJSON(hjson.loads(source)))
 			element.content = [Text(res)]
 		elif mode == "raw":
-			element.setFormat(FORMAT_PRESERVE)
+			element.setFormat(FORMAT_PREFORMATTED)
 		# NOTE: This is a post-processor
 		if element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
 			for text in element.content:
@@ -1180,9 +1181,15 @@ class HTMLFormatter:
 			self._result[-1] = self._result[-1] + tagText
 
 	def writeText( self, text ):
+		asdads sa das
+		assert None
 		result = self._result
 		text   = self.formatText(text)
-		if self.hasFlag(FORMAT_PRESERVE):
+		print ("WRITE", text)
+		if self.hasFlag(FORMAT_PREFORMATTED):
+			print ("PREF", text)
+			result.append(text)
+		elif self.hasFlag(FORMAT_PRESERVE):
 			#print "APPEND ",repr(text)
 			result.append(text)
 		else:
