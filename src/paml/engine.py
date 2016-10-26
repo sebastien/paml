@@ -87,8 +87,7 @@ TAB_WIDTH      = 4
 FORMAT_INLINE       = "i"
 FORMAT_INLINE_BLOCK = "ib"
 FORMAT_SINGLE_LINE  = "sl"
-FORMAT_PRESERVE     = "P"
-FORMAT_PREFORMATTED = "p"
+FORMAT_PRESERVE     = "p"
 FORMAT_NORMALIZE    = "n"
 FORMAT_STRIP        = "s"
 FORMAT_COMPACT      = "c"
@@ -114,7 +113,7 @@ HTML_DEFAULTS = {
 	"h4":"sl n s".split(),
 	"p":"n s c w".split(),
 	"code":"n s c".split(),
-	"pre":"p".split(),
+	"pre":"p c".split(),
 	"div":"ib".split()
 }
 
@@ -1083,7 +1082,12 @@ class HTMLFormatter:
 			res    = ensure_unicode(hjson.dumpsJSON(hjson.loads(source)))
 			element.content = [Text(res)]
 		elif mode == "raw":
-			element.setFormat(FORMAT_PREFORMATTED)
+			text = "".join(element.contentAsLines())
+			while text and text[-1] in "\n\t":
+				text = text[:-1]
+			element.content = [Text(text)]
+			element.setFormat(FORMAT_PRESERVE)
+			element.setFormat(FORMAT_COMPACT)
 		# NOTE: This is a post-processor
 		if element.mode and (element.mode.endswith ("+escape") or "+escape+" in element.mode):
 			for text in element.content:
@@ -1115,7 +1119,6 @@ class HTMLFormatter:
 			# Or maybe the element has a SINGLE_LINE flag, in which case we add a
 			# newline inbetween
 			elif self.hasFlag(FORMAT_SINGLE_LINE) or element.isTextOnly():
-				self.newLine()
 				self.writeTag(start)
 				self._formatContent(element)
 				self.writeTag(end)
@@ -1123,11 +1126,13 @@ class HTMLFormatter:
 			else:
 				self.newLine()
 				self.writeTag(start)
-				self.newLine()
-				self.startIndent()
+				if not self.hasFlag(FORMAT_COMPACT):
+					self.newLine()
+					self.startIndent()
 				self._formatContent(element)
-				self.endIndent()
-				self.ensureNewLine()
+				if not self.hasFlag(FORMAT_COMPACT):
+					self.endIndent()
+					self.ensureNewLine()
 				self.writeTag(end)
 			self.popFlags()
 		# Otherwise it doesn't have any content
@@ -1181,16 +1186,9 @@ class HTMLFormatter:
 			self._result[-1] = self._result[-1] + tagText
 
 	def writeText( self, text ):
-		asdads sa das
-		assert None
 		result = self._result
 		text   = self.formatText(text)
-		print ("WRITE", text)
-		if self.hasFlag(FORMAT_PREFORMATTED):
-			print ("PREF", text)
-			result.append(text)
-		elif self.hasFlag(FORMAT_PRESERVE):
-			#print "APPEND ",repr(text)
+		if self.hasFlag(FORMAT_PRESERVE):
 			result.append(text)
 		else:
 			if self._isNewLine():
