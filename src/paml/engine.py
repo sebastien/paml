@@ -106,14 +106,14 @@ FORMAT_OPTIONS      = (
 HTML_DEFAULTS = {
 	"script":"i".split(),
 	"link":"i".split(),
-	"title":"sl n s".split(),
-	"h1":"sl n s".split(),
-	"h2":"sl n s".split(),
-	"h3":"sl n s".split(),
-	"h4":"sl n s".split(),
-	"p":"n s c w".split(),
-	"code":"n s c".split(),
-	"pre":"p c".split(),
+	"title":"sl n".split(),
+	"h1":"sl n".split(),
+	"h2":"sl n".split(),
+	"h3":"sl n".split(),
+	"h4":"sl n".split(),
+	"p":"n c w".split(),
+	"code":"p".split(),
+	"pre":"p".split(),
 	"div":"ib".split()
 }
 
