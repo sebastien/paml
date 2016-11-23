@@ -6,10 +6,10 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   13-Sep-2016
+# Last mod.         :   22-Nov-2016
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json, time, glob, tempfile, argparse
+import os, sys, re, string, json, time, glob, tempfile, argparse, types
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
@@ -186,9 +186,19 @@ class Macro:
 		"lib/js/{0}-*.js",
 	)
 
+	GMODULE_PATTERNS = (
+		"lib/sjs/{0}.sjs",
+		"lib/js/{0}.gmodule.js",
+		"lib/js/{0}-*.gmodule.js",
+	)
+
 	@classmethod
 	def Get( cls, name ):
 		return cls.CATALOGUE.get(name)
+
+	@classmethod
+	def IndentAsString( cls, indent ):
+		return "\t" * (indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
 
 	@staticmethod
 	def Require( name, paths=[]):
@@ -205,7 +215,7 @@ class Macro:
 		"""A helper function that is used by `Require{CSS,JS}`, iterates
 		on the hte given parameters, and injecting the template
 		when files are found matching the patterns."""
-		indent = "\t" * (indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
+		indent = Macro.IndentAsString(indent)
 		for f in params.split(","):
 			f = f.strip()
 			p = Macro.Require(f, patterns)
@@ -216,7 +226,10 @@ class Macro:
 					# NOTE: We're using dirname as the path is actually the
 					# filename
 					p = os.path.relpath(p, os.path.dirname(parser_path))
-				parser._parseLine(template.format(indent, p))
+				if isinstance(template, types.FunctionType):
+					parser._parseLine(template(indent, p))
+				else:
+					parser._parseLine(template.format(indent, p))
 
 	def RequireCSS( parser, params, indent ):
 		"""The `require:css(name,...)` macro looks for files in the
@@ -238,9 +251,29 @@ class Macro:
 			"{0}<script(type=text/javascript,src={1})"
 		)
 
+	def RequireGmodule( parser, params, indent ):
+		"""The `require:gmodule(name,...)` macro looks for files in the
+		paths defined by `JS` for the given `name`s and
+		replaces them by `<script>` tags."""
+		# SEE: http://stackoverflow.com/questions/1918996/how-can-i-load-my-own-js-module-with-goog-provide-and-goog-require#2007296
+		def formatter(indent, path):
+			name = os.path.basename(path).split(".")[0].rsplit("-",1)[0].replace("_", ".")
+			if path.endswith(".sjs"):
+				# TODO: Get dependencies
+				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],['extend']);".format(indent, path, name)
+			else:
+				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],[]);".format(indent, path, name)
+		parser._parseLine("{0}<script:".format(Macro.IndentAsString(indent)))
+		Macro.RequireExpand(
+			parser, params, indent,
+			Macro.GMODULE_PATTERNS,
+			formatter,
+		)
+
 	CATALOGUE = {
 		"require:css":RequireCSS,
 		"require:js" :RequireJS,
+		"require:gmodule" :RequireGmodule,
 	}
 
 # -----------------------------------------------------------------------------
