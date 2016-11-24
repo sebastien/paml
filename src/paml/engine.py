@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   22-Nov-2016
+# Last mod.         :   24-Nov-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse, types
@@ -284,6 +284,7 @@ class Macro:
 
 class Text:
 	"""Reprensents a text fragment within the HTML document."""
+
 	def __init__(self, content):
 		self.content = content
 
@@ -1108,6 +1109,7 @@ class HTMLFormatter:
 			source = u"".join(lines)
 			res    = ensure_unicode(texto.toHTML(source))
 			element.content = [Text(res)]
+			self.setFlag(FORMAT_PRESERVE)
 		elif mode == "hjson":
 			lines = element.contentAsLines()
 			import hjson
