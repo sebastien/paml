@@ -258,11 +258,14 @@ class Macro:
 		# SEE: http://stackoverflow.com/questions/1918996/how-can-i-load-my-own-js-module-with-goog-provide-and-goog-require#2007296
 		def formatter(indent, path):
 			name = os.path.basename(path).split(".")[0].rsplit("-",1)[0].replace("_", ".")
+			# We use `deparse` to list the dependencies
+			import deparse
+			deps = [_[1] for _ in deparse.list([path]) if _[0] == "js:module"]
 			if path.endswith(".sjs"):
 				# TODO: Get dependencies
-				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],['extend']);".format(indent, path, name)
+				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(indent, path, name, json.dumps(deps))
 			else:
-				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],[]);".format(indent, path, name)
+				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(indent, path, name, json.dumps(deps))
 		parser._parseLine("{0}<script:".format(Macro.IndentAsString(indent)))
 		Macro.RequireExpand(
 			parser, params, indent,
