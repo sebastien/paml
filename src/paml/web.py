@@ -189,7 +189,13 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 
 @locked
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
-	text    = engine.ensure_unicode(text)
+	text    = engine.ensure_unicode(text or "")
+	multi_paths = None
+	# NOTE: This supports having multiple paths given as argument, which
+	# will then be combined as a single argument.
+	if isinstance(path, tuple) or isinstance(path, list):
+		multi_paths = path
+		path        = path[0]
 	if os.path.isdir(path or "."):
 		parent_path  = path or "."
 	else:
@@ -209,7 +215,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 			"--include-source" if includeSource else ""
 			"-L" + parent_path,
 			"-L" + os.path.join(parent_path, "lib", "sjs"),
-			path
+			" ".join(_ for _  in multi_paths) if multi_paths else path
 		]
 		return command.runAsString (arguments), "text/javascript"
 	else:
@@ -231,7 +237,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 			"-cSljs" if includeSource else "-cljs",
 			"-L" + norm_path(parent_path),
 			"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
-			norm_path(path)
+			" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
 		]
 		res = _processCommand(command, text, path, cache, cwd=temp_path), "text/javascript"
 		# We clean up the temp dir
@@ -415,7 +421,6 @@ def resolveFile( component, request, path ):
 		paths  = p.split("+")
 		res    = [paths[0]] + [os.path.join(prefix,_) for _ in paths[1:]]
 		return res
-
 	return p
 
 def getLocalFiles(root=""):
