@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   24-Nov-2016
+# Last mod.         :   01-Dec-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse, types
@@ -18,7 +18,7 @@ try:
 except:
 	import logging
 
-__version__    = "0.8.2"
+__version__    = "0.8.3"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -202,12 +202,31 @@ class Macro:
 
 	@staticmethod
 	def Require( name, paths=[]):
-		"""Globs the given expressions replacing `{0}` with the given `name`"""
+		"""Globs the given expressions replacing `{0}` with the given `name`,
+		returning a list containing the file with the highest version number, or
+		the list of matching files in case name contains a `*`.
+
+		For instance:
+
+		```
+		>>> Require("select", ["lib/js"])
+		(`lib/js/select-0.7.9.js`)
+		```
+
+		```
+		>>> Require("module-*", ["lib/sjs"])
+		(`lib/sjs/module-a.sjs`, `lib/sjs/module-b.sjs`)
+		```
+
+		"""
 		for p in paths:
 			p = p.format(name)
 			l = glob.glob(p)
-			if l:
-				return sorted(l)[-1]
+			if not l: continue
+			if "*" in name:
+				return l
+			else:
+				return (sorted(l)[-1],)
 		return None
 
 	@staticmethod
@@ -225,7 +244,11 @@ class Macro:
 				if parser_path != ".":
 					# NOTE: We're using dirname as the path is actually the
 					# filename
-					p = os.path.relpath(p, os.path.dirname(parser_path))
+					p = [os.path.relpath(_, os.path.dirname(parser_path)) for _ in p]
+				if len(p) > 1:
+					p = "+".join([p[0]] + [os.path.basename(_) for _ in p[1:]])
+				else:
+					p = p[0]
 				if isinstance(template, types.FunctionType):
 					parser._parseLine(template(indent, p))
 				else:
@@ -256,8 +279,10 @@ class Macro:
 		paths defined by `JS` for the given `name`s and
 		replaces them by `<script>` tags."""
 		# SEE: http://stackoverflow.com/questions/1918996/how-can-i-load-my-own-js-module-with-goog-provide-and-goog-require#2007296
-		def formatter(indent, path):
-			name = os.path.basename(path).split(".")[0].rsplit("-",1)[0].replace("_", ".")
+		loaded = []
+		def formatter(indent, path, loaded=loaded):
+			basename = os.path.basename(path)
+			name     = basename.split(".")[0].rsplit("-",1)[0].replace("_", ".")
 			# We use `deparse` to list the dependencies
 			import deparse
 			deps = [_[1] for _ in deparse.list([path]) if _[0] == "js:module"]
@@ -878,6 +903,7 @@ class Parser:
 		"""Returns the line indentation as a number. It takes into account the
 		fact that tabs may be requried or not, and also takes into account the
 		'tabsWith' property."""
+		line   = line or ""
 		tabs   = RE_LEADING_TAB.match(line)
 		spaces = RE_LEADING_SPC.match(line)
 		if self._tabsOnly and spaces:

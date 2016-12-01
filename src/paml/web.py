@@ -9,6 +9,8 @@
 # Last mod.         :   2016-09-08
 # -----------------------------------------------------------------------------
 
+# TODO: Should be moved to retro
+
 import os, sys, re, json, subprocess, tempfile, hashlib, threading, mimetypes, functools
 from   paml import engine
 try:
@@ -408,6 +410,12 @@ def resolveFile( component, request, path ):
 		# We alias .hsjon to .json if there is no .json
 		if p.endswith(".json") and os.path.exists(name + ".hjson"):
 			return name + ".hjson"
+	if not os.path.exists(p) and "+" in p:
+		prefix = os.path.dirname(p)
+		paths  = p.split("+")
+		res    = [paths[0]] + [os.path.join(prefix,_) for _ in paths[1:]]
+		return res
+
 	return p
 
 def getLocalFiles(root=""):
