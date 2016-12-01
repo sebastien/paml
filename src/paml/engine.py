@@ -104,7 +104,7 @@ FORMAT_OPTIONS      = (
 
 # Defaults for HTML documents
 HTML_DEFAULTS = {
-	"script":"i".split(),
+	"script":"sl i".split(),
 	"link":"i".split(),
 	"title":"sl n".split(),
 	"h1":"sl n".split(),
@@ -224,7 +224,7 @@ class Macro:
 			l = glob.glob(p)
 			if not l: continue
 			if "*" in name:
-				return l
+				return sorted(l)
 			else:
 				return (sorted(l)[-1],)
 		return None
@@ -732,7 +732,7 @@ class Parser:
 		name   = match.group(2)[1:]
 		params = match.group(4)
 		macro  = Macro.Get(name)
-		assert macro, "Undefined macro: {0}".format(macro)
+		assert macro, "paml.engine: Undefined macro: {0} in {1}".format(name, match.group())
 		macro(self, params, indent)
 		return True
 
