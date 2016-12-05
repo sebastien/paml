@@ -224,7 +224,7 @@ class Macro:
 			l = glob.glob(p)
 			if not l: continue
 			if "*" in name:
-				return sorted(l)
+				return sorted(l,reverse=True)
 			else:
 				return (sorted(l)[-1],)
 		return None
