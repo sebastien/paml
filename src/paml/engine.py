@@ -6,10 +6,11 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   10-May-2007
-# Last mod.         :   01-Dec-2016
+# Last mod.         :   08-Dec-2016
 # -----------------------------------------------------------------------------
 
 import os, sys, re, string, json, time, glob, tempfile, argparse, types
+from functools import reduce
 IS_PYTHON3 = sys.version_info[0] > 2
 
 try:
@@ -18,7 +19,13 @@ try:
 except:
 	import logging
 
-__version__    = "0.8.3"
+try:
+	# We try to use `deparse` if it's available
+	import deparse
+except:
+	deparse = None
+
+__version__    = "0.8.4"
 PAMELA_VERSION = __version__
 
 # TODO: Add an option to start a sugar compilation server and directly query
@@ -280,23 +287,42 @@ class Macro:
 		replaces them by `<script>` tags."""
 		# SEE: http://stackoverflow.com/questions/1918996/how-can-i-load-my-own-js-module-with-goog-provide-and-goog-require#2007296
 		loaded = []
-		def formatter(indent, path, loaded=loaded):
-			basename = os.path.basename(path)
-			name     = basename.split(".")[0].rsplit("-",1)[0].replace("_", ".")
-			# We use `deparse` to list the dependencies
-			import deparse
-			deps = [_[1] for _ in deparse.list([path]) if _[0] == "js:module"]
+		# We get the module names, and resolve them to files using deparse
+		# FIXME: This is quite slow, we should try to factor this out as a
+		# higher level operation
+		modules = [_.strip() for _ in params.split(",")]
+		files   = list(set((_[1] for _ in reduce(lambda x,y:x + y, deparse.find(modules).values(), []))))
+		deps    = [_[1] for _ in deparse.list(files)]
+		for path in files:
+			provides = deparse.provides(path)
+			if not provides: continue
+			type,name = provides[0]
+			if name not in deps:
+				deps.append(name)
+		prefix = Macro.IndentAsString(indent)
+		base   = os.path.dirname(os.path.abspath(parser.path()))
+		count  = 0
+		def prefer_gmodule(path):
+			"""Picks the gmodule file if available."""
 			if path.endswith(".sjs"):
-				# TODO: Get dependencies
-				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(indent, path, name, json.dumps(deps))
+				return path + "?+google"
 			else:
-				return "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(indent, path, name, json.dumps(deps))
-		parser._parseLine("{0}<script:".format(Macro.IndentAsString(indent)))
-		Macro.RequireExpand(
-			parser, params, indent,
-			Macro.GMODULE_PATTERNS,
-			formatter,
-		)
+				name, ext = os.path.splitext(path)
+				gpath     = name + ".gmodule" + ext
+				return gpath if os.path.exists(gpath) else path
+		for name in deps:
+			paths = [_[1] for _ in deparse.find(name)[name]]
+			path  = sorted(list(set(paths)))
+			if path:
+				deps = [_[1] for _ in deparse.list(path)]
+				path = prefer_gmodule(os.path.relpath(path[0], base))
+				if count == 0:
+					parser._parseLine(prefix + "<script@raw")
+				line = "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(
+					prefix, path, name, json.dumps(deps)
+				)
+				parser._parseLine(line)
+				count += 1
 
 	CATALOGUE = {
 		"require:css":RequireCSS,

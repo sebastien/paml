@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-09-08
+# Last mod.         :   2016-12-06
 # -----------------------------------------------------------------------------
 
 # TODO: Should be moved to retro
@@ -135,6 +135,9 @@ def cacheGet( text, path, cache ):
 	else:
 		return cache, False, None, None
 
+# FIXME: The caching infrastructure should not be dependent on the path
+# only. For instance, we might want to cache the same file, but compiled
+# with different command (options).
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		tmpprefix="paml_", resolveData=None, allowEmpty=False, cwd=None):
 	timestamp = has_changed = data = None
@@ -189,10 +192,21 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 
 @locked
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
-	text    = engine.ensure_unicode(text or "")
+	text        = engine.ensure_unicode(text or "")
 	multi_paths = None
+	sugar       = getCommands()["sugar"]
 	# NOTE: This supports having multiple paths given as argument, which
 	# will then be combined as a single argument.
+	options     = []
+	# If we have + in the request query, then we interpret that as a reset
+	# of default sugar options, which we make sure are stripped from the
+	# default options.
+	if request:
+		query = request.path().split("?",1)
+		if len(query) == 2 and "+" in query[1]:
+			options = ["-D" + _.strip() for _ in query[1].split("+") if _.strip()]
+			sugar   = " ".join(_ for _ in sugar.split() if not _.startswith("-D"))
+			cache   = False
 	if isinstance(path, tuple) or isinstance(path, list):
 		multi_paths = path
 		path        = path[0]
@@ -209,12 +223,14 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	if sugar2:
 		# If Sugar2 is available, we'll use it
 		command = sugar2.SugarCommand("sugar2")
+		# FIXME: Should filter out options from command
 		arguments = [
 			"-cljs",
 			"--cache",
 			"--include-source" if includeSource else ""
 			"-L" + parent_path,
 			"-L" + os.path.join(parent_path, "lib", "sjs"),
+		] + options + [
 			" ".join(_ for _  in multi_paths) if multi_paths else path
 		]
 		return command.runAsString (arguments), "text/javascript"
@@ -233,10 +249,11 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		# Otherwise we fallback to the regular Sugar, which has to be
 		# run through popen (so it's slower)
 		command = [
-			getCommands()["sugar"],
+			sugar,
 			"-cSljs" if includeSource else "-cljs",
 			"-L" + norm_path(parent_path),
 			"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
+		] + options + [
 			" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
 		]
 		res = _processCommand(command, text, path, cache, cwd=temp_path), "text/javascript"
