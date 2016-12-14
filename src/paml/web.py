@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-12-06
+# Last mod.         :   2016-12-09
 # -----------------------------------------------------------------------------
 
 # TODO: Should be moved to retro
@@ -198,15 +198,19 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	# NOTE: This supports having multiple paths given as argument, which
 	# will then be combined as a single argument.
 	options     = []
+	query       = ""
 	# If we have + in the request query, then we interpret that as a reset
 	# of default sugar options, which we make sure are stripped from the
 	# default options.
 	if request:
 		query = request.path().split("?",1)
-		if len(query) == 2 and "+" in query[1]:
-			options = ["-D" + _.strip() for _ in query[1].split("+") if _.strip()]
-			sugar   = " ".join(_ for _ in sugar.split() if not _.startswith("-D"))
-			cache   = False
+		if len(query) == 2:
+			if "+" in query[1]:
+				options = ["-D" + _.strip() for _ in query[1].split("+") if _.strip()]
+				sugar   = " ".join(_ for _ in sugar.split() if not _.startswith("-D"))
+			query = "?" + query[1]
+		else:
+			query = ""
 	if isinstance(path, tuple) or isinstance(path, list):
 		multi_paths = path
 		path        = path[0]
@@ -215,6 +219,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path or "."))
 	sugar2 = None
+	# FIXME: The whole PATH shing should be better
 	# try:
 	# 	import sugar2
 	# except ImportError, e:
@@ -228,6 +233,8 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 			"-cljs",
 			"--cache",
 			"--include-source" if includeSource else ""
+			"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
+			"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
 			"-L" + parent_path,
 			"-L" + os.path.join(parent_path, "lib", "sjs"),
 		] + options + [
@@ -251,12 +258,14 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		command = [
 			sugar,
 			"-cSljs" if includeSource else "-cljs",
+			"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
+			"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
 			"-L" + norm_path(parent_path),
 			"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
 		] + options + [
 			" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
 		]
-		res = _processCommand(command, text, path, cache, cwd=temp_path), "text/javascript"
+		res = _processCommand(command, text, path + query, cache, cwd=temp_path), "text/javascript"
 		# We clean up the temp dir
 		if os.path.exists(temp_path): os.rmdir(temp_path)
 		if temp_output and os.path.exists(temp_output): os.unlink(temp_output)
