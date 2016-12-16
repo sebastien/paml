@@ -119,12 +119,19 @@ def processCleverCSS( text, path, request=None ):
 	return result, "text/css"
 
 def cacheGet( text, path, cache ):
+	"""Retrieves the given data from the cache. If path is given, then
+	the `SIG_CACHE` will be used, testing the `mtime` of the file at the
+	given path.
+
+	Note that `path` can contain a query string, which will be striped to
+	acces the mtime."""
 	if cache:
 		if path:
 			# The path might have a query string, in which case we remove it
-			path          = path.split("?",1)[0]
+			subpath       = path.split("?",1)[0]
 			cache         = SIG_CACHE
-			timestamp     = SignatureCache.mtime(path)
+			timestamp     = SignatureCache.mtime(subpath)
+			# We get/set using the actual path, not the subpath
 			is_same, data = cache.get(path,timestamp)
 			return cache, is_same, data, timestamp
 		else:
