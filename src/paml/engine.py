@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf8
 # -----------------------------------------------------------------------------
 # Project           :   PAML
 # -----------------------------------------------------------------------------
@@ -291,8 +292,16 @@ class Macro:
 		# FIXME: This is quite slow, we should try to factor this out as a
 		# higher level operation
 		modules = [_.strip() for _ in params.split(",")]
-		files   = list(set((_[1] for _ in reduce(lambda x,y:x + y, deparse.find(modules).values(), []))))
+		files   = (_[1] for _ in reduce(lambda x,y:x + y, deparse.find(modules).values(), []))
+		files   = list(set((_ for _ in files if _.endswith(".sjs") or _.endswith(".gmodule.js"))))
 		deps    = [_[1] for _ in deparse.list(files)]
+		# NOTE: This whole section should be refactored, and some of it
+		# moved to deparse. In essence, what this does is:
+		# 1) Takes a list of module names
+		# 2) Finds these modules
+		# 3) Parses each module
+		# 4) Aggregate the js:* dependencies and recurse to 1
+		# 5) The result is a list of [path, [provides‥], [requires‥]]
 		for path in files:
 			provides = deparse.provides(path)
 			if not provides: continue
@@ -312,7 +321,7 @@ class Macro:
 				return gpath if os.path.exists(gpath) else path
 		for name in deps:
 			paths = [_[1] for _ in deparse.find(name)[name]]
-			path  = sorted(list(set(paths)))
+			path  = sorted(list(set((_ for _ in paths if _.endswith(".sjs") or _.endswith(".gmodule.js")))))
 			if path:
 				deps = [_[1] for _ in deparse.list(path)]
 				path = prefer_gmodule(os.path.relpath(path[0], base))
@@ -324,6 +333,8 @@ class Macro:
 				parser._parseLine(line)
 				count += 1
 
+	# NOTE: This is declared here as we need to reference the Require*
+	# class methods.
 	CATALOGUE = {
 		"require:css":RequireCSS,
 		"require:js" :RequireJS,
