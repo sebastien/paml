@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-12-09
+# Last mod.         :   2016-12-15
 # -----------------------------------------------------------------------------
 
 # TODO: Should be moved to retro
@@ -121,7 +121,9 @@ def processCleverCSS( text, path, request=None ):
 def cacheGet( text, path, cache ):
 	if cache:
 		if path:
-			cache = SIG_CACHE
+			# The path might have a query string, in which case we remove it
+			path          = path.split("?",1)[0]
+			cache         = SIG_CACHE
 			timestamp     = SignatureCache.mtime(path)
 			is_same, data = cache.get(path,timestamp)
 			return cache, is_same, data, timestamp
@@ -153,7 +155,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			temp_created = False
 		# FIXME: Honestly, I have so many problems with popen it's unbelievable.
 		# I sometimes get sugar to freeze without any reason. I'm keeping the
-		# following snipped for reference of what not to do.
+		# following snippet for reference of what not to do.
 		# ---
 		# cmd     = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE,
 		# 		stderr=subprocess.PIPE, cwd=cwd)
