@@ -327,7 +327,7 @@ class Macro:
 				path = prefer_gmodule(os.path.relpath(path[0], base))
 				if count == 0:
 					parser._parseLine(prefix + "<script@raw")
-				line = "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});".format(
+				line = "{0}\tgoog.addDependency('../../../{1}',['{2}'],{3});\n{0}".format(
 					prefix, path, name, json.dumps(deps)
 				)
 				parser._parseLine(line)
@@ -366,6 +366,7 @@ class Element:
 		self.isInline      = isInline
 		self.mode          = None
 		self.isPI          = isPI
+		self.isComment      = False
 		self.formatOptions = []
 		if name[0] == "?":
 			self.isPI = True
@@ -418,6 +419,15 @@ class Element:
 		r = " ".join(r)
 		if r: r= " "+r
 		return r
+
+class Comment(object):
+
+	def __init__(self, line):
+		self.isComment = True
+		self.content  = line
+
+	def contentAsLines( self ):
+		return [self.content]
 
 class Declaration(Element):
 	def __init__(self, name, attributes=None):
@@ -567,8 +577,6 @@ class Parser:
 				return
 		is_comment     = RE_COMMENT.match(line)
 		if is_comment and not self._isInEmbed(indent):
-			# FIXME: Integrate this
-			return
 			return self._writer.onComment(line)
 		is_pi = RE_PI.match(line)
 		if is_pi:
@@ -752,6 +760,7 @@ class Parser:
 				return self._writer.onTextAdd(error_line)
 		else:
 			self._paths.append(path)
+			self._parseLine("# START:INCLUDE[{0}]".format(path))
 			with open(path,'rb') as f:
 				for l in f.readlines():
 					if RE_PROCESSING_INSTRUCTION.match(l): continue
@@ -761,6 +770,7 @@ class Parser:
 					# We do the substituion
 					if subs: l = string.Template(l).safe_substitute(**subs)
 					(parseLine or self._parseLine) (p * "\t" + l)
+			self._parseLine("# END:INCLUDE[{0}]".format(path))
 			self._paths.pop()
 		return True
 
@@ -1079,6 +1089,8 @@ class HTMLFormatter:
 				self._formatElement(e)
 			elif isinstance(e, Text):
 				text.append(e.content)
+			elif isinstance(e, Comment):
+				text.append(u"<!-- {0} -->".format(e.content))
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
@@ -1094,6 +1106,8 @@ class HTMLFormatter:
 		one line and text without EOLs as content."""
 		if isinstance(element, Text):
 			return element.content.find("\n") == -1
+		elif isinstance(element, Comment):
+			return False
 		else:
 			for c in element.content:
 				if not self._inlineCanSpanOneLine(c):
@@ -1105,6 +1119,7 @@ class HTMLFormatter:
 	def _formatElement( self, element ):
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
+		if isinstance(element, Comment): return self._formatComment(element)
 		attributes = element._attributesAsHTML()
 		exceptions = HTML_EXCEPTIONS.get(element.name)
 		content    = element.content
@@ -1245,6 +1260,9 @@ class HTMLFormatter:
 			# And if it's an inline, we don't add a newline
 			if not element.isInline: self.newLine()
 			self.writeTag(text)
+
+	def _formatComment( self, comment ):
+		self.writeTag(u"<!-- {0} -->\n".format(comment.content))
 
 	# -------------------------------------------------------------------------
 	# TEXT OUTPUT COMMANDS
@@ -1486,8 +1504,7 @@ class Writer:
 
 	def onComment( self, line ):
 		line = line.replace("\n", " ").strip()
-		# FIXME: Why is this disabled ?
-		#comment = ET.Comment(line)
+		comment = Comment(line)
 		#self._node().append(comment)
 
 	def onTextAdd( self, text ):
