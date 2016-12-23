@@ -65,7 +65,7 @@ SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?(%s)?\:?" % (
 	SYMBOL_CONTENT
 )
 RE_ATTRIBUTE   = re.compile(SYMBOL_ATTR)
-RE_COMMENT     = re.compile("^#.*$")
+RE_COMMENT     = re.compile("^#(.*)$")
 RE_EMPTY       = re.compile("^\s*$")
 RE_DECLARATION = re.compile("^@(%s):?" % (SYMBOL_NAME))
 RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
@@ -332,6 +332,7 @@ class Macro:
 				)
 				parser._parseLine(line)
 				count += 1
+		parser._parseLine("\n")
 
 	# NOTE: This is declared here as we need to reference the Require*
 	# class methods.
@@ -422,9 +423,9 @@ class Element:
 
 class Comment(object):
 
-	def __init__(self, line):
+	def __init__(self, line ):
 		self.isComment = True
-		self.content  = line
+		self.content   = line
 
 	def contentAsLines( self ):
 		return [self.content]
@@ -576,8 +577,12 @@ class Parser:
 			else:
 				return
 		is_comment     = RE_COMMENT.match(line)
-		if is_comment and not self._isInEmbed(indent):
-			return self._writer.onComment(line)
+		if is_comment:
+			comment = is_comment.group(1).strip()
+			if not self._isInEmbed(indent) and (comment.startswith("START:") or comment.startswith("END:")):
+				return self._writer.onComment(comment)
+			else:
+				return
 		is_pi = RE_PI.match(line)
 		if is_pi:
 			self._writer.onTextAdd(line)
@@ -760,17 +765,18 @@ class Parser:
 				return self._writer.onTextAdd(error_line)
 		else:
 			self._paths.append(path)
-			self._parseLine("# START:INCLUDE[{0}]".format(path))
+			p = int(indent/4) * "\t"
+			relpath = os.path.relpath(path, local_dir)
+			#(parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
 			with open(path,'rb') as f:
 				for l in f.readlines():
 					if RE_PROCESSING_INSTRUCTION.match(l): continue
 					# FIXME: This does not work when I use tabs instead
 					l = ensure_unicode(l)
-					p = int(indent/4)
 					# We do the substituion
 					if subs: l = string.Template(l).safe_substitute(**subs)
-					(parseLine or self._parseLine) (p * "\t" + l)
-			self._parseLine("# END:INCLUDE[{0}]".format(path))
+					(parseLine or self._parseLine) (p + l)
+			#(parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
 			self._paths.pop()
 		return True
 
@@ -1090,7 +1096,7 @@ class HTMLFormatter:
 			elif isinstance(e, Text):
 				text.append(e.content)
 			elif isinstance(e, Comment):
-				text.append(u"<!-- {0} -->".format(e.content))
+				text.append(u"<!-- {0} -->\n".format(e.content))
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
@@ -1505,7 +1511,7 @@ class Writer:
 	def onComment( self, line ):
 		line = line.replace("\n", " ").strip()
 		comment = Comment(line)
-		#self._node().append(comment)
+		self._node().append(comment)
 
 	def onTextAdd( self, text ):
 		"""Adds the given text fragment to the current element."""
