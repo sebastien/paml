@@ -50,6 +50,7 @@ def getCommands():
 			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
 			babel       = os.environ.get("BABEL",       "babel"),
 			hjson       = os.environ.get("HJSON",       "hjson"),
+			texto       = os.environ.get("TEXTO",       "texto"),
 		)
 	return COMMANDS
 
@@ -350,10 +351,20 @@ def processPythonicCSS( text, path, request=None, cache=True ):
 	return _processCommand(command, text, path, cache, allowEmpty=False), "text/css"
 
 def processHJSON( text, path, request=None, cache=True ):
-	# NOTE: Disabled until memory leaks are fixed
 	import hjson
 	result = hjson.loads(text)
 	return hjson.dumpsJSON(result), "application/json"
+
+def processTexto( text, path, request=None, cache=True ):
+	import texto.main
+	if request and request.param("as") == "raw":
+		return text, "text/plain"
+	else:
+		result = u"<!DOCTYPE html>\n" + texto.main.text2htmlbody(engine.ensure_unicode(text))
+		if request:
+			result = "<div><small><a href='{0}'>[SOURCE]</a></small></div>".format(request.path() +
+			"?as=raw") + result
+		return result, "text/html"
 
 def processNobrackets( text, path, request=None, cache=True ):
 	"""Processes the given `text` (that might come from the given path)
@@ -423,6 +434,8 @@ def getProcessors():
 			"ccss"     : processCleverCSS,
 			"coffee"   : processCoffeeScript,
 			"hjson"    : processHJSON,
+			"texto"    : processTexto,
+			"txto"     : processTexto,
 			"ts"       : processTypeScript,
 			"pcss"     : processPythonicCSS,
 			"md"       : processPandoc,
