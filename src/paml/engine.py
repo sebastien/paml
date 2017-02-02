@@ -489,6 +489,7 @@ class Parser:
 		self._writer = Writer()
 		self._formatter = formatter or HTMLFormatter()
 		self._paths     = []
+		self._searchPaths = [".", "src/paml", "lib/paml"]
 		self._defaults  = defaults or {}
 
 	def setDefaults( self, defaults ):
@@ -747,18 +748,10 @@ class Parser:
 		else:
 			path = path.strip()
 		# Now we load the file
-		local_dir  = os.path.dirname(os.path.abspath(os.path.normpath(self.path())))
-		local_path = os.path.normpath(os.path.join(local_dir, path))
-		if   os.path.exists(local_path):
-			path = local_path
-		elif os.path.exists(local_path + ".paml"):
-			path = local_path + ".paml"
-		elif os.path.exists(path):
-			path = path
-		elif os.path.exists(path + ".paml"):
-			path = path + ".paml"
-		if not os.path.exists(path):
-			error_line = "ERROR: File not found <code>%s</code>" % (local_path)
+		original_path = path
+		path = self._findIncludedPath(path)
+		if not path or not os.path.exists(path):
+			error_line = "ERROR: File not found <code>%s</code>" % (original_path)
 			if parseLine:
 				parseLine(error_line)
 			else:
@@ -766,7 +759,7 @@ class Parser:
 		else:
 			self._paths.append(path)
 			p = int(indent/4) * "\t"
-			relpath = os.path.relpath(path, local_dir)
+			relpath = os.path.relpath(path, os.path.dirname(path))
 			#(parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
 			with open(path,'rb') as f:
 				for l in f.readlines():
@@ -779,6 +772,15 @@ class Parser:
 			#(parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
 			self._paths.pop()
 		return True
+
+	def _findIncludedPath( self, path ):
+		"""Looks for the given `path` and returns the first matching one."""
+		for parent in [os.path.dirname(self.path())] + self._searchPaths:
+			local_dir  = os.path.abspath(os.path.normpath(parent))
+			local_path = os.path.normpath(os.path.join(local_dir, path))
+			for p in (local_path, local_path + ".paml", path, path + ".paml"):
+				if os.path.exists(p):
+					return p
 
 	def _parseMacro( self, match, indent, parseLine=None ):
 		if not match: return False

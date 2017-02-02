@@ -6,7 +6,7 @@
 # License           :   Lesser GNU Public License
 # -----------------------------------------------------------------------------
 # Creation date     :   2007-06-01
-# Last mod.         :   2016-12-15
+# Last mod.         :   2017-02-02
 # -----------------------------------------------------------------------------
 
 # TODO: Should be moved to retro
@@ -151,6 +151,7 @@ def cacheGet( text, path, cache ):
 def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		tmpprefix="paml_", resolveData=None, allowEmpty=False, cwd=None):
 	timestamp = has_changed = data = None
+	error = None
 	cache, is_same, data, cache_key = cacheGet( text, path, cache)
 	if (not is_same) or (not cache):
 		if not path or os.path.isdir(path):
@@ -188,7 +189,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			data = resolveData()
 		if not data and not allowEmpty:
 			raise Exception(error or u"No data processing `{0}`".format(u" ".join(command)))
-		if not temp_created:
+		if not temp_created and not error:
 			# We don't cache temp files. Temp files are only created when
 			# we don't have a path.
 			if cache is SIG_CACHE:
@@ -198,7 +199,7 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 				cache.set(cache_key,data)
 				assert cache.has(cache_key) == data
 	assert data is not None, "paml.web._processCommand: None returned by {0}".format(command)
-	return engine.ensure_unicode(data)
+	return engine.ensure_unicode(data), error
 
 @locked
 def processSugar( text, path, request=None, cache=True, includeSource=False ):
@@ -228,72 +229,52 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		parent_path  = path or "."
 	else:
 		parent_path  = os.path.dirname(os.path.abspath(path or "."))
-	sugar2 = None
-	# FIXME: The whole PATH shing should be better
-	# try:
-	# 	import sugar2
-	# except ImportError, e:
-	# 	sugar2 = None
-	# 	pass
-	if sugar2:
-		# If Sugar2 is available, we'll use it
-		command = sugar2.SugarCommand("sugar2")
-		# FIXME: Should filter out options from command
-		arguments = [
-			"-cljs",
-			"--cache",
-			"--include-source" if includeSource else ""
-			"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
-			"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
-			"-L" + parent_path,
-			"-L" + os.path.join(parent_path, "lib", "sjs"),
-		] + options + [
-			" ".join(_ for _  in multi_paths) if multi_paths else path
-		]
-		return command.runAsString (arguments), "text/javascript"
-	else:
-		# We create a temp dir to cd to, because sugar's DParser
-		# creates temp files in the current dir.
-		temp_output = None
-		if not path:
-			temp_output = tempfile.mktemp()
-			path        = temp_output
-			with open(temp_output, "w") as f:
-				f.write(text.encode("utf-8"))
-		temp_path = tempfile.mkdtemp()
-		norm_path = lambda _:os.path.relpath(_, temp_path)
-		if not os.path.exists(temp_path): os.mkdir(temp_path)
-		# Otherwise we fallback to the regular Sugar, which has to be
-		# run through popen (so it's slower)
-		command = [
-			sugar,
-			"-cSljs" if includeSource else "-cljs",
-			"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
-			"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
-			"-L" + norm_path(parent_path),
-			"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
-		] + options + [
-			" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
-		]
-		res = _processCommand(command, text, path + query, cache, cwd=temp_path), "text/javascript"
-		# We clean up the temp dir
-		if os.path.exists(temp_path): os.rmdir(temp_path)
-		if temp_output and os.path.exists(temp_output): os.unlink(temp_output)
-		return res
+	# We create a temp dir to cd to, because sugar's DParser
+	# creates temp files in the current dir.
+	temp_output = None
+	if not path:
+		temp_output = tempfile.mktemp()
+		path        = temp_output
+		with open(temp_output, "w") as f:
+			f.write(text.encode("utf-8"))
+	temp_path = tempfile.mkdtemp()
+	norm_path = lambda _:os.path.relpath(_, temp_path)
+	if not os.path.exists(temp_path): os.mkdir(temp_path)
+	# Options
+	sugar_backend = os.environ["SUGAR_BACKEND"] if "SUGAR_BACKEND" in os.environ else "js"
+	# Otherwise we fallback to the regular Sugar, which has to be
+	# run through popen (so it's slower)
+	command = [
+		sugar,
+		("-cSl" if includeSource else "-cl") + sugar_backend,
+		"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
+		"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
+		"-L" + norm_path(parent_path),
+		"-L" + norm_path(os.path.join(parent_path, "lib", "sjs")),
+	] + options + [
+		" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
+	]
+	res, error = _processCommand(command, text, path + query, cache, cwd=temp_path)
+	if error:
+		res = "console.error("+ json.dumps(error) +")"
+	# We clean up the temp dir
+	if os.path.exists(temp_path): os.rmdir(temp_path)
+	if temp_output and os.path.exists(temp_output): os.unlink(temp_output)
+	return res, "text/javascript"
 
 def processCoffeeScript( text, path, request=None, cache=True ):
 	command = [
 		getCommands()["coffee"],"-cp",
 		path
 	]
-	return _processCommand(command, text, path, cache), "text/javascript"
+	return _processCommand(command, text, path, cache)[0], "text/javascript"
 
 def processBabelJS( text, path, cache=True ):
 	command = [
 		getCommands()["babel"],
 		path
 	]
-	return _processCommand(command, text, path, cache), "text/javascript"
+	return _processCommand(command, text, path, cache)[0], "text/javascript"
 
 def processTypeScript( text, path, request=None, cache=True ):
 	timestamp = has_changed = data = None
@@ -310,7 +291,7 @@ def processTypeScript( text, path, request=None, cache=True ):
 					return f.read()
 			return None
 		# We bypass the cache
-		error = _processCommand(command, text, path, cache=None, resolveData=read_file)
+		error,_ = _processCommand(command, text, path, cache=None, resolveData=read_file)
 		data  = None
 		# We don't expect to have an error there
 		# if error.strip():
@@ -336,7 +317,7 @@ def processPandoc( text, path, request=None, cache=True ):
 		getCommands()["pandoc"],
 		path
 	]
-	return PANDOC_HEADER + _processCommand(command, text, path, cache) + PANDOC_FOOTER, "text/html"
+	return PANDOC_HEADER + _processCommand(command, text, path, cache)[0] + PANDOC_FOOTER, "text/html"
 
 
 def processPythonicCSS( text, path, request=None, cache=True ):
@@ -348,7 +329,7 @@ def processPythonicCSS( text, path, request=None, cache=True ):
 		getCommands()["pythoniccss"],
 		path
 	]
-	return _processCommand(command, text, path, cache, allowEmpty=False), "text/css"
+	return _processCommand(command, text, path, cache, allowEmpty=False)[0], "text/css"
 
 def processHJSON( text, path, request=None, cache=True ):
 	import hjson
