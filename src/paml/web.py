@@ -51,6 +51,7 @@ def getCommands():
 			babel       = os.environ.get("BABEL",       "babel"),
 			hjson       = os.environ.get("HJSON",       "hjson"),
 			texto       = os.environ.get("TEXTO",       "texto"),
+			metablocks  = os.environ.get("METABLOCKS",  "metablocks"),
 		)
 	return COMMANDS
 
@@ -255,7 +256,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False ):
 		" ".join(norm_path(_) for _  in multi_paths) if multi_paths else norm_path(path)
 	]
 	res, error = _processCommand(command, text, path + query, cache, cwd=temp_path)
-	if error:
+	if error and not(res.strip()):
 		res = "console.error("+ json.dumps(error) +")"
 	# We clean up the temp dir
 	if os.path.exists(temp_path): os.rmdir(temp_path)
@@ -400,6 +401,22 @@ def processNobrackets( text, path, request=None, cache=True ):
 		content_type, data = data.split("\t", 1)
 		return data, content_type
 
+def processBlock( text, path, request=None, cache=True ):
+	"""Processes the given `.block` file."""
+	import metablocks
+	cache, is_same, data, cache_key = cacheGet (text, path, cache)
+	cache_path = path
+	is_same = False
+	if (not is_same) or (not cache):
+		data = metablocks.process(text, path=path, xsl="lib/xsl/block.xsl")
+		if   cache is SIG_CACHE:
+			cache.set(cache_path, cache_key, data)
+		elif cache is MEMORY_CACHE:
+			cache.set(cache_key, data)
+		return data, "text/xml"
+	else:
+		return data, "text/xml"
+
 def getProcessors():
 	"""Returns a dictionary with the Retro LocalFiles processors already
 	setup."""
@@ -421,6 +438,7 @@ def getProcessors():
 			"pcss"     : processPythonicCSS,
 			"md"       : processPandoc,
 			"nb"       : processNobrackets,
+			"block"    : processBlock,
 		}
 	return PROCESSORS
 

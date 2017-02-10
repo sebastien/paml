@@ -10,7 +10,7 @@
 # Last mod.         :   08-Dec-2016
 # -----------------------------------------------------------------------------
 
-import os, sys, re, string, json, time, glob, tempfile, argparse, types
+import os, sys, re, string, json, time, glob, tempfile, argparse, types, xml.dom
 from functools import reduce
 IS_PYTHON3 = sys.version_info[0] > 2
 
@@ -43,6 +43,11 @@ def ensure_bytes( t, encoding="utf8" ):
 		return t if isinstance(t, bytes) else bytes(t, encoding)
 	else:
 		return t
+
+def flatten(l, result=None):
+	result = result or []
+	[result.extend(flatten(_)) if isinstance(_,list) or isinstance(_,tuple) else result.append(_) for _ in l]
+	return result
 
 # -----------------------------------------------------------------------------
 #
@@ -112,7 +117,7 @@ FORMAT_OPTIONS      = (
 
 # Defaults for HTML documents
 HTML_DEFAULTS = {
-	"script":"sl i".split(),
+	"script":"p".split(),
 	"link":"i".split(),
 	"title":"sl n".split(),
 	"h1":"sl n".split(),
@@ -181,6 +186,11 @@ class Macro:
 	be updated live to register more macros."""
 
 	CSS_PATTERNS = (
+		"src/pcss/{0}.pcss",
+		"src/ccss/{0}.ccss",
+		"src/css/{0}.css",
+		"src/css/{0}-*.css",
+
 		"lib/pcss/{0}.pcss",
 		"lib/ccss/{0}.ccss",
 		"lib/css/{0}.css",
@@ -188,6 +198,11 @@ class Macro:
 	)
 
 	JS_PATTERNS = (
+		"src/sjs/{0}.sjs",
+		"src/ts/{0}.ts",
+		"src/js/{0}.js",
+		"src/js/{0}-*.js",
+
 		"lib/sjs/{0}.sjs",
 		"lib/ts/{0}.ts",
 		"lib/js/{0}.js",
@@ -235,7 +250,7 @@ class Macro:
 				return sorted(l,reverse=True)
 			else:
 				return (sorted(l)[-1],)
-		return None
+		return ()
 
 	@staticmethod
 	def RequireExpand( parser, params, indent, patterns, template ):
@@ -282,6 +297,7 @@ class Macro:
 			"{0}<script(type=text/javascript,src={1})"
 		)
 
+	# NOTE: This should be deprecated
 	def RequireGmodule( parser, params, indent ):
 		"""The `require:gmodule(name,...)` macro looks for files in the
 		paths defined by `JS` for the given `name`s and
@@ -334,12 +350,32 @@ class Macro:
 				count += 1
 		parser._parseLine("\n")
 
+	def ImportJS( parser, params, indent ):
+		import deparse.core
+		# We get the paths of the explicitely imported modules
+		modules = flatten([Macro.Require(_.strip().replace(".","/"), Macro.JS_PATTERNS) for _ in params.split(",")])
+		# We retrieve the dependencies
+		deps    = deparse.core.list(modules, recursive=True, resolve=True)
+		imports = []
+		# We resolve the files
+		for t,name in deps:
+			imports += Macro.Require(name.replace(".", "/"), Macro.JS_PATTERNS)
+		# And output the result
+		prefix  = Macro.IndentAsString(indent)
+		for path in imports + modules:
+			# NOTE: If the module type is not Vanilla, we can use async
+			line = "{0}<script(src='{1}')\n".format(prefix, path)
+			parser._parseLine(line)
+
 	# NOTE: This is declared here as we need to reference the Require*
 	# class methods.
 	CATALOGUE = {
-		"require:css":RequireCSS,
-		"require:js" :RequireJS,
+		# NOTE: Requires are the old way of doing imports
+		"require:css"     :RequireCSS,
+		"require:js"      :RequireJS,
 		"require:gmodule" :RequireGmodule,
+		# NOTE: This is the new way to do so
+		"import:js"       :ImportJS,
 	}
 
 # -----------------------------------------------------------------------------
@@ -491,6 +527,7 @@ class Parser:
 		self._paths     = []
 		self._searchPaths = [".", "src/paml", "lib/paml"]
 		self._defaults  = defaults or {}
+
 
 	def setDefaults( self, defaults ):
 		self._defaults = defaults
@@ -1006,6 +1043,10 @@ class HTMLFormatter:
 		self.defaults = HTML_DEFAULTS
 		self.flags    = [[]]
 		self.useProcessCache = True
+		self._init()
+
+	def _init( self ):
+		pass
 
 	def setDefaults( self, element, formatOptions=()):
 		"""Sets the formatting defaults for the given element name."""
@@ -1103,7 +1144,7 @@ class HTMLFormatter:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
 			#text = "".join(map(lambda _:_.encode("utf-8"), text))
-			text  = "".join(text)
+			text  = ("\n" if self.hasFlag(FORMAT_PRESERVE) else "").join(text)
 			if not element.isInline:
 				while text and text[-1] in "\n\t ": text = text[:-1]
 			self.writeText(text)
@@ -1483,6 +1524,44 @@ class JSFormatter( HTMLFormatter ):
 		else:
 			assert None, "Unrecognized value type: " + str(value)
 
+class XMLFormatter( HTMLFormatter ):
+
+	def __init__( self, document=None, root=None ):
+		self.dom  = xml.dom.getDOMImplementation()
+		self.doc  = document or self.dom.createDocument(None, None, None)
+		self.node = None
+		self.root = root
+
+	def format( self, document, indent=0 ):
+		elements = [v for v in document.content if isinstance(v, Element)]
+		assert len(elements) == len(document.content) == 1, "JSHTMLFormatter can only be used with one element"
+		node = self._formatContent(elements[0])
+		self.node = node
+		if self.root:
+			self.root.appendChild(node)
+		else:
+			self.doc.appendChild(node)
+		return self.doc.toprettyxml("\t")
+
+	def _formatContent( self, value ):
+		"""Formats the content of the given element. This uses the formatting
+		operations defined in this class."""
+		# FIXME: Should escape entities
+		if isinstance( value, Text ):
+			return self.doc.createTextNode(value.content)
+		elif isinstance( value, Element ):
+			element = value
+			if element.isPI: return None
+			node = self.doc.createElementNS(None, element.name)
+			if element.attributes:
+				for name, value in element.attributes:
+					node.setAttributeNS(None, name, value)
+			for child in element.content:
+				node.appendChild(self._formatContent(child))
+			return node
+		else:
+			assert None, "Unrecognized value type: " + str(value)
+
 # -----------------------------------------------------------------------------
 #
 # WRITER CLASS
@@ -1640,17 +1719,23 @@ class Writer:
 
 def parse( text, path=None, format="html" ):
 	parser = Parser()
-	if format == "js": parser._formatter = JSFormatter()
+	if   format == "js" : parser._formatter = JSFormatter()
+	elif format == "xml": parser._formatter = XMLFormatter()
 	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):
 	p = argparse.ArgumentParser(description="Processes PAML files")
 	p.add_argument("file",  type=str, help="File to process", nargs="?")
-	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js"))
+	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js", "xml"))
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
 	env       = dict(_.split("=",1) for _ in args.var or ())
-	formatter = JSFormatter() if args.format == "js" else HTMLFormatter()
+	if args.format == "js":
+		formatter = JSFormatter ()
+	elif args.format == "xml":
+		formatter = XMLFormatter ()
+	else:
+		formatter = HTMLFormatter ()
 	parser    = Parser(formatter=formatter, defaults=env)
 	return parser.parseFile(args.file or "--")
 
