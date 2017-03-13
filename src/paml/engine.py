@@ -49,6 +49,13 @@ def flatten(l, result=None):
 	[result.extend(flatten(_)) if isinstance(_,list) or isinstance(_,tuple) else result.append(_) for _ in l]
 	return result
 
+def xsl_escape( text ):
+	text = text.replace("\n", "&#x000A;")
+	text = text.replace("\t", "&#x0020;")
+	text = text.replace(">", "&gt;")
+	text = text.replace("<", "&lt;")
+	return text
+
 # -----------------------------------------------------------------------------
 #
 # GRAMMAR
@@ -101,6 +108,7 @@ FORMAT_INLINE       = "i"
 FORMAT_INLINE_BLOCK = "ib"
 FORMAT_SINGLE_LINE  = "sl"
 FORMAT_PRESERVE     = "p"
+FORMAT_XSL          = "x"
 FORMAT_NORMALIZE    = "n"
 FORMAT_STRIP        = "s"
 FORMAT_COMPACT      = "c"
@@ -396,15 +404,15 @@ class Text:
 class Element:
 	"""Represents an element within the HTML document."""
 
-	def __init__(self, name, attributes=None,isInline=False,isPI=False):
+	def __init__(self, name, attributes=None,isInline=False,isPI=False, hints=None):
 		self.name          = name
 		self.attributes    = attributes or []
 		self.content       = []
 		self.isInline      = isInline
 		self.mode          = None
 		self.isPI          = isPI
-		self.isComment      = False
-		self.formatOptions = []
+		self.isComment     = False
+		self.formatOptions = hints or []
 		if name[0] == "?":
 			self.isPI = True
 			self.name = name[1:]
@@ -527,7 +535,6 @@ class Parser:
 		self._paths     = []
 		self._searchPaths = [".", "src/paml", "lib/paml"]
 		self._defaults  = defaults or {}
-
 
 	def setDefaults( self, defaults ):
 		self._defaults = defaults
@@ -679,7 +686,7 @@ class Parser:
 			rest   = line[len(is_element.group()):]
 			name,attributes,embed,hints=self._parsePAMLElement(group)
 			# Element is a single line if it ends with ':'
-			self._writer.onElementStart(name, attributes, isInline=False)
+			self._writer.onElementStart(name, attributes, isInline=False, hints=hints)
 			if group[-1] == ":" and rest:
 				self._parseContentLine(rest)
 		else:
@@ -856,7 +863,7 @@ class Parser:
 			# And we append the element itself
 			group = element.group()[1:]
 			name,attributes,embed, hints=self._parsePAMLElement(group)
-			self._writer.onElementStart(name, attributes, isInline=True)
+			self._writer.onElementStart(name, attributes, isInline=True, hints=hints)
 			text = line[element.end():closing]
 			if text: self._writer.onTextAdd(text)
 			self._writer.onElementEnd()
@@ -1291,11 +1298,11 @@ class HTMLFormatter:
 			else:
 				self.newLine()
 				self.writeTag(start)
-				if not self.hasFlag(FORMAT_COMPACT):
+				if not self.hasFlag(FORMAT_COMPACT) and not self.hasFlag(FORMAT_PRESERVE):
 					self.newLine()
 					self.startIndent()
 				self._formatContent(element)
-				if not self.hasFlag(FORMAT_COMPACT):
+				if not self.hasFlag(FORMAT_COMPACT) and not self.hasFlag(FORMAT_PRESERVE):
 					self.endIndent()
 					self.ensureNewLine()
 				self.writeTag(end)
@@ -1356,6 +1363,8 @@ class HTMLFormatter:
 	def writeText( self, text ):
 		result = self._result
 		text   = self.formatText(text)
+		if self.hasFlag(FORMAT_XSL):
+			text = xsl_escape(text)
 		if self.hasFlag(FORMAT_PRESERVE):
 			result.append(text)
 		else:
@@ -1534,13 +1543,13 @@ class XMLFormatter( HTMLFormatter ):
 
 	def format( self, document, indent=0 ):
 		elements = [v for v in document.content if isinstance(v, Element)]
-		assert len(elements) == len(document.content) == 1, "JSHTMLFormatter can only be used with one element"
-		node = self._formatContent(elements[0])
-		self.node = node
-		if self.root:
-			self.root.appendChild(node)
-		else:
-			self.doc.appendChild(node)
+		for _ in elements:
+			node = self._formatContent(_)
+			self.node = node
+			if self.root:
+				self.root.appendChild(node)
+			else:
+				self.doc.appendChild(node)
 		return self.doc.toprettyxml("\t")
 
 	def _formatContent( self, value ):
@@ -1585,6 +1594,7 @@ class Writer:
 		self._document  = Element("document")
 		self._override  = None
 		self._bemStack  = []
+		self._hintStack = []
 
 	def onDocumentEnd( self ):
 		return self._document
@@ -1598,7 +1608,7 @@ class Writer:
 		"""Adds the given text fragment to the current element."""
 		self._node().append(Text(text))
 
-	def onElementStart( self, name, attributes=None,isInline=False ):
+	def onElementStart( self, name, attributes=None, isInline=False, hints=None ):
 		# We extend the override if present
 		if self._override:
 			# FIXME: This would be much more elegant with an ordered key-value
@@ -1642,12 +1652,12 @@ class Writer:
 			attr[1] = " ".join(value)
 		# We only want 0 or 1 BEM prefixes
 		assert len(bem_prefixes) <= 1
-		element = Element(name,attributes=attributes,isInline=isInline)
+		element = Element(name,attributes=attributes,isInline=isInline, hints=hints)
 		# We clear the override
 		if self._override:
 			self._override = None
 		self._node().append(element)
-		self._pushStack(element, bem_prefixes[0] if bem_prefixes else None)
+		self._pushStack(element, bem_prefixes[0] if bem_prefixes else None, hints)
 
 	def overrideAttributesForNextElement( self, attributes ):
 		self._override = []
@@ -1684,15 +1694,17 @@ class Writer:
 		# We simply join the resulting array into a string
 		return "".join(res)
 
-	def _pushStack( self, node, bemPrefixes=None ):
+	def _pushStack( self, node, bemPrefixes=None, hints=None ):
 		node.setMode(self.mode())
 		self._nodeStack.append(node)
 		# NOTE: Might just as well store the bem prefixes in the node?
 		self._bemStack.append(bemPrefixes)
+		self._hintStack.append(hints)
 
 	def _popStack(self):
 		self._nodeStack.pop()
 		self._bemStack.pop()
+		self._hintStack.pop()
 
 	def _node( self ):
 		if not self._nodeStack: return self._document

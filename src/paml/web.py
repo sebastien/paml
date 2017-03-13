@@ -51,7 +51,7 @@ def getCommands():
 			babel       = os.environ.get("BABEL",       "babel"),
 			hjson       = os.environ.get("HJSON",       "hjson"),
 			texto       = os.environ.get("TEXTO",       "texto"),
-			metablocks  = os.environ.get("METABLOCKS",  "metablocks"),
+			polyblocks  = os.environ.get("METABLOCKS",  "polyblocks"),
 		)
 	return COMMANDS
 
@@ -403,12 +403,13 @@ def processNobrackets( text, path, request=None, cache=True ):
 
 def processBlock( text, path, request=None, cache=True ):
 	"""Processes the given `.block` file."""
-	import metablocks
+	import polyblocks
 	cache, is_same, data, cache_key = cacheGet (text, path, cache)
 	cache_path = path
 	is_same = False
+	# FIXME: Should try a command here
 	if (not is_same) or (not cache):
-		data = metablocks.process(text, path=path, xsl="lib/xsl/block.xsl")
+		data = polyblocks.process(text, path=path, xsl="lib/xsl/block.xsl")
 		if   cache is SIG_CACHE:
 			cache.set(cache_path, cache_key, data)
 		elif cache is MEMORY_CACHE:
