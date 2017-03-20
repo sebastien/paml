@@ -1643,7 +1643,9 @@ class Writer:
 			value            = []
 			for i,_ in enumerate(class_attributes):
 				if _.endswith("-"):
-					bem_prefixes.append(_[0:-1])
+					prefix = _[0:-1]
+					value.append(prefix)
+					bem_prefixes.append(prefix)
 				elif _.startswith("-"):
 					_ = self._getBEMName(_)
 					value.append(_)
