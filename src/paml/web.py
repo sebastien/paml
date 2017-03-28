@@ -45,7 +45,7 @@ def getCommands():
 		COMMANDS = dict(
 			sugar       = os.environ.get("SUGAR",       "sugar"),
 			coffee      = os.environ.get("COFFEE",      "coffee"),
-			pythoniccss = os.environ.get("PYTHONICCSS", "pythoniccss"),
+			pcss       = os.environ.get("PCSS",        "pcss"),
 			pandoc      = os.environ.get("PANDOC",      "pandoc"),
 			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
 			babel       = os.environ.get("BABEL",       "babel"),
@@ -321,13 +321,13 @@ def processPandoc( text, path, request=None, cache=True ):
 	return PANDOC_HEADER + _processCommand(command, text, path, cache)[0] + PANDOC_FOOTER, "text/html"
 
 
-def processPythonicCSS( text, path, request=None, cache=True ):
+def processPCSS( text, path, request=None, cache=True ):
 	# NOTE: Disabled until memory leaks are fixed
 	# import pythoniccss
 	# result = pythoniccss.convert(text)
 	# return result, "text/css"
 	command = [
-		getCommands()["pythoniccss"],
+		getCommands()["pcss"],
 		path
 	]
 	return _processCommand(command, text, path, cache, allowEmpty=False)[0], "text/css"
@@ -342,10 +342,17 @@ def processTexto( text, path, request=None, cache=True ):
 	if request and request.param("as") == "raw":
 		return text, "text/plain"
 	else:
-		result = u"<!DOCTYPE html>\n" + texto.main.text2htmlbody(engine.ensure_unicode(text))
+		text   = engine.ensure_unicode(text)
+		result = engine.ensure_unicode(texto.main.text2htmlbody(text))
+		result = u"" + result
 		if request:
-			result = "<div><small><a href='{0}'>[SOURCE]</a></small></div>".format(request.path() +
-			"?as=raw") + result
+			#'<div><small><a href='{0}'>[SOURCE]</a></small></div>'.format(request.path() + "?as=raw") + result
+			result = (
+				u"<!DOCTYPE html>\n"
+				"<html><head>"
+				'<link rel="stylesheet" href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css" type="text/css" />'
+				'</head><body><div class=markdown-body style="padding:4em;max-width:55em;">'
+				) + result + "</div></body></html>"
 		return result, "text/html"
 
 def processNobrackets( text, path, request=None, cache=True ):
@@ -436,7 +443,7 @@ def getProcessors():
 			"texto"    : processTexto,
 			"txto"     : processTexto,
 			"ts"       : processTypeScript,
-			"pcss"     : processPythonicCSS,
+			"pcss"     : processPCSS,
 			"md"       : processPandoc,
 			"nb"       : processNobrackets,
 			"block"    : processBlock,
