@@ -1642,7 +1642,11 @@ class Writer:
 			class_attributes = attr[1].split()
 			value            = []
 			for i,_ in enumerate(class_attributes):
-				if _.endswith("-"):
+				if _.startswith("-") and _.endswith("-"):
+					_ = self._getBEMName(_[:-1])
+					value.append(_)
+					bem_prefixes.append(_)
+				elif _.endswith("-"):
 					prefix = _[0:-1]
 					value.append(prefix)
 					bem_prefixes.append(prefix)
