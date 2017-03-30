@@ -1223,8 +1223,8 @@ class HTMLFormatter:
 			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = paml.web.processPythonicCSS(source, ".")
-			logging.info("Parsed PythonicCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
+			res, _ = paml.web.processPCSS(source, ".")
+			logging.info("Parsed PCSS: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif element.mode and element.mode.endswith("nobrackets"):
 			lines = element.contentAsLines()
