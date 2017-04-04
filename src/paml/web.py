@@ -349,7 +349,7 @@ def processTexto( text, path, request=None, cache=True ):
 			#'<div><small><a href='{0}'>[SOURCE]</a></small></div>'.format(request.path() + "?as=raw") + result
 			result = (
 				u"<!DOCTYPE html>\n"
-				"<html><head>"
+				"<html><head><meta charset='utf8' />"
 				'<link rel="stylesheet" href="https://cdn.rawgit.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css" type="text/css" />'
 				'</head><body><div class=markdown-body style="padding:4em;max-width:55em;">'
 				) + result + "</div></body></html>"

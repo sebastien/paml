@@ -1358,7 +1358,10 @@ class HTMLFormatter:
 		if self._isNewLine():
 			self._result.append(self.indentAsSpaces() + tagText)
 		else:
-			self._result[-1] = self._result[-1] + tagText
+			if self._result:
+				self._result[-1] = self._result[-1] + tagText
+			else:
+				self._result.append(tagText)
 
 	def writeText( self, text ):
 		result = self._result
