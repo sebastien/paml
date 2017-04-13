@@ -190,7 +190,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 			data = resolveData()
 		if not data and not allowEmpty:
 			raise Exception(error or u"No data processing `{0}`".format(u" ".join(command)))
-		if not temp_created and not error:
+		# A return code of 0 means success, even if there was output on stderr
+		if not temp_created and p.returncode == 0:
 			# We don't cache temp files. Temp files are only created when
 			# we don't have a path.
 			if cache is SIG_CACHE:
