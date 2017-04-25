@@ -68,7 +68,7 @@ SYMBOL_ATTR    = "(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
 SYMBOL_ATTRS   = "\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
 SYMBOL_CONTENT = "@\w[\w\d\-_\+]*"
 SYMBOL_HINTS   = "\|[a-z](\+[a-z])*"
-SYMBOL_ELEMENT = "<(%s(%s)?|%s)?(%s)?(%s)?(%s)?\:?" % (
+SYMBOL_ELEMENT = "<(%s(%s)?|%s)(%s)?(%s)?(%s)?\:?" % (
 	SYMBOL_NAME,
 	SYMBOL_ID_CLS,
 	SYMBOL_ID_CLS,
@@ -685,7 +685,6 @@ class Parser:
 			group  = is_element.group()[1:]
 			rest   = line[len(is_element.group()):]
 			name,attributes,embed,hints=self._parsePAMLElement(group)
-			name = name or "div"
 			# Element is a single line if it ends with ':'
 			self._writer.onElementStart(name, attributes, isInline=False, hints=hints)
 			if group[-1] == ":" and rest:
