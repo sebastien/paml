@@ -1186,12 +1186,13 @@ class HTMLFormatter:
 			if not_empty != None and not content:
 				element.content.append(Text(not_empty))
 		# Does this element has any content that needs to be pre-processed?
-		if mode == "sugar":
+		if mode and mode.startswith("sugar"):
 			lines = element.contentAsLines()
+			version = mode[len("sugar"):]
 			import paml.web
 			source = u"".join(lines)
 			t = time.time()
-			res, _ = paml.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"))
+			res, _ = paml.web.processSugar(source, "", cache=self.useProcessCache, includeSource=element.mode.endswith("+source"), version=version)
 			logging.info("Parsed Sugar: {0} lines in {1:0.2f}s".format(len(lines), time.time() - t))
 			element.content = [Text(res)]
 		elif mode in ("coffeescript", "coffee"):

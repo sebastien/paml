@@ -44,8 +44,10 @@ def getCommands():
 	if not COMMANDS:
 		COMMANDS = dict(
 			sugar       = os.environ.get("SUGAR",       "sugar"),
+			sugar1      = os.environ.get("SUGAR1",      "sugar1"),
+			sugar2      = os.environ.get("SUGAR2",      "sugar2"),
 			coffee      = os.environ.get("COFFEE",      "coffee"),
-			pcss       = os.environ.get("PCSS",        "pcss"),
+			pcss        = os.environ.get("PCSS",        "pcss"),
 			pandoc      = os.environ.get("PANDOC",      "pandoc"),
 			typescript  = os.environ.get("TYPESCRIPT",  "tsc"),
 			babel       = os.environ.get("BABEL",       "babel"),
@@ -204,10 +206,10 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 	return engine.ensure_unicode(data), error
 
 @locked
-def processSugar( text, path, request=None, cache=True, includeSource=False ):
+def processSugar( text, path, request=None, cache=True, includeSource=False, version="" ):
 	text        = engine.ensure_unicode(text or "")
 	multi_paths = None
-	sugar       = getCommands()["sugar"]
+	sugar       = getCommands()["sugar" + version]
 	# NOTE: This supports having multiple paths given as argument, which
 	# will then be combined as a single argument.
 	options     = []
