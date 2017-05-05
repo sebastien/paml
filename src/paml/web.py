@@ -246,11 +246,13 @@ def processSugar( text, path, request=None, cache=True, includeSource=False, ver
 	if not os.path.exists(temp_path): os.mkdir(temp_path)
 	# Options
 	sugar_backend = os.environ["SUGAR_BACKEND"] if "SUGAR_BACKEND" in os.environ else "js"
+	sugar_modules = os.environ["SUGAR_MODULES"] if "SUGAR_MODULES" in os.environ else "vanilla"
 	# Otherwise we fallback to the regular Sugar, which has to be
 	# run through popen (so it's slower)
 	command = [
 		sugar,
 		("-cSl" if includeSource else "-cl") + sugar_backend,
+		"-D" + sugar_modules,
 		"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
 		"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
 		"-L" + norm_path(parent_path),
