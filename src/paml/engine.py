@@ -448,7 +448,7 @@ class Element:
 				res.extend(e.contentAsLines())
 		return res
 
-	def _attributesAsHTML(self):
+	def _attributesAsHTML(self, strict=True):
 		"""Returns the attributes as HTML"""
 		r = []
 		def escape(v):
@@ -458,7 +458,7 @@ class Element:
 			return v
 		for name, value in self.attributes:
 			if value is None:
-				r.append("%s" % (name))
+				r.append("%s=\"\"" % (name) if strict else str(name))
 			else:
 				r.append("%s=%s" % (name,escape(value)))
 		r = " ".join(r)
@@ -1050,6 +1050,7 @@ class HTMLFormatter:
 		self.defaults = HTML_DEFAULTS
 		self.flags    = [[]]
 		self.useProcessCache = True
+		self.strict          = True
 		self._init()
 
 	def _init( self ):
@@ -1176,7 +1177,7 @@ class HTMLFormatter:
 		"""Formats the given element and its content, by using the formatting
 		operations defined in this class."""
 		if isinstance(element, Comment): return self._formatComment(element)
-		attributes = element._attributesAsHTML()
+		attributes = element._attributesAsHTML(strict=self.strict)
 		exceptions = HTML_EXCEPTIONS.get(element.name)
 		content    = element.content
 		mode       = element.mode.split("+")[0] if element.mode else None
