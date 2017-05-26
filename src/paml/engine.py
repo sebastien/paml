@@ -1040,7 +1040,7 @@ class HTMLFormatter:
 
 	"""
 
-	def __init__( self ):
+	def __init__( self, strict=False ):
 		"""Creates a new formatter."""
 		self.indent = 0
 		self.indentValue = "  "
@@ -1050,7 +1050,7 @@ class HTMLFormatter:
 		self.defaults = HTML_DEFAULTS
 		self.flags    = [[]]
 		self.useProcessCache = True
-		self.strict          = True
+		self.strict          = strict
 		self._init()
 
 	def _init( self ):
@@ -1311,7 +1311,7 @@ class HTMLFormatter:
 			self.popFlags()
 		# Otherwise it doesn't have any content
 		else:
-			if exceptions and exceptions.get("NO_CLOSING"):
+			if not self.strict and exceptions and exceptions.get("NO_CLOSING"):
 				text =  "<%s%s>" % (element.name, attributes)
 			else:
 				text =  "<%s%s />" % (element.name, attributes)
@@ -1555,7 +1555,7 @@ class XMLFormatter( HTMLFormatter ):
 				self.root.appendChild(node)
 			else:
 				self.doc.appendChild(node)
-		return self.doc.toprettyxml("\t")
+		return self.doc.toxml()
 
 	def _formatContent( self, value ):
 		"""Formats the content of the given element. This uses the formatting
@@ -1740,10 +1740,16 @@ class Writer:
 #
 # -----------------------------------------------------------------------------
 
+def formatter( format ):
+	if   format == "js"     : return JSFormatter()
+	if   format == "jshtml" : return JSHTMLFormatter()
+	elif format == "xml"    : return XMLFormatter()
+	elif format == "xhtml"  : return HTMLFormatter(strict=True)
+	elif format == "html"   : return HTMLFormatter(strict=False)
+	else: return None
+
 def parse( text, path=None, format="html" ):
-	parser = Parser()
-	if   format == "js" : parser._formatter = JSFormatter()
-	elif format == "xml": parser._formatter = XMLFormatter()
+	parser = Parser(formatter=formatter(format))
 	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):
@@ -1753,12 +1759,7 @@ def run( arguments, input=None ):
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
 	env       = dict(_.split("=",1) for _ in args.var or ())
-	if args.format == "js":
-		formatter = JSFormatter ()
-	elif args.format == "xml":
-		formatter = XMLFormatter ()
-	else:
-		formatter = HTMLFormatter ()
+	formatter = formatter(args.format)
 	parser    = Parser(formatter=formatter, defaults=env)
 	return parser.parseFile(args.file or "--")
 

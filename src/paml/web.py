@@ -104,12 +104,16 @@ def processPAML( pamlText, path, request=None ):
 					suffix = "}" + suffix
 		return prefix + result + suffix, "text/javascript"
 	else:
-		type = "text/html"
+		type   = "text/html"
+		format = "html"
 		if path.endswith(".xsl.paml"):
 			# NOTE: Use text/xsl does not work in FF
 			type = "text/xml"
+			format = "xml"
 		elif path.endswith(".xml.paml"):
 			type = "text/xml"
+			format = "xml"
+		parser._formatter = engine.formatter(format)
 		result = parser.parseString(pamlText, path)
 		return result, type
 
