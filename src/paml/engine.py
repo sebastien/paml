@@ -1759,8 +1759,7 @@ def run( arguments, input=None ):
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
 	env       = dict(_.split("=",1) for _ in args.var or ())
-	formatter = formatter(args.format)
-	parser    = Parser(formatter=formatter, defaults=env)
+	parser    = Parser(formatter=formatter(args.format), defaults=env)
 	return parser.parseFile(args.file or "--")
 
 # -----------------------------------------------------------------------------
