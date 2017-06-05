@@ -1755,7 +1755,7 @@ def parse( text, path=None, format="html" ):
 def run( arguments, input=None ):
 	p = argparse.ArgumentParser(description="Processes PAML files")
 	p.add_argument("file",  type=str, help="File to process", nargs="?")
-	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js", "xml"))
+	p.add_argument("-t", "--to",  dest="format", help="Converts the PAML to HTML or JavaScript", choices=("html", "js", "xml", "xhtml"))
 	p.add_argument("-d", "--def", dest="var",   type=str, action="append")
 	args      = p.parse_args(arguments)
 	env       = dict(_.split("=",1) for _ in args.var or ())
