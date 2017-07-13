@@ -1043,7 +1043,9 @@ class HTMLFormatter:
 	def __init__( self, strict=False ):
 		"""Creates a new formatter."""
 		self.indent = 0
-		self.indentValue = "  "
+		# NOTE: I removed the indentation. It does not serve any purpose
+		# as the HTML is going to be minified anyway.
+		self.indentValue = ""
 		self.textWidth = 80
 		# FIXME
 		self.defaults = {}
@@ -1298,15 +1300,12 @@ class HTMLFormatter:
 				self.writeTag(end)
 			# Otherwise it's a normal open/closed element
 			else:
-				self.newLine()
 				self.writeTag(start)
 				if not self.hasFlag(FORMAT_COMPACT) and not self.hasFlag(FORMAT_PRESERVE):
-					self.newLine()
 					self.startIndent()
 				self._formatContent(element)
 				if not self.hasFlag(FORMAT_COMPACT) and not self.hasFlag(FORMAT_PRESERVE):
 					self.endIndent()
-					self.ensureNewLine()
 				self.writeTag(end)
 			self.popFlags()
 		# Otherwise it doesn't have any content
@@ -1316,7 +1315,6 @@ class HTMLFormatter:
 			else:
 				text =  "<%s%s />" % (element.name, attributes)
 			# And if it's an inline, we don't add a newline
-			if not element.isInline: self.newLine()
 			self.writeTag(text)
 
 	def _formatComment( self, comment ):
@@ -1348,13 +1346,6 @@ class HTMLFormatter:
 	def endIndent( self ):
 		assert self.indent > 0
 		self.indent -= 1
-		self._ensureNewLine()
-
-	def newLine( self ):
-		self._ensureNewLine()
-
-	def ensureNewLine( self ):
-		self._ensureNewLine()
 
 	def writeTag( self, tagText ):
 		if self._isNewLine():

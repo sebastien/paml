@@ -108,8 +108,10 @@ def processPAML( pamlText, path, request=None ):
 		format = "html"
 		# FIXME: Somehow using XML does not work the same
 		if path.endswith(".xsl.paml"):
-			# NOTE: Use text/xsl does not work in FF
-			type = "text/xml"
+			# NOTE: Use text/xsl does not work in FF, or Chrome for that matter.
+			# otherwise it is not parsed as an XML document.
+			# SEE: https://stackoverflow.com/questions/13752836/chrome-says-resource-interpreted-as-stylesheet-but-transferred-with-mime-type-a#21604288
+			type   = "text/xml"
 			format = "xhtml"
 		elif path.endswith(".xml.paml"):
 			type = "text/xml"
