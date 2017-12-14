@@ -53,7 +53,7 @@ def getCommands():
 			babel       = os.environ.get("BABEL",       "babel"),
 			hjson       = os.environ.get("HJSON",       "hjson"),
 			texto       = os.environ.get("TEXTO",       "texto"),
-			polyblocks  = os.environ.get("METABLOCKS",  "polyblocks"),
+			polyblocks  = os.environ.get("POLYBLOCKS",  "polyblocks"),
 		)
 	return COMMANDS
 
@@ -190,6 +190,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 				stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True,
 				cwd=cwd)
 		data, error = p.communicate()
+		if error:
+			error = engine.ensure_unicode(error)
 		# DEBUG:
 		# If we have a resolveData attribute, we use it to resolve/correct the
 		# data

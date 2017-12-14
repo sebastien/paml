@@ -561,7 +561,7 @@ class Parser:
 			f = sys.stdin
 		else:
 			# FIXME: File exists and is readable
-			f = open(path, "r")
+			f = open(path, "rb")
 			should_close = True
 		self._paths.append(path)
 		self._writer.onDocumentStart()
