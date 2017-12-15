@@ -156,6 +156,9 @@ HTML_EXCEPTIONS = {
 	"script":{
 		"NOT_EMPTY":" "
 	},
+	"template":{
+		"NOT_EMPTY":" "
+	},
 	"span":{
 		"NOT_EMPTY":" "
 	},
