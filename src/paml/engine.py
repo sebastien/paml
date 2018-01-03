@@ -84,6 +84,7 @@ RE_ELEMENT     = re.compile("^%s" % (SYMBOL_ELEMENT))
 RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_MACRO       = re.compile("^(\s)*(@\w+(:\w+)?)\s*\(([^\)]+)\)\s*$")
 RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
+RE_USE         = re.compile("^(\s)*%use\s+#([A-Za-z0-9_\-]+)(\.\w+)?(\s+(\d+)x(\d+))?$")
 RE_PI          = re.compile("^(\s)*\<\?.+\?\>\s*$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
@@ -619,7 +620,8 @@ class Parser:
 			if self._isInEmbed():
 				line_with_indent = "\n"
 				if len(line) > (self.indent()+4)/4:
-					line_with_indent = original_line[(self.indent()+4)/4:]
+					i = int(((self.indent() or 0)+4)/4)
+					line_with_indent = original_line[i:]
 				self._writer.onTextAdd(line_with_indent)
 				return
 			else:
@@ -637,6 +639,9 @@ class Parser:
 			return
 		# Is it an include element (%include ...)
 		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
+			return
+		# Is it an include element (%use ...)
+		if self._parseUse( RE_USE.match(original_line), indent ):
 			return
 		# Is it a macro element (%macro ...)
 		if self._parseMacro( RE_MACRO.match(original_line), indent ):
@@ -804,20 +809,29 @@ class Parser:
 			else:
 				return self._writer.onTextAdd(error_line)
 		else:
-			self._paths.append(path)
-			p = int(indent/4) * "\t"
-			relpath = os.path.relpath(path, os.path.dirname(path))
-			#(parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
-			with open(path,'rb') as f:
-				for l in f.readlines():
-					if RE_PROCESSING_INSTRUCTION.match(l): continue
-					# FIXME: This does not work when I use tabs instead
-					l = ensure_unicode(l)
-					# We do the substituion
-					if subs: l = string.Template(l).safe_substitute(**subs)
-					(parseLine or self._parseLine) (p + l)
-			#(parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
-			self._paths.pop()
+			if not path.endswith(".paml"):
+				# If it's not a PAML file we include it as-is, skipping
+				# any processing instruction
+				with open(path,"rt") as f:
+					text = f.read()
+					if text.startswith("<?xml"):
+						text = text[text.find("\n"):]
+					self._writer.onTextAdd(text)
+			else:
+				self._paths.append(path)
+				p = int(indent/4) * "\t"
+				relpath = os.path.relpath(path, os.path.dirname(path))
+				#(parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
+				with open(path,'rt') as f:
+					for l in f.readlines():
+						if RE_PROCESSING_INSTRUCTION.match(l): continue
+						# FIXME: This does not work when I use tabs instead
+						l = ensure_unicode(l)
+						# We do the substituion
+						if subs: l = string.Template(l).safe_substitute(**subs)
+						(parseLine or self._parseLine) (p + l)
+				#(parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
+				self._paths.pop()
 		return True
 
 	def _findIncludedPath( self, path ):
@@ -828,6 +842,23 @@ class Parser:
 			for p in (local_path, local_path + ".paml", path, path + ".paml"):
 				if os.path.exists(p):
 					return p
+
+	def _parseUse( self, match, indent, parseLine=None ):
+		"""An use rule is expressed as follows
+		%use id
+		"""
+		if not match: return False
+		attr = ""
+		if match.group(3):
+			attr += ' class="{0}"'.format(match.group(3)[1:].strip())
+		if match.group(4):
+			attr += ' width="{0}px"'.format(match.group(5).strip())
+			attr += ' height="{0}px"'.format(match.group(6).strip())
+		self._writer.onTextAdd(
+			'<svg{1} data-target="{0}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
+			'<use xlink:href="#{0}" /></svg>'.format(match.group(2), attr)
+		)
+		return True
 
 	def _parseMacro( self, match, indent, parseLine=None ):
 		if not match: return False
@@ -1605,7 +1636,9 @@ class Writer:
 
 	def onTextAdd( self, text ):
 		"""Adds the given text fragment to the current element."""
-		self._node().append(Text(text))
+		node = Text(text)
+		self._node().append(node)
+		return node
 
 	def onElementStart( self, name, attributes=None, isInline=False, hints=None ):
 		# We extend the override if present
