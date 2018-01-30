@@ -849,6 +849,8 @@ class Parser:
 		"""
 		if not match: return False
 		attr = ""
+		# We find the parent element
+		self._gotoParentElement(indent)
 		if match.group(3):
 			attr += ' class="{0}"'.format(match.group(3)[1:].strip())
 		if match.group(4):
