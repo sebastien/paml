@@ -260,6 +260,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False, ver
 	# run through popen (so it's slower)
 	command = [
 		sugar,
+		"--cache",
 		("-cSl" if includeSource else "-cl") + sugar_backend,
 		"-D" + sugar_modules,
 		"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
@@ -505,6 +506,13 @@ def run( arguments, options={} ):
 	args      = p.parse_args(arguments)
 	options.update(dict(_.split("=",1) for _ in args.var or ""))
 	options.update(dict((_.split("=",1)[0].lower(), _.split("=",1)[1]) for _ in args.values or "" if not _.startswith("proxy:")))
+	# We merge some of the options that match COMMAND definitions, so we
+	# do stuff like: `paml-web SUGAR=sugar1`
+	commands = getCommands()
+	for k,v in options.items():
+		if k in commands and v:
+			commands[k] = v
+
 	# We can load defaults. This should be moved to a dedicated option.
 	global PAMELA_DEFAULTS
 	defaults_path = ".paml-defaults"
