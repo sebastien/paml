@@ -56,6 +56,14 @@ def xsl_escape( text ):
 	text = text.replace("<", "&lt;")
 	return text
 
+def xml_escape( text ):
+	# TODO: Support escaping &
+	text = text.replace("<", "&lt;")
+	text = text.replace(">", "&gt;")
+	return text
+
+
+
 # -----------------------------------------------------------------------------
 #
 # GRAMMAR
@@ -90,6 +98,8 @@ RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
 RE_PROCESSING_INSTRUCTION = re.compile("^\s*\<\?.+\?\>\s*$")
+# TODO: Support numerical entities
+# RE_ENTITY      = re.compile("&[A-Za-z];")
 
 T_ELEMENT      = "EL"
 T_DECLARATION  = "DC"
@@ -456,6 +466,7 @@ class Element:
 		"""Returns the attributes as HTML"""
 		r = []
 		def escape(v):
+			v = xml_escape(v)
 			if   v.find('"') == -1: v = '"%s"' % (v)
 			elif v.find("'") == -1: v = "'%s'" % (v)
 			else: v = '"%s"' % (v.replace('"', '\\"'))
@@ -1425,6 +1436,7 @@ class HTMLFormatter:
 		"""Returns the given text properly formatted according to
 		this formatted configuration."""
 		if not self.hasFlag(FORMAT_PRESERVE):
+			text = xml_escape(text)
 			if self.hasFlag(FORMAT_NORMALIZE):
 				text = self.normalizeText(text)
 			if self.hasFlag(FORMAT_STRIP):
