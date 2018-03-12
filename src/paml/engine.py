@@ -62,8 +62,6 @@ def xml_escape( text ):
 	text = text.replace(">", "&gt;")
 	return text
 
-
-
 # -----------------------------------------------------------------------------
 #
 # GRAMMAR
@@ -93,11 +91,11 @@ RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_MACRO       = re.compile("^(\s)*(@\w+(:\w+)?)\s*\(([^\)]+)\)\s*$")
 RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
 RE_USE         = re.compile("^(\s)*%use\s+#([A-Za-z0-9_\-]+)(\.\w+)?(\s+(\d+)x(\d+))?$")
-RE_PI          = re.compile("^(\s)*\<\?.+\?\>\s*$")
+RE_PI          = re.compile("^(\s)*\<\?(.+)\?\>\s*$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
 RE_SPACE       = re.compile("[\s\n]")
-RE_PROCESSING_INSTRUCTION = re.compile("^\s*\<\?.+\?\>\s*$")
+RE_XML_COMMENT = re.compile("^(\s)*\<\!\-\-(([^\-]|\-[^\-]|\-\-[^\>])+)\-\-\>\s*$")
 # TODO: Support numerical entities
 # RE_ENTITY      = re.compile("&[A-Za-z];")
 
@@ -489,6 +487,24 @@ class Comment(object):
 	def contentAsLines( self ):
 		return [self.content]
 
+class XMLComment(object):
+
+	def __init__(self, line ):
+		self.isComment = True
+		self.content   = line
+
+	def contentAsLines( self ):
+		return [self.content]
+
+class ProcessingInstruction(object):
+
+	def __init__(self, line ):
+		self.isPI = True
+		self.content   = line
+
+	def contentAsLines( self ):
+		return [self.content]
+
 class Declaration(Element):
 	def __init__(self, name, attributes=None):
 		Element.__init__(self,name,attributes)
@@ -646,7 +662,11 @@ class Parser:
 				return
 		is_pi = RE_PI.match(line)
 		if is_pi:
-			self._writer.onTextAdd(line)
+			self._writer.onProcessingInstruction(is_pi.group(2))
+			return
+		is_xml_comment = RE_XML_COMMENT.match(line)
+		if is_xml_comment:
+			self._writer.onXMLComment(is_xml_comment.group(2))
 			return
 		# Is it an include element (%include ...)
 		if self._parseInclude( RE_INCLUDE.match(original_line), indent ):
@@ -835,7 +855,7 @@ class Parser:
 				#(parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
 				with open(path,'rt') as f:
 					for l in f.readlines():
-						if RE_PROCESSING_INSTRUCTION.match(l): continue
+						if RE_PI.match(l): continue
 						# FIXME: This does not work when I use tabs instead
 						l = ensure_unicode(l)
 						# We do the substituion
@@ -1195,8 +1215,10 @@ class HTMLFormatter:
 				self._formatElement(e)
 			elif isinstance(e, Text):
 				text.append(e.content)
-			elif isinstance(e, Comment):
-				text.append(u"<!-- {0} -->\n".format(e.content))
+			elif isinstance(e, XMLComment):
+				self._result.append(u"<!-- {0} -->\n".format(xml_escape(e.content)))
+			elif isinstance(e, ProcessingInstruction):
+				self._result.append(u"<?{0}?>\n".format(e.content))
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
@@ -1647,6 +1669,16 @@ class Writer:
 		line = line.replace("\n", " ").strip()
 		comment = Comment(line)
 		self._node().append(comment)
+
+	def onXMLComment(self, text):
+		node = XMLComment(text)
+		self._node().append(node)
+		return node
+
+	def onProcessingInstruction( self, text ):
+		node = ProcessingInstruction(text)
+		self._node().append(node)
+		return node
 
 	def onTextAdd( self, text ):
 		"""Adds the given text fragment to the current element."""
