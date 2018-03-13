@@ -91,6 +91,7 @@ RE_INLINE      = re.compile("%s" % (SYMBOL_ELEMENT))
 RE_MACRO       = re.compile("^(\s)*(@\w+(:\w+)?)\s*\(([^\)]+)\)\s*$")
 RE_INCLUDE     = re.compile("^(\s)*%include (.+)$")
 RE_USE         = re.compile("^(\s)*%use\s+#([A-Za-z0-9_\-]+)(\.\w+)?(\s+(\d+)x(\d+))?$")
+RE_DOCTYPE     = re.compile("^(\s)*\<\!([^>]+)\>\s*$")
 RE_PI          = re.compile("^(\s)*\<\?(.+)\?\>\s*$")
 RE_LEADING_TAB = re.compile("\t*")
 RE_LEADING_SPC = re.compile("[ ]*")
@@ -423,6 +424,7 @@ class Element:
 		self.isInline      = isInline
 		self.mode          = None
 		self.isPI          = isPI
+		self.isDoctype     = False
 		self.isComment     = False
 		self.formatOptions = hints or []
 		if name[0] == "?":
@@ -491,6 +493,15 @@ class XMLComment(object):
 
 	def __init__(self, line ):
 		self.isComment = True
+		self.content   = line
+
+	def contentAsLines( self ):
+		return [self.content]
+
+class DocType(object):
+
+	def __init__(self, line ):
+		self.isDocType = True
 		self.content   = line
 
 	def contentAsLines( self ):
@@ -663,6 +674,10 @@ class Parser:
 		is_pi = RE_PI.match(line)
 		if is_pi:
 			self._writer.onProcessingInstruction(is_pi.group(2))
+			return
+		is_doctype = RE_DOCTYPE.match(line)
+		if is_doctype:
+			self._writer.onDocType(is_doctype.group(2))
 			return
 		is_xml_comment = RE_XML_COMMENT.match(line)
 		if is_xml_comment:
@@ -1219,6 +1234,8 @@ class HTMLFormatter:
 				self._result.append(u"<!-- {0} -->\n".format(xml_escape(e.content)))
 			elif isinstance(e, ProcessingInstruction):
 				self._result.append(u"<?{0}?>\n".format(e.content))
+			elif isinstance(e, DocType):
+				self._result.append(u"<?{0}>\n".format(e.content))
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
@@ -1677,6 +1694,11 @@ class Writer:
 
 	def onProcessingInstruction( self, text ):
 		node = ProcessingInstruction(text)
+		self._node().append(node)
+		return node
+
+	def onDocType( self, text ):
+		node = DocType(text)
 		self._node().append(node)
 		return node
 
