@@ -414,6 +414,16 @@ class Text:
 	def contentAsLines( self ):
 		return [self.content]
 
+class RawText:
+	"""Reprensents a text fragment within the HTML document that should not be
+	escaped."""
+
+	def __init__(self, content):
+		self.content = content
+
+	def contentAsLines( self ):
+		return [self.content]
+
 class Element:
 	"""Represents an element within the HTML document."""
 
@@ -862,7 +872,7 @@ class Parser:
 					text = f.read()
 					if text.startswith("<?xml"):
 						text = text[text.find("\n"):]
-					self._writer.onTextAdd(text)
+					self._writer.onRawTextAdd(text)
 			else:
 				self._paths.append(path)
 				p = int(indent/4) * "\t"
@@ -902,7 +912,7 @@ class Parser:
 		if match.group(4):
 			attr += ' width="{0}px"'.format(match.group(5).strip())
 			attr += ' height="{0}px"'.format(match.group(6).strip())
-		self._writer.onTextAdd(
+		self._writer.onRawTextAdd(
 			'<svg{1} data-target="{0}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
 			'<use xlink:href="#{0}" /></svg>'.format(match.group(2), attr)
 		)
@@ -1230,6 +1240,8 @@ class HTMLFormatter:
 				self._formatElement(e)
 			elif isinstance(e, Text):
 				text.append(e.content)
+			elif isinstance(e, RawText):
+				self._result.append(e.content)
 			elif isinstance(e, XMLComment):
 				self._result.append(u"<!-- {0} -->\n".format(xml_escape(e.content)))
 			elif isinstance(e, ProcessingInstruction):
@@ -1705,6 +1717,12 @@ class Writer:
 	def onTextAdd( self, text ):
 		"""Adds the given text fragment to the current element."""
 		node = Text(text)
+		self._node().append(node)
+		return node
+
+	def onRawTextAdd( self, text ):
+		"""Adds the given text fragment to the current element."""
+		node = RawText(text)
 		self._node().append(node)
 		return node
 
