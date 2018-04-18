@@ -242,7 +242,7 @@ class Macro:
 
 	@classmethod
 	def IndentAsString( cls, indent ):
-		return "\t" * (indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
+		return "\t" * int(indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
 
 	@staticmethod
 	def Require( name, paths=[]):
