@@ -1645,7 +1645,7 @@ class XMLFormatter( HTMLFormatter ):
 				self.root.appendChild(node)
 			else:
 				self.doc.appendChild(node)
-		return self.doc.toxml().encode("utf-8")
+		return self.doc.toxml()
 
 	def _formatContent( self, value ):
 		"""Formats the content of the given element. This uses the formatting
