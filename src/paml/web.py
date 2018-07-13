@@ -187,8 +187,8 @@ def _processCommand( command, text, path, cache=True, tmpsuffix="tmp",
 		# ---
 		# Here the `shell` means single-line comman,d
 		p  = subprocess.Popen(" ".join(command), shell=True,
-				stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True,
-				cwd=cwd)
+			stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True,
+			cwd=cwd)
 		data, error = p.communicate()
 		if error:
 			error = engine.ensure_unicode(error)
@@ -248,7 +248,7 @@ def processSugar( text, path, request=None, cache=True, includeSource=False, ver
 	if not path:
 		temp_output = tempfile.mktemp()
 		path        = temp_output
-		with open(temp_output, "w") as f:
+		with open(temp_output, "wb") as f:
 			f.write(text.encode("utf-8"))
 	temp_path = tempfile.mkdtemp()
 	norm_path = lambda _:os.path.relpath(_, temp_path)
@@ -260,8 +260,8 @@ def processSugar( text, path, request=None, cache=True, includeSource=False, ver
 	# run through popen (so it's slower)
 	command = [
 		sugar,
-		"--cache",
-		("-cSl" if includeSource else "-cl") + sugar_backend,
+		("-cSl" if includeSource else "-cl") + (sugar_backend or "es"),
+		"-C " + os.path.expanduser("~/.cache/lambdafactory/paml"),
 		"-D" + sugar_modules,
 		"-L" + os.path.abspath(os.path.join(os.getcwd(), "lib/sjs")),
 		"-L" + os.path.abspath(os.path.join(os.getcwd(), "src/sjs")),
@@ -274,7 +274,8 @@ def processSugar( text, path, request=None, cache=True, includeSource=False, ver
 	if error and not(res.strip()):
 		res = "console.error("+ json.dumps(error) +")"
 	# We clean up the temp dir
-	if os.path.exists(temp_path): os.rmdir(temp_path)
+	if os.path.exists(temp_path):
+		os.rmdir(temp_path)
 	if temp_output and os.path.exists(temp_output): os.unlink(temp_output)
 	return res, "text/javascript"
 
