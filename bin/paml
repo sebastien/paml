@@ -3,7 +3,7 @@ import sys, paml.engine, io
 output = sys.stdout
 result = paml.engine.run(sys.argv[1:])
 if isinstance(output, io.TextIOBase):
-    output.write(str(result, "utf-8"))
+    output.write(result)
 else:
     output.write(result.encode("utf-8"))
 # EOF
