@@ -1,1 +1,2 @@
-<span:${MILESTONE}
+<div(data-milestone="${MILESTONE}")
+	<span:${MILESTONE}

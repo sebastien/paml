@@ -242,7 +242,7 @@ class Macro:
 
 	@classmethod
 	def IndentAsString( cls, indent ):
-		return "\t" * (indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
+		return "\t" * int(indent / TAB_WIDTH) if indent % TAB_WIDTH == 0 else " " * indent
 
 	@staticmethod
 	def Require( name, paths=[]):
@@ -1645,7 +1645,7 @@ class XMLFormatter( HTMLFormatter ):
 				self.root.appendChild(node)
 			else:
 				self.doc.appendChild(node)
-		return self.doc.toxml(encoding="utf8")
+		return self.doc.toxml().encode("utf-8")
 
 	def _formatContent( self, value ):
 		"""Formats the content of the given element. This uses the formatting
@@ -1862,7 +1862,8 @@ def formatter( format ):
 	else: return None
 
 def parse( text, path=None, format="html" ):
-	parser = Parser(formatter=formatter(format))
+	fmt = formatter(format)
+	parser = Parser(formatter=fmt)
 	return parser.parseString(text, path=path)
 
 def run( arguments, input=None ):

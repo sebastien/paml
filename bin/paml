@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import sys, paml.engine, io
 output = sys.stdout
 result = paml.engine.run(sys.argv[1:])
 if isinstance(output, io.TextIOBase):
-    output.write(result)
+    output.write(str(result, "utf-8"))
 else:
     output.write(result.encode("utf-8"))
 # EOF
