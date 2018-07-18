@@ -1653,6 +1653,17 @@ class XMLFormatter( HTMLFormatter ):
 		# FIXME: Should escape entities
 		if isinstance( value, Text ):
 			return self.doc.createTextNode(value.content)
+		elif isinstance( value, RawText ):
+			import xml.dom.minidom
+			try:
+				document = xml.dom.minidom.parseString(value.content)
+			except:
+				pass
+			if not document:
+				return self.doc.createTextNode(value.content)
+			else:
+				# NOTE: We might want to return more
+				return document.childNodes[0]
 		elif isinstance( value, Element ):
 			element = value
 			if element.isPI: return None
