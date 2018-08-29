@@ -794,7 +794,7 @@ class Parser:
 		"""A simple parser that extract (key,value) from a string like
 		`KEY=VALUE,KEY="VALUE\"VALUE",KEY='VALUE\'VALUE'`"""
 		offset = 0
-		result = [] + self._defaults.items()
+		result = [_ for _ in self._defaults.items()]
 		while offset < len(text):
 			equal  = text.find("=", offset)
 			assert equal >= 0, "Include subsitution without value: {0}".format(text)
