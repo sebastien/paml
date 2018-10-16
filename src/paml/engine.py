@@ -1247,7 +1247,7 @@ class HTMLFormatter:
 			elif isinstance(e, ProcessingInstruction):
 				self._result.append(u"<?{0}?>\n".format(e.content))
 			elif isinstance(e, DocType):
-				self._result.append(u"<?{0}>\n".format(e.content))
+				self._result.append(u"<!{0}>\n".format(e.content))
 			else:
 				raise Exception("Unsupported content type: %s" % (e))
 		if text:
