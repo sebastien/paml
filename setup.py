@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Encoding: iso-8859-1
 # vim: tw=80 ts=4 sw=4 noet
 # -----------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 # Last mod  : 06-Dec-2008
 # -----------------------------------------------------------------------------
 
-import sys ; sys.path.insert(0, "Sources")
+import sys ; sys.path.insert(0, "src/py")
 from distutils.core import setup
 import paml.engine
 
@@ -37,9 +37,9 @@ setup(
     license      = "Revised BSD License",
     keywords     = "XML, HTML, syntax, pre-processor, web",
     url          = "http://www.github.com/sebastien/paml",
-    package_dir  = { "": "Sources" },
+    package_dir  = { "": "src/py" },
     packages     = ["paml"],
-    scripts      = ["Scripts/paml", "Scripts/paml-web"]
+    scripts      = ["bin/paml", "bin/html2paml"]
 )
 
 # EOF

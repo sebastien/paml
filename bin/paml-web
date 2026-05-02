@@ -1,3 +1,0 @@
-#!/usr/bin/python
-import sys, paml.web
-paml.web.run(sys.argv[1:])
