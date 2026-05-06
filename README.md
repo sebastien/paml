@@ -124,7 +124,7 @@ Include a sibling file:
 %include library
 ```
 
-If not found locally, Paml can look in `PAMELA_LIBRARY`.
+If not found locally, Paml can look in `PAML_LIBRARY` (colon-separated paths).
 
 Include nested library files:
 
@@ -174,8 +174,10 @@ Supported hints:
 You can also define hint defaults for element groups:
 
 ```text
-@pre,code|preserved
+@pre,code|p
 ```
+
+This sets default format hints for the named elements. The `@` declaration without `<>` sets defaults for those element names.
 
 ## API
 
@@ -320,6 +322,145 @@ Lorem <span:ipsum dolor> sit <a(href=http://www.google.com):amet>
 | --- | --- |
 | CSS declaration | `<div:[css|...]` |
 | JavaScript declaration | `<script:[javascript|...]` |
+| TypeScript declaration | `<script:[typescript|...]` |
+| CoffeeScript declaration | `<script:[coffee|...]` |
+
+See [Embedded Language Processors](#embedded-language-processors) for full list.
+
+## Macros
+
+Macros are prefixed with `%` and provide powerful import and dependency management:
+
+```text
+%require:css(select,button)
+%require:js(jquery,myapp)
+%import:js(module-a,module-b)
+```
+
+### Macro types
+
+| Macro | Description |
+| --- | --- |
+| `%require:css(...)` | Looks for CSS files in `src/css`, `lib/css`, etc. and generates `<link>` tags |
+| `%require:js(...)` | Looks for JS files and generates `<script>` tags |
+| `%require:gmodule(...)` | Google Closure module imports with dependency resolution |
+| `%import:js(...)` | ES6-style imports with recursive dependency resolution |
+
+### Search paths for require macros
+
+Files are looked up in order:
+- `src/pcss/`, `src/ccss/`, `src/css/`, `lib/pcss/`, `lib/ccss/`, `lib/css/`
+- `src/sjs/`, `src/ts/`, `src/js/`, `lib/sjs/`, `lib/ts/`, `lib/js/`
+
+Versioned files (e.g., `select-0.7.9.js`) are automatically picked if available.
+
+## Embedded Language Processors
+
+Paml supports embedded content blocks with language processors:
+
+```text
+<div:[typescript|
+  export function greet(name: string): string {
+    return `Hello, ${name}`;
+  }
+]
+```
+
+### Supported languages
+
+| Language | Syntax | Notes |
+| --- | --- | --- |
+| CSS | `[css\|...]` | Embedded stylesheets |
+| JavaScript | `[javascript\|...]` | Embedded scripts |
+| TypeScript | `[typescript\|...]` or `[ts\|...]` | Requires `tsc` CLI |
+| CoffeeScript | `[coffeescript\|...]` or `[coffee\|...]` | Requires `coffee` CLI |
+| CleverCSS | `[clevercss\|...]` or `[ccss\|...]` | Python library |
+| PythonicCSS | `[pythoniccss\|...]` or `[pcss\|...]` | Requires `pcss` CLI |
+| Nobrackets | `[lang+nobrackets\|...]` | Various prefix options |
+| Texto | `[texto\|...]` | TextOb format |
+| HJSON | `[hjson\|...]` | JSON serialization |
+| Raw | `[raw\|...]` | Unprocessed content |
+| Sugar | `[sugar1\|...]` | Sugar parser |
+| Raw + Escape | `[raw+escape\|...]` | HTML-escaped raw content |
+
+## Comments and Special Elements
+
+### Regular comments
+
+```text
+# This is a comment (not rendered)
+
+#START:MYBLOCK
+<div content here>
+#END:MYBLOCK
+```
+
+### XML-style elements
+
+```text
+<!-- This is an XML comment -->
+
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+
+<!DOCTYPE html>
+```
+
+### SVG Sprites
+
+Reference SVG symbols with `%use`:
+
+```text
+%use #icon-arrow
+%use #icon-arrow.myClass
+%use #icon-arrow 24x24
+```
+
+## Format Hints
+
+Additional hints not covered in the Tight HTML output section:
+
+| Hint | Name | Description |
+| --- | --- | --- |
+| `ib` | inline-block | Inline block output |
+| `x` | XSL escape | Apply XSL escaping |
+
+## Formatters
+
+Paml provides multiple output formatters:
+
+```python
+from paml.engine import Parser, HTMLFormatter, XMLFormatter, JSFormatter
+
+html_parser = Parser(formatter=HTMLFormatter(strict=False))  # Default HTML5
+xhtml_parser = Parser(formatter=HTMLFormatter(strict=True))  # Self-closing tags
+xml_parser = Parser(formatter=XMLFormatter())               # XML output
+js_parser = Parser(formatter=JSFormatter())                 # JavaScript builder
+```
+
+### HTMLFormatter options
+
+- `strict=True/False` - When `True`, uses self-closing syntax (`<br />`) for void elements
+
+## Web Components
+
+Paml supports web components and custom elements by outputting explicit open/close tags for element names containing hyphens. This ensures compatibility with the Custom Elements specification.
+
+```text
+<ui-icon#my-icon(name=value)
+<custom-button[type=primary]:Click me
+<my-element
+  <span:Content
+```
+
+Outputs:
+
+```html
+<ui-icon id="my-icon" name="value"></ui-icon>
+<custom-button type="primary">Click me</custom-button>
+<my-element><span>Content</span></my-element>
+```
+
+Empty elements with hyphens in names use `<ui-icon></ui-icon>` instead of `<ui-icon />` to comply with the HTML parsing specification.
 
 ## References
 
