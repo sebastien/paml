@@ -1,0 +1,2 @@
+<ui-stepper(steps="(label=Account Creation),(label=Integration,checked)"):
+<ui-stepper(steps="(label:Account Creation),(label:Integration,checked)"):

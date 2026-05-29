@@ -66,6 +66,9 @@ Read the <a(href=/docs):documentation> first.
 An empty declaration still produces an element. In HTML mode, built-in void
 elements such as `meta`, `img`, and `br` are emitted without closing tags.
 
+Elements that cannot be self-closed in HTML, such as `label`, are always
+rendered with explicit opening and closing tags when empty.
+
 Custom elements containing `-` are never self-closed in HTML mode:
 
 ```paml

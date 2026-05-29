@@ -46,8 +46,16 @@ except ImportError:
 __version__ = "0.8.4"
 PAMELA_VERSION = __version__
 
-# TODO: Add an option to start a sugar compilation server and directly query
-# it, maybe using ZMQ.
+HTML_EXPLICIT_CLOSE = [
+	"label",
+	"slot",
+	"h1",
+	"h2",
+	"h3",
+	"h4",
+	"h5",
+	"h6",
+]
 
 
 def ensure_unicode(t, encoding="utf8"):
@@ -154,10 +162,10 @@ def xml_escape(text):
 #
 # -----------------------------------------------------------------------------
 
-SYMBOL_NAME = r"\??([\w\d_-]+::)?[\w\d_-]+"
+SYMBOL_NAME = r"\??([\w\d_-]+::)*[\w\d_-]+"
 SYMBOL_ID_CLS = r"(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
 SYMBOL_ATTR = r"(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
-SYMBOL_ATTRS = r"\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
+SYMBOL_ATTRS = r"\(%s(\s*,\s*%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
 SYMBOL_CONTENT = r"@\w[\w\d\-_\+]*"
 SYMBOL_HINTS = r"\|[a-z](\+[a-z])*"
 SYMBOL_ELEMENT = r"<(%s(%s)?|%s)(%s)?(%s)?(%s)?\:?" % (
@@ -1231,7 +1239,7 @@ class Parser:
 					raise ValueError(
 						"Attributes must be comma-separated: %s" % (attributes)
 					)
-				attributes = attributes[1:]
+				attributes = attributes[1:].lstrip()
 				if not attributes:
 					raise ValueError(
 						"Trailing comma with no remaining attributes: %s" % (original)
@@ -1313,10 +1321,7 @@ class HTMLFormatter:
 	def _requiresExplicitCloseInHTML(self, name):
 		"""Returns True for tags that should never be emitted as self-closing
 		when using HTML mode."""
-		if not isinstance(name, str):
-			return False
-		lname = name.lower()
-		return lname == "slot" or lname in ("h1", "h2", "h3", "h4", "h5", "h6")
+		return name.lower() in HTML_EXPLICIT_CLOSE if isinstance(name, str) else False
 
 	def _init(self):
 		pass
@@ -1637,10 +1642,7 @@ class HTMLFormatter:
 		else:
 			if not self.strict and exceptions and exceptions.get("NO_CLOSING"):
 				text = "<%s%s>" % (element.name, attributes)
-			elif (
-				not self.strict
-				and self._requiresExplicitCloseInHTML(element.name)
-			):
+			elif not self.strict and self._requiresExplicitCloseInHTML(element.name):
 				text = "<%s%s></%s>" % (element.name, attributes, element.name)
 			elif self._isWebComponent(element.name):
 				text = "<%s%s></%s>" % (element.name, attributes, element.name)

@@ -1,3 +1,4 @@
 <html
 	<ul
 		<li.pouet(style=background-image:url("image.gif"))
+		<div(a, b=2, c=3)
