@@ -20,4 +20,8 @@
 		<div#id(a=1,b='2',c="3")
 		# This is an element with an id, classes and attributes
 		<div#id.classA.classB(a=1,b='2',c="3")
+		# Single-colon namespaced attributes should work inside parens
+		<div(on:mousedown='javascript:doThis()')
+		# Legacy double-colon namespaced attributes should still work
+		<div(on::mousedown='javascript:doThat()')
 #EOF

@@ -8,13 +8,12 @@
 
 ```
 
-People who care about web application design and development often prefer writing
-HTML by hand rather than generating it with heavy tools. You keep full control
-of structure and meaning, which is critical when HTML is the foundation of a
-JavaScript-rich client application.
+Paml is a Pythonic way to write HTML, featuring tight control over output,
+minimal templating support (load, expand), and ability to convert to XML
+and embeddable JavaScript.
 
-Writing HTML is still painful. Templating systems (Cheetah, Kid, RHTML, etc.)
-help, but can feel too heavy for day-to-day document authoring.
+Paml is a good replacement when writing long HTML pages, as the indentation
+naturally ensures that tags are closed and structure is respected.
 
 Projects like [HAML](#references) and [SLIP](#references) proved that a concise,
 indentation-driven syntax can make authoring easier. Paml follows that path,
@@ -24,7 +23,6 @@ with a focus on:
 - **Fewer errors:** reduce common HTML mistakes (missing closes, unreadable nesting).
 - **Single purpose:** generate HTML/XML well, without coupling to unrelated stacks.
 - **Design + dev workflow:** useful both for prototyping and production markup.
-
 
 ## Quick Overview
 
@@ -255,11 +253,13 @@ Paml ships with two command-line tools: `paml` and `html2paml`.
 ### `paml` (Paml -> HTML/XML/JS)
 
 ```bash
-paml [-t html|xhtml|xml|js] [-d KEY=VALUE] [file]
+paml [-t html|xhtml|xml|js] [-f html|htm|xhtml|xml] [-d KEY=VALUE] [file]
 ```
 
 - If `file` is omitted, input is read from stdin.
 - `-t, --to` selects the output format (default is `html`).
+- `-f, --from` converts HTML/XML input back to Paml.
+- When `-f` is omitted, `paml` auto-detects `.html`, `.htm`, `.xhtml`, and `.xml` input files.
 - `-d, --def KEY=VALUE` defines variables used by include substitutions.
 
 Examples:
@@ -273,6 +273,9 @@ paml -t xml page.paml
 
 # Convert stdin to XHTML
 cat page.paml | paml -t xhtml
+
+# Convert HTML to Paml
+paml -f html input.html
 
 # Pass variables used by ${...} placeholders in includes
 paml -d ID=mywidget -d TITLE="Start date" page.paml

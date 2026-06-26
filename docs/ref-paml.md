@@ -437,12 +437,14 @@ representation and expects a single root node.
 The main CLI is:
 
 ```bash
-paml [-t html|xhtml|xml|js] [-d KEY=VALUE] [file]
+paml [-t html|xhtml|xml|js] [-f html|htm|xhtml|xml] [-d KEY=VALUE] [file]
 ```
 
 Notes:
 
 - If `file` is omitted, input is read from stdin.
+- `-f, --from` converts HTML/XML input back to Paml.
+- If `-f` is omitted, `.html`, `.htm`, `.xhtml`, and `.xml` files are auto-detected.
 - `-d` defines default substitution variables used by includes.
 - `html2paml input.html` converts HTML back to Paml.
 
@@ -453,6 +455,9 @@ The practical element grammar is:
 ```text
 <name[#id][.class...][(attr=value,...)][|hint[+hint...]][@mode][:]
 ```
+
+Inside `(...)`, namespaced attribute names may use either `:` or legacy `::`,
+for example `on:mousedown=...` and `xmlns::og=...`.
 
 Where:
 

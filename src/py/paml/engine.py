@@ -25,6 +25,8 @@ import shutil
 import subprocess
 from functools import reduce
 
+import paml.importer
+
 IS_PYTHON3 = sys.version_info[0] > 2
 
 if IS_PYTHON3:
@@ -156,7 +158,8 @@ def xml_escape(text):
 
 SYMBOL_NAME = r"\??([\w\d_-]+::)?[\w\d_-]+"
 SYMBOL_ID_CLS = r"(\#%s|\.%s)+" % (SYMBOL_NAME, SYMBOL_NAME)
-SYMBOL_ATTR = r"(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_NAME)
+SYMBOL_ATTR_NAME = r"\??([\w\d_-]+::?)?[\w\d_-]+"
+SYMBOL_ATTR = r"(%s)(=('[^']+'|\"[^\"]+\"|([^),]+)))?" % (SYMBOL_ATTR_NAME)
 SYMBOL_ATTRS = r"\(%s(,%s)*\)" % (SYMBOL_ATTR, SYMBOL_ATTR)
 SYMBOL_CONTENT = r"@\w[\w\d\-_\+]*"
 SYMBOL_HINTS = r"\|[a-z](\+[a-z])*"
@@ -2141,6 +2144,13 @@ def run(arguments, input=None):
 	p = argparse.ArgumentParser(description="Processes PAML files")
 	p.add_argument("file", type=str, help="File to process", nargs="?")
 	p.add_argument(
+		"-f",
+		"--from",
+		dest="source_format",
+		help="Reads HTML/XML and converts it to Paml",
+		choices=("html", "htm", "xhtml", "xml"),
+	)
+	p.add_argument(
 		"-t",
 		"--to",
 		dest="format",
@@ -2149,6 +2159,12 @@ def run(arguments, input=None):
 	)
 	p.add_argument("-d", "--def", dest="var", type=str, action="append")
 	args = p.parse_args(arguments)
+	if args.file:
+		_, ext = os.path.splitext(args.file.lower())
+		if not args.source_format and ext in (".html", ".htm", ".xhtml", ".xml"):
+			args.source_format = "html" if ext != ".xml" else "xml"
+	if args.source_format:
+		return paml.importer.run(args.file or sys.stdin, sourceFormat=args.source_format)
 	env = dict(_.split("=", 1) for _ in args.var or ())
 	parser = Parser(formatter=formatter(args.format), defaults=env)
 	return parser.parseFile(args.file or "--")
