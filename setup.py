@@ -4,18 +4,20 @@
 # -----------------------------------------------------------------------------
 # Project   : PAML
 # -----------------------------------------------------------------------------
-# Author    : Sebastien Pierre                               <sebastien@ivy.fr>
+# Author    : Sébastien Pierre                     <sebastien.pierre@gmail.com>
 # License   : Revised BSD License
 # -----------------------------------------------------------------------------
 # Creation  : 06-Dec-2008
 # Last mod  : 06-Dec-2008
 # -----------------------------------------------------------------------------
 
-import sys ; sys.path.insert(0, "src/py")
+import sys
+
+sys.path.insert(0, "src/py")
 from distutils.core import setup
 import paml.engine
 
-SUMMARY     = "A Pythonic transpiler for HTML/XML"
+SUMMARY = "A Pythonic transpiler for HTML/XML"
 DESCRIPTION = """\
 PAML is a simple HTML/XML shorthand syntax in the same spirit as HAML or SLIP.
 It was designed to be faithful to the HTML/XML syntax while reducing the
@@ -30,16 +32,18 @@ supports advanced formatting options to get exactly the HTML you want to have.
 # ------------------------------------------------------------------------------
 
 setup(
-    name         = "paml",
-    version      = paml.engine.__version__,
-    author       = "Sebastien Pierre", author_email = "sebastien.pierre@gmail.com",
-    description   = SUMMARY, long_description  = DESCRIPTION,
-    license      = "Revised BSD License",
-    keywords     = "XML, HTML, syntax, pre-processor, web",
-    url          = "http://www.github.com/sebastien/paml",
-    package_dir  = { "": "src/py" },
-    packages     = ["paml"],
-    scripts      = ["bin/paml", "bin/html2paml"]
+	name="paml",
+	version=paml.engine.__version__,
+	author="Sébastien Pierre",
+	author_email="sebastien.pierre@gmail.com",
+	description=SUMMARY,
+	long_description=DESCRIPTION,
+	license="Revised BSD License",
+	keywords="XML, HTML, syntax, pre-processor, web",
+	url="http://www.github.com/sebastien/paml",
+	package_dir={"": "src/py"},
+	packages=["paml"],
+	scripts=["bin/paml", "bin/html2paml"],
 )
 
 # EOF

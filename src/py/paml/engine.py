@@ -9,6 +9,17 @@
 
 import re
 import warnings
+
+from paml.cli import parse as parse, run as run
+from paml.formatter import HTMLFormatter as HTMLFormatter, JSFormatter as JSFormatter, XMLFormatter as XMLFormatter, formatter as formatter
+from paml.macros import PamlMacro as PamlMacro
+from paml.model import PamlDeclaration as PamlDeclaration, PamlElement as PamlElement, PamlRawText as PamlRawText, PamlText as PamlText, ProcessingInstruction as ProcessingInstruction, XMLComment as XMLComment, DocType as DocType
+from paml.parser import PamlParser as Parser
+from paml.version import PAMELA_VERSION as PAMELA_VERSION, __version__ as __version__
+from paml.writer import PamlWriter as PamlWriter
+
+PamlParser = Parser
+toHTML = process = parse
 warnings.warn(
 	"paml.engine is deprecated; import directly from paml or its submodules",
 	DeprecationWarning,

@@ -72,7 +72,25 @@ class HTMLFormatter:
 		if not isinstance(name, str):
 			return False
 		lname = name.lower()
-		return lname == "slot" or lname in ("h1", "h2", "h3", "h4", "h5", "h6")
+		return lname in (
+			"a",
+			"canvas",
+			"div",
+			"h1",
+			"h2",
+			"h3",
+			"h4",
+			"h5",
+			"h6",
+			"iframe",
+			"li",
+			"ol",
+			"script",
+			"slot",
+			"span",
+			"template",
+			"ul",
+		)
 
 	def _init(self):
 		pass
@@ -220,6 +238,11 @@ class HTMLFormatter:
 		if exceptions:
 			not_empty = exceptions.get("NOT_EMPTY")
 			if not_empty is not None and not content:
+				# Textareas intentionally keep one literal space when empty. Render
+				# it directly so normal block whitespace formatting cannot discard it.
+				if element.name == "textarea":
+					self.writeTag("<%s%s> </%s>" % (element.name, attributes, element.name))
+					return
 				element.content.append(PamlText(not_empty))
 		# Does this element has any content that needs to be pre-processed?
 		if mode and mode.startswith("sugar"):

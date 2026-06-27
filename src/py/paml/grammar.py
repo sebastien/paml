@@ -93,17 +93,7 @@ HTML_EXCEPTIONS = {
 	"img": dict(NO_CLOSING=True),
 	# FIXME: No idea why there was a no closing, but this is wrong
 	# "path" :dict(NO_CLOSING=True),
-	"ol": {"NOT_EMPTY": " "},
-	"ul": {"NOT_EMPTY": " "},
-	"a": {"NOT_EMPTY": " "},
-	"script": {"NOT_EMPTY": " "},
-	"template": {"NOT_EMPTY": " "},
-	"span": {"NOT_EMPTY": " "},
-	"li": {"NOT_EMPTY": ""},
-	"canvas": {"NOT_EMPTY": " "},
 	"textarea": {"NOT_EMPTY": " "},
-	"iframe": {"NOT_EMPTY": " "},
-	"div": {"NOT_EMPTY": " "},
 	"td": {"NOT_EMPTY": "&nbsp;"},
 	"th": {"NOT_EMPTY": "&nbsp;"},
 }
