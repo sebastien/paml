@@ -1,0 +1,5924 @@
+{
+  "symbols": {
+    "paml.importer.PAML": {
+      "id": "paml.importer.PAML",
+      "name": "PAML",
+      "type": "Value",
+      "subtype": "project",
+      "lang": "py",
+      "module": "paml.importer",
+      "description": "---------------------------------------------------------------------------",
+      "fragments": [
+        {
+          "type": "doc",
+          "source": "src/py/paml/importer.py",
+          "start": 1,
+          "end": 573,
+          "hash": "6cbfc92c35428531410394c0405a204818d971a25e9283f6a1aac776760b4a0d"
+        }
+      ]
+    },
+    "paml.macros.__see__": {
+      "id": "paml.macros.__see__",
+      "name": "__see__",
+      "type": "Meta",
+      "subtype": "meta",
+      "lang": "py",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "doc",
+          "source": "src/py/paml/macros.py",
+          "start": 3685,
+          "end": 3808,
+          "hash": "3ad4ac6c5a8af20d0053073bd7c3528fc629750ebcf386e4d405866583ec42e3"
+        }
+      ]
+    },
+    "paml.model.Comment": {
+      "id": "paml.model.Comment",
+      "name": "Comment",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 2250,
+          "end": 2272,
+          "hash": "d7a279ea89d72e441732fb5286554f1396c22c83f40db816d80e3167f32ca47b",
+          "content": "class Comment(object):",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.model.Element.__init__": {
+      "id": "paml.model.Element.__init__",
+      "name": "__init__",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 683,
+          "end": 766,
+          "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+          "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.XMLComment.contentAsLines": {
+      "id": "paml.model.XMLComment.contentAsLines",
+      "name": "contentAsLines",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 345,
+          "end": 371,
+          "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+          "content": "\tdef contentAsLines(self):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Declaration": {
+      "id": "paml.model.Declaration",
+      "name": "Declaration",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 2862,
+          "end": 2889,
+          "hash": "4696319411c1c4793948cd6de87b49cbc118665d9ac3347d5204309fced4f9a0",
+          "content": "class Declaration(Element):",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.model.DocType": {
+      "id": "paml.model.DocType",
+      "name": "DocType",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 2553,
+          "end": 2575,
+          "hash": "e3a6d252444f28533d3bfa009bb3c198faba6d76f612ca480c96cf1d16e0bc85",
+          "content": "class DocType(object):",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.model.Element": {
+      "id": "paml.model.Element",
+      "name": "Element",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 612,
+          "end": 626,
+          "hash": "75869988c3226a216bbb3ffde6300400abb662fafd0fefb97272454417c9abd0",
+          "content": "class Element:",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element._attributesAsHTML",
+          "name": "_attributesAsHTML",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1740,
+              "end": 1782,
+              "hash": "246762c1fea2af29e275006ab77b12cd61151caaae81f9a86586635d1b854054",
+              "content": "\tdef _attributesAsHTML(self, strict=True):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element.append",
+          "name": "append",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1288,
+              "end": 1309,
+              "hash": "66fc88e7a8d35043a0a57fb8b15655a198f7ffde50ea8be613f02a4af2cdcaa9",
+              "content": "\tdef append(self, n):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element.getFormatFlags",
+          "name": "getFormatFlags",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1180,
+              "end": 1206,
+              "hash": "e65048c9914eaaa8636f49e861c885408e23e535ed940f3afb5ff87cd05b13df",
+              "content": "\tdef getFormatFlags(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element.isTextOnly",
+          "name": "isTextOnly",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1336,
+              "end": 1358,
+              "hash": "6b27eaea0070a37e02121ebd693b64c6ddd59680e2d407877ce89562e88695ab",
+              "content": "\tdef isTextOnly(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element.setFormat",
+          "name": "setFormat",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1059,
+              "end": 1088,
+              "hash": "5a698a5e23894b365c42c1c74951e74c19d3237eb961eb6978b3617d072db951",
+              "content": "\tdef setFormat(self, option):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.Element.setMode",
+          "name": "setMode",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 1242,
+              "end": 1267,
+              "hash": "591f8dbba7b93c99255bfbebea4e5a29c57168a31a4aa3c6b05641a62e28f48a",
+              "content": "\tdef setMode(self, mode):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.model.Element._attributesAsHTML": {
+      "id": "paml.model.Element._attributesAsHTML",
+      "name": "_attributesAsHTML",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1740,
+          "end": 1782,
+          "hash": "246762c1fea2af29e275006ab77b12cd61151caaae81f9a86586635d1b854054",
+          "content": "\tdef _attributesAsHTML(self, strict=True):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Element.append": {
+      "id": "paml.model.Element.append",
+      "name": "append",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1288,
+          "end": 1309,
+          "hash": "66fc88e7a8d35043a0a57fb8b15655a198f7ffde50ea8be613f02a4af2cdcaa9",
+          "content": "\tdef append(self, n):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Element.getFormatFlags": {
+      "id": "paml.model.Element.getFormatFlags",
+      "name": "getFormatFlags",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1180,
+          "end": 1206,
+          "hash": "e65048c9914eaaa8636f49e861c885408e23e535ed940f3afb5ff87cd05b13df",
+          "content": "\tdef getFormatFlags(self):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Element.isTextOnly": {
+      "id": "paml.model.Element.isTextOnly",
+      "name": "isTextOnly",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1336,
+          "end": 1358,
+          "hash": "6b27eaea0070a37e02121ebd693b64c6ddd59680e2d407877ce89562e88695ab",
+          "content": "\tdef isTextOnly(self):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Element.setFormat": {
+      "id": "paml.model.Element.setFormat",
+      "name": "setFormat",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1059,
+          "end": 1088,
+          "hash": "5a698a5e23894b365c42c1c74951e74c19d3237eb961eb6978b3617d072db951",
+          "content": "\tdef setFormat(self, option):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.model.Element.setMode": {
+      "id": "paml.model.Element.setMode",
+      "name": "setMode",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1242,
+          "end": 1267,
+          "hash": "591f8dbba7b93c99255bfbebea4e5a29c57168a31a4aa3c6b05641a62e28f48a",
+          "content": "\tdef setMode(self, mode):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_COMPACT": {
+      "id": "paml.grammar.FORMAT_COMPACT",
+      "name": "FORMAT_COMPACT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2028,
+          "end": 2048,
+          "hash": "6acc15d4ca2d5c262f245626e5fbc35787893c280b4bb85dda606bd381a553ff",
+          "content": "FORMAT_COMPACT = \"c\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_INLINE": {
+      "id": "paml.grammar.FORMAT_INLINE",
+      "name": "FORMAT_INLINE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1874,
+          "end": 1893,
+          "hash": "14bd709e5043c5adfda848b8910ba9900a2e8543e2a2f755b41d672480d5e5f4",
+          "content": "FORMAT_INLINE = \"i\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_INLINE_BLOCK": {
+      "id": "paml.grammar.FORMAT_INLINE_BLOCK",
+      "name": "FORMAT_INLINE_BLOCK",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1894,
+          "end": 1920,
+          "hash": "120848947a49222d8f2884d14fe20e1db2df9bd248d8557b95fb6f5d4f60ad8c",
+          "content": "FORMAT_INLINE_BLOCK = \"ib\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_NORMALIZE": {
+      "id": "paml.grammar.FORMAT_NORMALIZE",
+      "name": "FORMAT_NORMALIZE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1986,
+          "end": 2008,
+          "hash": "ea248a39aebed2f64b86224ecfc41eb9d0c14f1f494d809037d7d55408c730eb",
+          "content": "FORMAT_NORMALIZE = \"n\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_OPTIONS": {
+      "id": "paml.grammar.FORMAT_OPTIONS",
+      "name": "FORMAT_OPTIONS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2067,
+          "end": 2085,
+          "hash": "358b6973e2700f04ba6a86eceb04d9020cbbe8ab9a4d6aba22525f0830bbc216",
+          "content": "FORMAT_OPTIONS = (",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_PRESERVE": {
+      "id": "paml.grammar.FORMAT_PRESERVE",
+      "name": "FORMAT_PRESERVE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1947,
+          "end": 1968,
+          "hash": "5368c2cf9ac258bbe385c63fdbd170b6f7370bfc67c3cbda0e10946b494d0937",
+          "content": "FORMAT_PRESERVE = \"p\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_SINGLE_LINE": {
+      "id": "paml.grammar.FORMAT_SINGLE_LINE",
+      "name": "FORMAT_SINGLE_LINE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1921,
+          "end": 1946,
+          "hash": "ba1de334943100cbf347b2b4ef69d90679848a78c7471d2d7235aa5745c7428d",
+          "content": "FORMAT_SINGLE_LINE = \"sl\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_STRIP": {
+      "id": "paml.grammar.FORMAT_STRIP",
+      "name": "FORMAT_STRIP",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2009,
+          "end": 2027,
+          "hash": "7ca0c82a1a1ad40084e2e73ef0c05e50b34e19d53f7f8072a27658ed5742bfdd",
+          "content": "FORMAT_STRIP = \"s\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_WRAP": {
+      "id": "paml.grammar.FORMAT_WRAP",
+      "name": "FORMAT_WRAP",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2049,
+          "end": 2066,
+          "hash": "49111e9af2a11db5e26ec3d641a5dbbb63bc77584aae028414cfcf01e25f1cc6",
+          "content": "FORMAT_WRAP = \"w\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.FORMAT_XSL": {
+      "id": "paml.grammar.FORMAT_XSL",
+      "name": "FORMAT_XSL",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1969,
+          "end": 1985,
+          "hash": "1893f0435b719614e55e337dc128486aba5c36896e03d2bbe0a38cbb0a971db2",
+          "content": "FORMAT_XSL = \"x\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter": {
+      "id": "paml.formatter.HTMLFormatter",
+      "name": "HTMLFormatter",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 974,
+          "end": 994,
+          "hash": "6f5aa3a03d9a60ad20ef2b378140f62b567c6fa816fc8da51e2e0928d9d0c98d",
+          "content": "class HTMLFormatter:",
+          "path": "src/py/paml/formatter.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.formatter.HTMLFormatter.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 1445,
+              "end": 1479,
+              "hash": "7a577fffc81402f3479c01ee00ab1d195089cf8248f3aeb4d4a3b302d12fd97d",
+              "content": "\tdef __init__(self, strict=False):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._ensureNewLine",
+          "name": "_ensureNewLine",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13372,
+              "end": 13398,
+              "hash": "3de1e45577d86b1e0ed85282314851c26048a557979e85dd141ba644f85de11b",
+              "content": "\tdef _ensureNewLine(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._formatComment",
+          "name": "_formatComment",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 12900,
+              "end": 12935,
+              "hash": "863cafd565e1a3010af44288ac5e0b29e498da4900649ab21a6e0d37d894ff15",
+              "content": "\tdef _formatComment(self, comment):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.XMLFormatter._formatContent",
+          "name": "_formatContent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 18899,
+              "end": 18932,
+              "hash": "f56b1c8696f54958610af62a56554954baee5c9935e72d6bd8369b92b4596269",
+              "content": "\tdef _formatContent(self, value):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._formatElement",
+          "name": "_formatElement",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 6592,
+              "end": 6627,
+              "hash": "90a777af7edb84f5b7bcb4c7ae0bf87d68cfaaf2cde5e607f98c056340226033",
+              "content": "\tdef _formatElement(self, element):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._init",
+          "name": "_init",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 2376,
+              "end": 2393,
+              "hash": "678fa81241ebf84f5bbc3ab07aa284127b814f31b8f7cb1a516bcffd218ff69a",
+              "content": "\tdef _init(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._inlineCanSpanOneLine",
+          "name": "_inlineCanSpanOneLine",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 6016,
+              "end": 6058,
+              "hash": "5a5e1c2dd2cf293b62212eeffb70ddba8f2495171a4dab94bed891391381a0c4",
+              "content": "\tdef _inlineCanSpanOneLine(self, element):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._isNewLine",
+          "name": "_isNewLine",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13174,
+              "end": 13196,
+              "hash": "f419c21e9be24a2d1fc9deb92722c371c447fc88f9471b2f1d1d72671015cd28",
+              "content": "\tdef _isNewLine(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._isWebComponent",
+          "name": "_isWebComponent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 1844,
+              "end": 1877,
+              "hash": "f59b6412484545b6334ff93ea61ec387dcde5e5413914c17c071be981e93e09a",
+              "content": "\tdef _isWebComponent(self, name):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._iterateOnWords",
+          "name": "_iterateOnWords",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 15502,
+              "end": 15535,
+              "hash": "60010a386a3bdb409aab11efab82533f720ae903c84ce36d9b341de4be4d64b2",
+              "content": "\tdef _iterateOnWords(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter._requiresExplicitCloseInHTML",
+          "name": "_requiresExplicitCloseInHTML",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 2084,
+              "end": 2130,
+              "hash": "a7164c604e6940589e62988e9b44fc4dbcee3bf64dfec53a2ee658237cab0c41",
+              "content": "\tdef _requiresExplicitCloseInHTML(self, name):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.endIndent",
+          "name": "endIndent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13668,
+              "end": 13689,
+              "hash": "8328b1aa08513072ba066b956758cfdf42a18884cdb39f9f8187cc50385b3812",
+              "content": "\tdef endIndent(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.endWriting",
+          "name": "endWriting",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 15416,
+              "end": 15438,
+              "hash": "a7e77f263d6c416f9489f1fa7bf2eb0b7e2416074bc7462452b8296753d37cf9",
+              "content": "\tdef endWriting(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.findFlag",
+          "name": "findFlag",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 4176,
+              "end": 4202,
+              "hash": "8ebaa186461cbb348ca7314450f8db917f262408e239ad74d474bfeb2b0b7b93",
+              "content": "\tdef findFlag(self, flag):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.XMLFormatter.format",
+          "name": "format",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 4605,
+              "end": 4643,
+              "hash": "2cbfcc6a964b693c15c24372da121cff0f74c65bb8a0b08ed661d4f280ccd30a",
+              "content": "\tdef format(self, document, indent=0):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.formatText",
+          "name": "formatText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 14913,
+              "end": 14941,
+              "hash": "cfb10c6b9c9b49e2e54e7067ea5a623f87169e70e65a5068ecf533f39c261555",
+              "content": "\tdef formatText(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.getDefaults",
+          "name": "getDefaults",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 2876,
+              "end": 2912,
+              "hash": "4fd57b9186af659cc471787f73fd772346044e254e811d5241ffb9aaa7e65ea6",
+              "content": "\tdef getDefaults(self, elementName):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.getFlags",
+          "name": "getFlags",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3985,
+              "end": 4005,
+              "hash": "a6c356a9812cfd853210b59ad72793c2e89c44f63034d9905af830928492d54b",
+              "content": "\tdef getFlags(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.hasFlag",
+          "name": "hasFlag",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3673,
+              "end": 3698,
+              "hash": "e4a744c9306209773963be3792a7cd8d390fe36db82194d56d4bd0cd45bdcd30",
+              "content": "\tdef hasFlag(self, flag):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.indentAsSpaces",
+          "name": "indentAsSpaces",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 17549,
+              "end": 17601,
+              "hash": "ce6fcb384463e1778be90b212c2be8e847bb5cfe835471b5362ba2630b1a85b9",
+              "content": "\tdef indentAsSpaces(self, indent=None, increment=0):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.indentString",
+          "name": "indentString",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 16702,
+              "end": 16768,
+              "hash": "c23154bdd1d65f6cceda916714ee36ff7c6ffa404120c9a4617c300006cc8d50",
+              "content": "\tdef indentString(self, text, indent=None, start=True, end=False):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.normalizeText",
+          "name": "normalizeText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 17813,
+              "end": 17844,
+              "hash": "6c46b1bd12d6c9bc41ef72722262cea3f50d0bb1dfa887e95334f50a486165ac",
+              "content": "\tdef normalizeText(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.popFlags",
+          "name": "popFlags",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3581,
+              "end": 3601,
+              "hash": "d2b089bd22d8fd1b1658fcd78beda2e93be35a506c95d01475b9a2e8b2ff098d",
+              "content": "\tdef popFlags(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.pushFlags",
+          "name": "pushFlags",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3025,
+              "end": 3054,
+              "hash": "dc9514ae34a4a578973837e97a4712fdc4ce3e66bc80aefe100a9e0b0f981c37",
+              "content": "\tdef pushFlags(self, *flags):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.reformatText",
+          "name": "reformatText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 18177,
+              "end": 18207,
+              "hash": "8e49732a8c22f08a8b9675da5980bfba2145f0f7e55a242c1a679b019463d2c8",
+              "content": "\tdef reformatText(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.setDefaults",
+          "name": "setDefaults",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 2402,
+              "end": 2452,
+              "hash": "685ae49e0bbe47a71c827e0700502daa0750996e4ac56e3c722c8385dabcdcf7",
+              "content": "\tdef setDefaults(self, element, formatOptions=()):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.setFlag",
+          "name": "setFlag",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3279,
+              "end": 3304,
+              "hash": "cd132071886af4d1d9d74fda4f029bf2204327456b138fe5c3d9c1fe9650cdce",
+              "content": "\tdef setFlag(self, flag):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.setFlags",
+          "name": "setFlags",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 3467,
+              "end": 3495,
+              "hash": "d950cf450b048f457bcfb8f72f0c5cc12b35795edd89a378d58bb5417014531c",
+              "content": "\tdef setFlags(self, *flags):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.startIndent",
+          "name": "startIndent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13624,
+              "end": 13647,
+              "hash": "3bd221a9c568b54ef1be44a38a86f850b38ee9d2e8222298097ea40466d423ed",
+              "content": "\tdef startIndent(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.startWriting",
+          "name": "startWriting",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13578,
+              "end": 13602,
+              "hash": "78576719c59abe4f9e3581178685ce8a9e8a9b464756267d357545a012c702e5",
+              "content": "\tdef startWriting(self):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.stripText",
+          "name": "stripText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 17954,
+              "end": 17981,
+              "hash": "641e27f9f94e9abd199642bef2b94b1ced89e7616905640d928704dce89b67f6",
+              "content": "\tdef stripText(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.wrapText",
+          "name": "wrapText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 16227,
+              "end": 16290,
+              "hash": "4a1211bf0ca63c7029b8e2e90108c6a07252a736a16d77d2009ebadc8237ad46",
+              "content": "\tdef wrapText(self, text, offset=0, textWidth=80, indent=None):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.writeTag",
+          "name": "writeTag",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 13787,
+              "end": 13816,
+              "hash": "0f904c312ca6f10701d4a2d0854fd37500cbd2132f0ae7f39f5433ddf288f89b",
+              "content": "\tdef writeTag(self, tagText):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.HTMLFormatter.writeText",
+          "name": "writeText",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 14018,
+              "end": 14045,
+              "hash": "0f0001ee03ecbf3996e267b521e8476378c5fa3195d9b1f4c2b536f840f5dee7",
+              "content": "\tdef writeText(self, text):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.__init__": {
+      "id": "paml.formatter.HTMLFormatter.__init__",
+      "name": "__init__",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 1445,
+          "end": 1479,
+          "hash": "7a577fffc81402f3479c01ee00ab1d195089cf8248f3aeb4d4a3b302d12fd97d",
+          "content": "\tdef __init__(self, strict=False):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._ensureNewLine": {
+      "id": "paml.formatter.HTMLFormatter._ensureNewLine",
+      "name": "_ensureNewLine",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13372,
+          "end": 13398,
+          "hash": "3de1e45577d86b1e0ed85282314851c26048a557979e85dd141ba644f85de11b",
+          "content": "\tdef _ensureNewLine(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._formatComment": {
+      "id": "paml.formatter.HTMLFormatter._formatComment",
+      "name": "_formatComment",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 12900,
+          "end": 12935,
+          "hash": "863cafd565e1a3010af44288ac5e0b29e498da4900649ab21a6e0d37d894ff15",
+          "content": "\tdef _formatComment(self, comment):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.XMLFormatter._formatContent": {
+      "id": "paml.formatter.XMLFormatter._formatContent",
+      "name": "_formatContent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 18899,
+          "end": 18932,
+          "hash": "f56b1c8696f54958610af62a56554954baee5c9935e72d6bd8369b92b4596269",
+          "content": "\tdef _formatContent(self, value):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._formatElement": {
+      "id": "paml.formatter.HTMLFormatter._formatElement",
+      "name": "_formatElement",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 6592,
+          "end": 6627,
+          "hash": "90a777af7edb84f5b7bcb4c7ae0bf87d68cfaaf2cde5e607f98c056340226033",
+          "content": "\tdef _formatElement(self, element):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._init": {
+      "id": "paml.formatter.HTMLFormatter._init",
+      "name": "_init",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 2376,
+          "end": 2393,
+          "hash": "678fa81241ebf84f5bbc3ab07aa284127b814f31b8f7cb1a516bcffd218ff69a",
+          "content": "\tdef _init(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._inlineCanSpanOneLine": {
+      "id": "paml.formatter.HTMLFormatter._inlineCanSpanOneLine",
+      "name": "_inlineCanSpanOneLine",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 6016,
+          "end": 6058,
+          "hash": "5a5e1c2dd2cf293b62212eeffb70ddba8f2495171a4dab94bed891391381a0c4",
+          "content": "\tdef _inlineCanSpanOneLine(self, element):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._isNewLine": {
+      "id": "paml.formatter.HTMLFormatter._isNewLine",
+      "name": "_isNewLine",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13174,
+          "end": 13196,
+          "hash": "f419c21e9be24a2d1fc9deb92722c371c447fc88f9471b2f1d1d72671015cd28",
+          "content": "\tdef _isNewLine(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._isWebComponent": {
+      "id": "paml.formatter.HTMLFormatter._isWebComponent",
+      "name": "_isWebComponent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 1844,
+          "end": 1877,
+          "hash": "f59b6412484545b6334ff93ea61ec387dcde5e5413914c17c071be981e93e09a",
+          "content": "\tdef _isWebComponent(self, name):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._iterateOnWords": {
+      "id": "paml.formatter.HTMLFormatter._iterateOnWords",
+      "name": "_iterateOnWords",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 15502,
+          "end": 15535,
+          "hash": "60010a386a3bdb409aab11efab82533f720ae903c84ce36d9b341de4be4d64b2",
+          "content": "\tdef _iterateOnWords(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter._requiresExplicitCloseInHTML": {
+      "id": "paml.formatter.HTMLFormatter._requiresExplicitCloseInHTML",
+      "name": "_requiresExplicitCloseInHTML",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 2084,
+          "end": 2130,
+          "hash": "a7164c604e6940589e62988e9b44fc4dbcee3bf64dfec53a2ee658237cab0c41",
+          "content": "\tdef _requiresExplicitCloseInHTML(self, name):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.endIndent": {
+      "id": "paml.formatter.HTMLFormatter.endIndent",
+      "name": "endIndent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13668,
+          "end": 13689,
+          "hash": "8328b1aa08513072ba066b956758cfdf42a18884cdb39f9f8187cc50385b3812",
+          "content": "\tdef endIndent(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.endWriting": {
+      "id": "paml.formatter.HTMLFormatter.endWriting",
+      "name": "endWriting",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 15416,
+          "end": 15438,
+          "hash": "a7e77f263d6c416f9489f1fa7bf2eb0b7e2416074bc7462452b8296753d37cf9",
+          "content": "\tdef endWriting(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.findFlag": {
+      "id": "paml.formatter.HTMLFormatter.findFlag",
+      "name": "findFlag",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 4176,
+          "end": 4202,
+          "hash": "8ebaa186461cbb348ca7314450f8db917f262408e239ad74d474bfeb2b0b7b93",
+          "content": "\tdef findFlag(self, flag):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.XMLFormatter.format": {
+      "id": "paml.formatter.XMLFormatter.format",
+      "name": "format",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 4605,
+          "end": 4643,
+          "hash": "2cbfcc6a964b693c15c24372da121cff0f74c65bb8a0b08ed661d4f280ccd30a",
+          "content": "\tdef format(self, document, indent=0):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.formatText": {
+      "id": "paml.formatter.HTMLFormatter.formatText",
+      "name": "formatText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 14913,
+          "end": 14941,
+          "hash": "cfb10c6b9c9b49e2e54e7067ea5a623f87169e70e65a5068ecf533f39c261555",
+          "content": "\tdef formatText(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.getDefaults": {
+      "id": "paml.formatter.HTMLFormatter.getDefaults",
+      "name": "getDefaults",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 2876,
+          "end": 2912,
+          "hash": "4fd57b9186af659cc471787f73fd772346044e254e811d5241ffb9aaa7e65ea6",
+          "content": "\tdef getDefaults(self, elementName):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.getFlags": {
+      "id": "paml.formatter.HTMLFormatter.getFlags",
+      "name": "getFlags",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3985,
+          "end": 4005,
+          "hash": "a6c356a9812cfd853210b59ad72793c2e89c44f63034d9905af830928492d54b",
+          "content": "\tdef getFlags(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.hasFlag": {
+      "id": "paml.formatter.HTMLFormatter.hasFlag",
+      "name": "hasFlag",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3673,
+          "end": 3698,
+          "hash": "e4a744c9306209773963be3792a7cd8d390fe36db82194d56d4bd0cd45bdcd30",
+          "content": "\tdef hasFlag(self, flag):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.indentAsSpaces": {
+      "id": "paml.formatter.HTMLFormatter.indentAsSpaces",
+      "name": "indentAsSpaces",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 17549,
+          "end": 17601,
+          "hash": "ce6fcb384463e1778be90b212c2be8e847bb5cfe835471b5362ba2630b1a85b9",
+          "content": "\tdef indentAsSpaces(self, indent=None, increment=0):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.indentString": {
+      "id": "paml.formatter.HTMLFormatter.indentString",
+      "name": "indentString",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 16702,
+          "end": 16768,
+          "hash": "c23154bdd1d65f6cceda916714ee36ff7c6ffa404120c9a4617c300006cc8d50",
+          "content": "\tdef indentString(self, text, indent=None, start=True, end=False):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.normalizeText": {
+      "id": "paml.formatter.HTMLFormatter.normalizeText",
+      "name": "normalizeText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 17813,
+          "end": 17844,
+          "hash": "6c46b1bd12d6c9bc41ef72722262cea3f50d0bb1dfa887e95334f50a486165ac",
+          "content": "\tdef normalizeText(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.popFlags": {
+      "id": "paml.formatter.HTMLFormatter.popFlags",
+      "name": "popFlags",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3581,
+          "end": 3601,
+          "hash": "d2b089bd22d8fd1b1658fcd78beda2e93be35a506c95d01475b9a2e8b2ff098d",
+          "content": "\tdef popFlags(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.pushFlags": {
+      "id": "paml.formatter.HTMLFormatter.pushFlags",
+      "name": "pushFlags",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3025,
+          "end": 3054,
+          "hash": "dc9514ae34a4a578973837e97a4712fdc4ce3e66bc80aefe100a9e0b0f981c37",
+          "content": "\tdef pushFlags(self, *flags):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.reformatText": {
+      "id": "paml.formatter.HTMLFormatter.reformatText",
+      "name": "reformatText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 18177,
+          "end": 18207,
+          "hash": "8e49732a8c22f08a8b9675da5980bfba2145f0f7e55a242c1a679b019463d2c8",
+          "content": "\tdef reformatText(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.setDefaults": {
+      "id": "paml.formatter.HTMLFormatter.setDefaults",
+      "name": "setDefaults",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 2402,
+          "end": 2452,
+          "hash": "685ae49e0bbe47a71c827e0700502daa0750996e4ac56e3c722c8385dabcdcf7",
+          "content": "\tdef setDefaults(self, element, formatOptions=()):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.setFlag": {
+      "id": "paml.formatter.HTMLFormatter.setFlag",
+      "name": "setFlag",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3279,
+          "end": 3304,
+          "hash": "cd132071886af4d1d9d74fda4f029bf2204327456b138fe5c3d9c1fe9650cdce",
+          "content": "\tdef setFlag(self, flag):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.setFlags": {
+      "id": "paml.formatter.HTMLFormatter.setFlags",
+      "name": "setFlags",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 3467,
+          "end": 3495,
+          "hash": "d950cf450b048f457bcfb8f72f0c5cc12b35795edd89a378d58bb5417014531c",
+          "content": "\tdef setFlags(self, *flags):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.startIndent": {
+      "id": "paml.formatter.HTMLFormatter.startIndent",
+      "name": "startIndent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13624,
+          "end": 13647,
+          "hash": "3bd221a9c568b54ef1be44a38a86f850b38ee9d2e8222298097ea40466d423ed",
+          "content": "\tdef startIndent(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.startWriting": {
+      "id": "paml.formatter.HTMLFormatter.startWriting",
+      "name": "startWriting",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13578,
+          "end": 13602,
+          "hash": "78576719c59abe4f9e3581178685ce8a9e8a9b464756267d357545a012c702e5",
+          "content": "\tdef startWriting(self):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.stripText": {
+      "id": "paml.formatter.HTMLFormatter.stripText",
+      "name": "stripText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 17954,
+          "end": 17981,
+          "hash": "641e27f9f94e9abd199642bef2b94b1ced89e7616905640d928704dce89b67f6",
+          "content": "\tdef stripText(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.wrapText": {
+      "id": "paml.formatter.HTMLFormatter.wrapText",
+      "name": "wrapText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 16227,
+          "end": 16290,
+          "hash": "4a1211bf0ca63c7029b8e2e90108c6a07252a736a16d77d2009ebadc8237ad46",
+          "content": "\tdef wrapText(self, text, offset=0, textWidth=80, indent=None):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.writeTag": {
+      "id": "paml.formatter.HTMLFormatter.writeTag",
+      "name": "writeTag",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 13787,
+          "end": 13816,
+          "hash": "0f904c312ca6f10701d4a2d0854fd37500cbd2132f0ae7f39f5433ddf288f89b",
+          "content": "\tdef writeTag(self, tagText):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.formatter.HTMLFormatter.writeText": {
+      "id": "paml.formatter.HTMLFormatter.writeText",
+      "name": "writeText",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 14018,
+          "end": 14045,
+          "hash": "0f0001ee03ecbf3996e267b521e8476378c5fa3195d9b1f4c2b536f840f5dee7",
+          "content": "\tdef writeText(self, text):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.grammar.HTML_DEFAULTS": {
+      "id": "paml.grammar.HTML_DEFAULTS",
+      "name": "HTML_DEFAULTS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2247,
+          "end": 2264,
+          "hash": "72161ecd625b624917e7e19bdeec54807109311c6fddfa428e05881ca71bd406",
+          "content": "HTML_DEFAULTS = {",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.HTML_EXCEPTIONS": {
+      "id": "paml.grammar.HTML_EXCEPTIONS",
+      "name": "HTML_EXCEPTIONS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 2520,
+          "end": 2539,
+          "hash": "923c70c2b533cbb7eed071f12c5819b129712c2b6044d28a93293cd533a453a6",
+          "content": "HTML_EXCEPTIONS = {",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.utils.IS_PYTHON3": {
+      "id": "paml.utils.IS_PYTHON3",
+      "name": "IS_PYTHON3",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 80,
+          "end": 116,
+          "hash": "bab1ae44033f64d26030a645250c5f64e5fc3c45dad39ea99ae5396fd4897f22",
+          "content": "IS_PYTHON3 = sys.version_info[0] > 2",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.formatter.JSFormatter": {
+      "id": "paml.formatter.JSFormatter",
+      "name": "JSFormatter",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 18484,
+          "end": 18517,
+          "hash": "0125ca158733f22545823c5159584604ccbc72931007c27e9ef044c9231a3467",
+          "content": "class JSFormatter(HTMLFormatter):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.formatter.XMLFormatter._formatContent",
+          "name": "_formatContent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 18899,
+              "end": 18932,
+              "hash": "f56b1c8696f54958610af62a56554954baee5c9935e72d6bd8369b92b4596269",
+              "content": "\tdef _formatContent(self, value):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.XMLFormatter.format",
+          "name": "format",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 4605,
+              "end": 4643,
+              "hash": "2cbfcc6a964b693c15c24372da121cff0f74c65bb8a0b08ed661d4f280ccd30a",
+              "content": "\tdef format(self, document, indent=0):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.macros.Macro": {
+      "id": "paml.macros.Macro",
+      "name": "Macro",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 376,
+          "end": 388,
+          "hash": "169cfee54cbc6a6140b1b66801106f4d04561794ad97a64d5260b718c956a662",
+          "content": "class Macro:",
+          "path": "src/py/paml/macros.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.macros.Macro.CATALOGUE",
+          "name": "CATALOGUE",
+          "type": "Value",
+          "subtype": "variable",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 6580,
+              "end": 6594,
+              "hash": "c9285369f2629a27eec9569f327d6f9027d5d41c1b7829fd7c9b1ba4a157a036",
+              "content": "\tCATALOGUE = {",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.CSS_PATTERNS",
+          "name": "CSS_PATTERNS",
+          "type": "Value",
+          "subtype": "variable",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 502,
+              "end": 519,
+              "hash": "5ab11a077d10e95c7f9640f2fa9115a7872e4767aa8edd313d97f2206c69488e",
+              "content": "\tCSS_PATTERNS = (",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.GMODULE_PATTERNS",
+          "name": "GMODULE_PATTERNS",
+          "type": "Value",
+          "subtype": "variable",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 885,
+              "end": 906,
+              "hash": "8bf03b7f6d1dd970bc6ac42a3abf583503a85dfa7fa41d1e605518b596273411",
+              "content": "\tGMODULE_PATTERNS = (",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.Get",
+          "name": "Get",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 1002,
+              "end": 1022,
+              "hash": "c75100240960729a1a42d8bcb81771fc599e0d68bc63a65c35a4858b0bbd7611",
+              "content": "\tdef Get(cls, name):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.ImportJS",
+          "name": "ImportJS",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 5763,
+              "end": 5801,
+              "hash": "0c42235dc1af4b811481d72afe31e97f915c242584c9054d96a34e9003abf2fc",
+              "content": "\tdef ImportJS(parser, params, indent):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.IndentAsString",
+          "name": "IndentAsString",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 1071,
+              "end": 1104,
+              "hash": "ec01a0a21093e21c672dbfd758d4abeed7670fdca6790c6a743212ea0e2ace34",
+              "content": "\tdef IndentAsString(cls, indent):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.JS_PATTERNS",
+          "name": "JS_PATTERNS",
+          "type": "Value",
+          "subtype": "variable",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 704,
+              "end": 720,
+              "hash": "9a332c226804e06e51321a208114bb42f517d0850906577b8a697c9f88680fcc",
+              "content": "\tJS_PATTERNS = (",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.Require",
+          "name": "Require",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 1215,
+              "end": 1244,
+              "hash": "59197e47620e372527e5245c5826c929fca31526fc67d04df0e44af2cb349fe8",
+              "content": "\tdef Require(name, paths=[]):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.RequireCSS",
+          "name": "RequireCSS",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 2789,
+              "end": 2829,
+              "hash": "4b4d552ab4f161e4d341d65c2f5954bbe939dd95a3205a77edfca3809ddc809c",
+              "content": "\tdef RequireCSS(parser, params, indent):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.RequireExpand",
+          "name": "RequireExpand",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 1884,
+              "end": 1947,
+              "hash": "1f1c13751c27cdb00f73ba8f0b8d55442940a91934465865d633e65dd4778598",
+              "content": "\tdef RequireExpand(parser, params, indent, patterns, template):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.RequireGmodule",
+          "name": "RequireGmodule",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 3482,
+              "end": 3526,
+              "hash": "a236148f779f97d200b4259199c9df01086dfba9238125a297b492b5d51be0c3",
+              "content": "\tdef RequireGmodule(parser, params, indent):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.macros.Macro.RequireJS",
+          "name": "RequireJS",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.macros",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/macros.py",
+              "start": 3127,
+              "end": 3166,
+              "hash": "ba9982c5ba83fff98e3d525744d85968ba18be83558405d1044b68e65f635d75",
+              "content": "\tdef RequireJS(parser, params, indent):",
+              "path": "src/py/paml/macros.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.macros.Macro.CATALOGUE": {
+      "id": "paml.macros.Macro.CATALOGUE",
+      "name": "CATALOGUE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 6580,
+          "end": 6594,
+          "hash": "c9285369f2629a27eec9569f327d6f9027d5d41c1b7829fd7c9b1ba4a157a036",
+          "content": "\tCATALOGUE = {",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.CSS_PATTERNS": {
+      "id": "paml.macros.Macro.CSS_PATTERNS",
+      "name": "CSS_PATTERNS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 502,
+          "end": 519,
+          "hash": "5ab11a077d10e95c7f9640f2fa9115a7872e4767aa8edd313d97f2206c69488e",
+          "content": "\tCSS_PATTERNS = (",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.GMODULE_PATTERNS": {
+      "id": "paml.macros.Macro.GMODULE_PATTERNS",
+      "name": "GMODULE_PATTERNS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 885,
+          "end": 906,
+          "hash": "8bf03b7f6d1dd970bc6ac42a3abf583503a85dfa7fa41d1e605518b596273411",
+          "content": "\tGMODULE_PATTERNS = (",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.Get": {
+      "id": "paml.macros.Macro.Get",
+      "name": "Get",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 1002,
+          "end": 1022,
+          "hash": "c75100240960729a1a42d8bcb81771fc599e0d68bc63a65c35a4858b0bbd7611",
+          "content": "\tdef Get(cls, name):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.ImportJS": {
+      "id": "paml.macros.Macro.ImportJS",
+      "name": "ImportJS",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 5763,
+          "end": 5801,
+          "hash": "0c42235dc1af4b811481d72afe31e97f915c242584c9054d96a34e9003abf2fc",
+          "content": "\tdef ImportJS(parser, params, indent):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.IndentAsString": {
+      "id": "paml.macros.Macro.IndentAsString",
+      "name": "IndentAsString",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 1071,
+          "end": 1104,
+          "hash": "ec01a0a21093e21c672dbfd758d4abeed7670fdca6790c6a743212ea0e2ace34",
+          "content": "\tdef IndentAsString(cls, indent):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.JS_PATTERNS": {
+      "id": "paml.macros.Macro.JS_PATTERNS",
+      "name": "JS_PATTERNS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 704,
+          "end": 720,
+          "hash": "9a332c226804e06e51321a208114bb42f517d0850906577b8a697c9f88680fcc",
+          "content": "\tJS_PATTERNS = (",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.Require": {
+      "id": "paml.macros.Macro.Require",
+      "name": "Require",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 1215,
+          "end": 1244,
+          "hash": "59197e47620e372527e5245c5826c929fca31526fc67d04df0e44af2cb349fe8",
+          "content": "\tdef Require(name, paths=[]):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.RequireCSS": {
+      "id": "paml.macros.Macro.RequireCSS",
+      "name": "RequireCSS",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 2789,
+          "end": 2829,
+          "hash": "4b4d552ab4f161e4d341d65c2f5954bbe939dd95a3205a77edfca3809ddc809c",
+          "content": "\tdef RequireCSS(parser, params, indent):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.RequireExpand": {
+      "id": "paml.macros.Macro.RequireExpand",
+      "name": "RequireExpand",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 1884,
+          "end": 1947,
+          "hash": "1f1c13751c27cdb00f73ba8f0b8d55442940a91934465865d633e65dd4778598",
+          "content": "\tdef RequireExpand(parser, params, indent, patterns, template):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.RequireGmodule": {
+      "id": "paml.macros.Macro.RequireGmodule",
+      "name": "RequireGmodule",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 3482,
+          "end": 3526,
+          "hash": "a236148f779f97d200b4259199c9df01086dfba9238125a297b492b5d51be0c3",
+          "content": "\tdef RequireGmodule(parser, params, indent):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.macros.Macro.RequireJS": {
+      "id": "paml.macros.Macro.RequireJS",
+      "name": "RequireJS",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 3127,
+          "end": 3166,
+          "hash": "ba9982c5ba83fff98e3d525744d85968ba18be83558405d1044b68e65f635d75",
+          "content": "\tdef RequireJS(parser, params, indent):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.version.PAMELA_VERSION": {
+      "id": "paml.version.PAMELA_VERSION",
+      "name": "PAMELA_VERSION",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.version",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/version.py",
+          "start": 22,
+          "end": 50,
+          "hash": "cb6c4b014e03d7d892fdfb3e963068c1b17a4ff5dd14c6705d9bc00a29eacd14",
+          "content": "PAMELA_VERSION = __version__",
+          "path": "src/py/paml/version.py"
+        }
+      ]
+    },
+    "paml.parser.Parser": {
+      "id": "paml.parser.Parser",
+      "name": "Parser",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 758,
+          "end": 771,
+          "hash": "dbacde712c505c4cc56cd5e441053369bf0c2334d855ceb7754cdc34cc067dcf",
+          "content": "class Parser:",
+          "path": "src/py/paml/parser.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.parser.Parser.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 2156,
+              "end": 2207,
+              "hash": "673ad6d695e773792d53249827d9b9eb12103aca4ccda9d2f44ad43462c79bd2",
+              "content": "\tdef __init__(self, formatter=None, defaults=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._findIncludedPath",
+          "name": "_findIncludedPath",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 12777,
+              "end": 12812,
+              "hash": "3da0509e30b07e86df445a436ac2ce78587b5afaf2fcfe562f96e1ba8456d77b",
+              "content": "\tdef _findIncludedPath(self, path):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._getLineIndent",
+          "name": "_getLineIndent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 19881,
+              "end": 19913,
+              "hash": "d49dd73ab23ca91f4d6ec9dd8a94efdbb3cb559490e471050f333c5e00fa9e40",
+              "content": "\tdef _getLineIndent(self, line):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._gotoParentElement",
+          "name": "_gotoParentElement",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 19612,
+              "end": 19657,
+              "hash": "a54258c510511106fdcbf9f1da8ef6975f91bc7b0445a0c6a872c663de997146",
+              "content": "\tdef _gotoParentElement(self, currentIndent):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._isInEmbed",
+          "name": "_isInEmbed",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 3917,
+              "end": 3952,
+              "hash": "d423dbe17ac883f676c6d8e4343b630dc53be0af08c3c20db3e8c57a4571b4e1",
+              "content": "\tdef _isInEmbed(self, indent=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseContentLine",
+          "name": "_parseContentLine",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 14476,
+              "end": 14511,
+              "hash": "deea67a60e12435019335f47059bb92a3558580264745c745c4a6c313e4c1f9a",
+              "content": "\tdef _parseContentLine(self, line):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseInclude",
+          "name": "_parseInclude",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 10178,
+              "end": 10234,
+              "hash": "30eb868eecfe164187541c525dfbbf1484928de2f2a40eeee82cdf1d5a0a23cd",
+              "content": "\tdef _parseInclude(self, match, indent, parseLine=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseIncludeSubstitutions",
+          "name": "_parseIncludeSubstitutions",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 9028,
+              "end": 9072,
+              "hash": "eef967f6217e97222a5ba5215ea23cced7ef9de3c590983cd66eb246e6ae3ecc",
+              "content": "\tdef _parseIncludeSubstitutions(self, text):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseLine",
+          "name": "_parseLine",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 4256,
+              "end": 4284,
+              "hash": "8ab342cdbb16b47cbb2ac469604f782b0b7fb7c18e21b09709694aef69c2212a",
+              "content": "\tdef _parseLine(self, line):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseMacro",
+          "name": "_parseMacro",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 13949,
+              "end": 14003,
+              "hash": "079d1ef156ac46971abc6eba50a2af219e89ac3ccb594b23d4032d3a037a2f16",
+              "content": "\tdef _parseMacro(self, match, indent, parseLine=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parsePAMLAttributes",
+          "name": "_parsePAMLAttributes",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 18647,
+              "end": 18691,
+              "hash": "1b13fa1fc6affe707b6792db0e98a382f01ce57ef9869e8e235b03f8b7fdd544",
+              "content": "\tdef _parsePAMLAttributes(self, attributes):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parsePAMLElement",
+          "name": "_parsePAMLElement",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 15690,
+              "end": 15728,
+              "hash": "4997c3bc0f31a5bac6cb608cd172eb4f76044ffed60230c3e6d2883cdbfdfaf3",
+              "content": "\tdef _parsePAMLElement(self, element):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._parseUse",
+          "name": "_parseUse",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 13270,
+              "end": 13322,
+              "hash": "a6d12c9a2bf68f15f6cbd5583d9144997e39e4d4fab73479fff73ab23db6062b",
+              "content": "\tdef _parseUse(self, match, indent, parseLine=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._popStack",
+          "name": "_popStack",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 14401,
+              "end": 14422,
+              "hash": "33aa5deb76cd47764bd7e8d44d6d8cc0633e797a8e270180b215d6420de24cc1",
+              "content": "\tdef _popStack(self):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._pushStack",
+          "name": "_pushStack",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 14278,
+              "end": 14325,
+              "hash": "4f1a4551238e2817d6d77a148629b64ecb2c1cb406f177fc7d9ea271bd55e9bd",
+              "content": "\tdef _pushStack(self, indent, type, mode=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser._tokenize",
+          "name": "_tokenize",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 8086,
+              "end": 8127,
+              "hash": "7b1bacf6f8699a68ffa09908c91afce01ed6a3213708d1c8870d2f2c1fb21112",
+              "content": "\tdef _tokenize(self, text, escape=\"\\\"'\"):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser.indent",
+          "name": "indent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 2897,
+              "end": 2915,
+              "hash": "1fc3a9197b85791fb1ec08d1c2a2ae6c880479ea17094cf48be4c34363ba3459",
+              "content": "\tdef indent(self):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser.parseFile",
+          "name": "parseFile",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 2998,
+              "end": 3025,
+              "hash": "ed804690cae10a5253e4c29c71ec463de8fd52b25162bd1c63dc84e0d25cc601",
+              "content": "\tdef parseFile(self, path):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser.parseString",
+          "name": "parseString",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 3465,
+              "end": 3505,
+              "hash": "108cdfcb17dbcac032983e4ef80185fbe70af4fda0f7061aca8e40d50ca77bf6",
+              "content": "\tdef parseString(self, text, path=None):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser.path",
+          "name": "path",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 2716,
+              "end": 2732,
+              "hash": "e8c21e1b37f8763dba02208ddaa98e4834a9ee12bbe296b430da6860aacbc11d",
+              "content": "\tdef path(self):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.parser.Parser.setDefaults",
+          "name": "setDefaults",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.parser",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/parser.py",
+              "start": 2639,
+              "end": 2672,
+              "hash": "181ba0cf10e6f5d8073630e458becb5286bca1143c41badc2ca9377fe7f2d1cf",
+              "content": "\tdef setDefaults(self, defaults):",
+              "path": "src/py/paml/parser.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.parser.Parser.__init__": {
+      "id": "paml.parser.Parser.__init__",
+      "name": "__init__",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 2156,
+          "end": 2207,
+          "hash": "673ad6d695e773792d53249827d9b9eb12103aca4ccda9d2f44ad43462c79bd2",
+          "content": "\tdef __init__(self, formatter=None, defaults=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._findIncludedPath": {
+      "id": "paml.parser.Parser._findIncludedPath",
+      "name": "_findIncludedPath",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 12777,
+          "end": 12812,
+          "hash": "3da0509e30b07e86df445a436ac2ce78587b5afaf2fcfe562f96e1ba8456d77b",
+          "content": "\tdef _findIncludedPath(self, path):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._getLineIndent": {
+      "id": "paml.parser.Parser._getLineIndent",
+      "name": "_getLineIndent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 19881,
+          "end": 19913,
+          "hash": "d49dd73ab23ca91f4d6ec9dd8a94efdbb3cb559490e471050f333c5e00fa9e40",
+          "content": "\tdef _getLineIndent(self, line):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._gotoParentElement": {
+      "id": "paml.parser.Parser._gotoParentElement",
+      "name": "_gotoParentElement",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 19612,
+          "end": 19657,
+          "hash": "a54258c510511106fdcbf9f1da8ef6975f91bc7b0445a0c6a872c663de997146",
+          "content": "\tdef _gotoParentElement(self, currentIndent):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._isInEmbed": {
+      "id": "paml.parser.Parser._isInEmbed",
+      "name": "_isInEmbed",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 3917,
+          "end": 3952,
+          "hash": "d423dbe17ac883f676c6d8e4343b630dc53be0af08c3c20db3e8c57a4571b4e1",
+          "content": "\tdef _isInEmbed(self, indent=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseContentLine": {
+      "id": "paml.parser.Parser._parseContentLine",
+      "name": "_parseContentLine",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 14476,
+          "end": 14511,
+          "hash": "deea67a60e12435019335f47059bb92a3558580264745c745c4a6c313e4c1f9a",
+          "content": "\tdef _parseContentLine(self, line):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseInclude": {
+      "id": "paml.parser.Parser._parseInclude",
+      "name": "_parseInclude",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 10178,
+          "end": 10234,
+          "hash": "30eb868eecfe164187541c525dfbbf1484928de2f2a40eeee82cdf1d5a0a23cd",
+          "content": "\tdef _parseInclude(self, match, indent, parseLine=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseIncludeSubstitutions": {
+      "id": "paml.parser.Parser._parseIncludeSubstitutions",
+      "name": "_parseIncludeSubstitutions",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 9028,
+          "end": 9072,
+          "hash": "eef967f6217e97222a5ba5215ea23cced7ef9de3c590983cd66eb246e6ae3ecc",
+          "content": "\tdef _parseIncludeSubstitutions(self, text):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseLine": {
+      "id": "paml.parser.Parser._parseLine",
+      "name": "_parseLine",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 4256,
+          "end": 4284,
+          "hash": "8ab342cdbb16b47cbb2ac469604f782b0b7fb7c18e21b09709694aef69c2212a",
+          "content": "\tdef _parseLine(self, line):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseMacro": {
+      "id": "paml.parser.Parser._parseMacro",
+      "name": "_parseMacro",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 13949,
+          "end": 14003,
+          "hash": "079d1ef156ac46971abc6eba50a2af219e89ac3ccb594b23d4032d3a037a2f16",
+          "content": "\tdef _parseMacro(self, match, indent, parseLine=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parsePAMLAttributes": {
+      "id": "paml.parser.Parser._parsePAMLAttributes",
+      "name": "_parsePAMLAttributes",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 18647,
+          "end": 18691,
+          "hash": "1b13fa1fc6affe707b6792db0e98a382f01ce57ef9869e8e235b03f8b7fdd544",
+          "content": "\tdef _parsePAMLAttributes(self, attributes):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parsePAMLElement": {
+      "id": "paml.parser.Parser._parsePAMLElement",
+      "name": "_parsePAMLElement",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 15690,
+          "end": 15728,
+          "hash": "4997c3bc0f31a5bac6cb608cd172eb4f76044ffed60230c3e6d2883cdbfdfaf3",
+          "content": "\tdef _parsePAMLElement(self, element):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._parseUse": {
+      "id": "paml.parser.Parser._parseUse",
+      "name": "_parseUse",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 13270,
+          "end": 13322,
+          "hash": "a6d12c9a2bf68f15f6cbd5583d9144997e39e4d4fab73479fff73ab23db6062b",
+          "content": "\tdef _parseUse(self, match, indent, parseLine=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._popStack": {
+      "id": "paml.parser.Parser._popStack",
+      "name": "_popStack",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 14401,
+          "end": 14422,
+          "hash": "33aa5deb76cd47764bd7e8d44d6d8cc0633e797a8e270180b215d6420de24cc1",
+          "content": "\tdef _popStack(self):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._pushStack": {
+      "id": "paml.parser.Parser._pushStack",
+      "name": "_pushStack",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 14278,
+          "end": 14325,
+          "hash": "4f1a4551238e2817d6d77a148629b64ecb2c1cb406f177fc7d9ea271bd55e9bd",
+          "content": "\tdef _pushStack(self, indent, type, mode=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser._tokenize": {
+      "id": "paml.parser.Parser._tokenize",
+      "name": "_tokenize",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 8086,
+          "end": 8127,
+          "hash": "7b1bacf6f8699a68ffa09908c91afce01ed6a3213708d1c8870d2f2c1fb21112",
+          "content": "\tdef _tokenize(self, text, escape=\"\\\"'\"):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser.indent": {
+      "id": "paml.parser.Parser.indent",
+      "name": "indent",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 2897,
+          "end": 2915,
+          "hash": "1fc3a9197b85791fb1ec08d1c2a2ae6c880479ea17094cf48be4c34363ba3459",
+          "content": "\tdef indent(self):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser.parseFile": {
+      "id": "paml.parser.Parser.parseFile",
+      "name": "parseFile",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 2998,
+          "end": 3025,
+          "hash": "ed804690cae10a5253e4c29c71ec463de8fd52b25162bd1c63dc84e0d25cc601",
+          "content": "\tdef parseFile(self, path):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser.parseString": {
+      "id": "paml.parser.Parser.parseString",
+      "name": "parseString",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 3465,
+          "end": 3505,
+          "hash": "108cdfcb17dbcac032983e4ef80185fbe70af4fda0f7061aca8e40d50ca77bf6",
+          "content": "\tdef parseString(self, text, path=None):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser.path": {
+      "id": "paml.parser.Parser.path",
+      "name": "path",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 2716,
+          "end": 2732,
+          "hash": "e8c21e1b37f8763dba02208ddaa98e4834a9ee12bbe296b430da6860aacbc11d",
+          "content": "\tdef path(self):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.parser.Parser.setDefaults": {
+      "id": "paml.parser.Parser.setDefaults",
+      "name": "setDefaults",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 2639,
+          "end": 2672,
+          "hash": "181ba0cf10e6f5d8073630e458becb5286bca1143c41badc2ca9377fe7f2d1cf",
+          "content": "\tdef setDefaults(self, defaults):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.model.ProcessingInstruction": {
+      "id": "paml.model.ProcessingInstruction",
+      "name": "ProcessingInstruction",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 2703,
+          "end": 2739,
+          "hash": "121730ff0407588657d6bf1a5b0eaa14b5f7f36053431e71696afd49da2bf372",
+          "content": "class ProcessingInstruction(object):",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.grammar.RE_ATTRIBUTE": {
+      "id": "paml.grammar.RE_ATTRIBUTE",
+      "name": "RE_ATTRIBUTE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 700,
+          "end": 738,
+          "hash": "62dc74a117281b6b22781dd63a7b79ff64f83bd06a72167139e1021dfd7d2504",
+          "content": "RE_ATTRIBUTE = re.compile(SYMBOL_ATTR)",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_COMMENT": {
+      "id": "paml.grammar.RE_COMMENT",
+      "name": "RE_COMMENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 739,
+          "end": 773,
+          "hash": "addfcfd14e7972cf8e584b09e4ec3419623c6e63a995701ddb584071688151f9",
+          "content": "RE_COMMENT = re.compile(\"^#(.*)$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_DECLARATION": {
+      "id": "paml.grammar.RE_DECLARATION",
+      "name": "RE_DECLARATION",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 806,
+          "end": 862,
+          "hash": "909cc62fb3ccf9e3042d9bca30549b9af31f7d93d23172a107de3170cdec2ac5",
+          "content": "RE_DECLARATION = re.compile(r\"^@(%s):?\" % (SYMBOL_NAME))",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_DOCTYPE": {
+      "id": "paml.grammar.RE_DOCTYPE",
+      "name": "RE_DOCTYPE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1159,
+          "end": 1210,
+          "hash": "151d006eff31ceaaf39587f533520e578454441c254eab5ee77f51fdbdfd4ad7",
+          "content": "RE_DOCTYPE = re.compile(r\"^(\\s)*\\<\\!([^>]+)\\>\\s*$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_ELEMENT": {
+      "id": "paml.grammar.RE_ELEMENT",
+      "name": "RE_ELEMENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 863,
+          "end": 913,
+          "hash": "f996e323af7f5e8d5d89e392e6146416f9fde8dec1867ab678100c825bba9a2b",
+          "content": "RE_ELEMENT = re.compile(r\"^%s\" % (SYMBOL_ELEMENT))",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_EMPTY": {
+      "id": "paml.grammar.RE_EMPTY",
+      "name": "RE_EMPTY",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 774,
+          "end": 805,
+          "hash": "82fa581e1f01247da9001dda367df1cd281abb610598be0423024dda5ea31cd3",
+          "content": "RE_EMPTY = re.compile(r\"^\\s*$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_INCLUDE": {
+      "id": "paml.grammar.RE_INCLUDE",
+      "name": "RE_INCLUDE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1028,
+          "end": 1076,
+          "hash": "b7250102d3952ac2f3d3c30ba5aed7ab311a28668519ece7cdc6f583fa096a5e",
+          "content": "RE_INCLUDE = re.compile(r\"^(\\s)*%include (.+)$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_INLINE": {
+      "id": "paml.grammar.RE_INLINE",
+      "name": "RE_INLINE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 914,
+          "end": 962,
+          "hash": "ab13d0ebf2e4ae26f4d08eb12d0b6a0e7ca024a113e671f8e6ca8d9f926eb0df",
+          "content": "RE_INLINE = re.compile(r\"%s\" % (SYMBOL_ELEMENT))",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_LEADING_SPC": {
+      "id": "paml.grammar.RE_LEADING_SPC",
+      "name": "RE_LEADING_SPC",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1293,
+          "end": 1329,
+          "hash": "8fd8eca2b7c2ccd53303ef24b7c151d93e9e87fb03c59b6a6b6fbcb325af6a42",
+          "content": "RE_LEADING_SPC = re.compile(r\"[ ]*\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_LEADING_TAB": {
+      "id": "paml.grammar.RE_LEADING_TAB",
+      "name": "RE_LEADING_TAB",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1257,
+          "end": 1292,
+          "hash": "c43565d588ab12bb957556c9fb280799e9c020b25c54ed5d05157cdee0f5fd0f",
+          "content": "RE_LEADING_TAB = re.compile(r\"\\t*\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_MACRO": {
+      "id": "paml.grammar.RE_MACRO",
+      "name": "RE_MACRO",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 963,
+          "end": 1027,
+          "hash": "87739d16fbf95685f84df388e1a016d807fb6bd71b8a86005b0148e84c6c5692",
+          "content": "RE_MACRO = re.compile(r\"^(\\s)*(@\\w+(:\\w+)?)\\s*\\(([^\\)]+)\\)\\s*$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_PI": {
+      "id": "paml.grammar.RE_PI",
+      "name": "RE_PI",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1211,
+          "end": 1256,
+          "hash": "aa78b67e9655fe4e9d8c756dd1a6b9ed8f4a44f2316a6f9aa0150ad1ad8f86bf",
+          "content": "RE_PI = re.compile(r\"^(\\s)*\\<\\?(.+)\\?\\>\\s*$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_SPACE": {
+      "id": "paml.grammar.RE_SPACE",
+      "name": "RE_SPACE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1330,
+          "end": 1362,
+          "hash": "025f994005a368695f51c4e5cdd8c9d3824e7c8e97c8b9da3f912aa221b3245c",
+          "content": "RE_SPACE = re.compile(r\"[\\s\\n]\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.engine.RE_SPACES": {
+      "id": "paml.engine.RE_SPACES",
+      "name": "RE_SPACES",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.engine",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/engine.py",
+          "start": 1895,
+          "end": 1924,
+          "hash": "ad3fbd9b1489a2fe8df89b46bbb660fca1f3fe89b96f9dc81011bfb4d1d1022a",
+          "content": "RE_SPACES = re.compile(r\"\\s\")",
+          "path": "src/py/paml/engine.py"
+        }
+      ]
+    },
+    "paml.formatter.RE_SPACES": {
+      "id": "paml.formatter.RE_SPACES",
+      "name": "RE_SPACES",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 534,
+          "end": 563,
+          "hash": "ad3fbd9b1489a2fe8df89b46bbb660fca1f3fe89b96f9dc81011bfb4d1d1022a",
+          "content": "RE_SPACES = re.compile(r\"\\s\")",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_USE": {
+      "id": "paml.grammar.RE_USE",
+      "name": "RE_USE",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1077,
+          "end": 1158,
+          "hash": "7ea37535bea0d01c343f26e407fd1b66b434c54b6ed673000bc6aaed521022c5",
+          "content": "RE_USE = re.compile(r\"^(\\s)*%use\\s+#([A-Za-z0-9_\\-]+)(\\.\\w+)?(\\s+(\\d+)x(\\d+))?$\")",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.RE_XML_COMMENT": {
+      "id": "paml.grammar.RE_XML_COMMENT",
+      "name": "RE_XML_COMMENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1363,
+          "end": 1444,
+          "hash": "3647c00b743ff90c25652ccdf64a240266466fd69cf198a3fe70f05d0d3228f3",
+          "content": "RE_XML_COMMENT = re.compile(r\"^(\\s)*\\<\\!\\-\\-(([^\\-]|\\-[^\\-]|\\-\\-[^\\>])+)\\-\\-\\>\\s*",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.model.RawText": {
+      "id": "paml.model.RawText",
+      "name": "RawText",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 398,
+          "end": 412,
+          "hash": "8ce8c050c9e1ea5f43d4487d2923ee26d46a5296fe828458767f88f3fc1904d5",
+          "content": "class RawText:",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_ATTR": {
+      "id": "paml.grammar.SYMBOL_ATTR",
+      "name": "SYMBOL_ATTR",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 341,
+          "end": 416,
+          "hash": "c89a84776d37c58720b1706d8300ba0fba400e4b79226c50988ed994b6b8a243",
+          "content": "SYMBOL_ATTR = r\"(%s)(=('[^']+'|\\\"[^\\\"]+\\\"|([^),]+)))?\" % (SYMBOL_ATTR_NAME)",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_ATTRS": {
+      "id": "paml.grammar.SYMBOL_ATTRS",
+      "name": "SYMBOL_ATTRS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 417,
+          "end": 476,
+          "hash": "a27b148877eb6f9870c6aa559f7ab2e766f1f439c492a386d0908be70d49d6aa",
+          "content": "SYMBOL_ATTRS = r\"\\(%s(,%s)*\\)\" % (SYMBOL_ATTR, SYMBOL_ATTR)",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_ATTR_NAME": {
+      "id": "paml.grammar.SYMBOL_ATTR_NAME",
+      "name": "SYMBOL_ATTR_NAME",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 291,
+          "end": 340,
+          "hash": "93ba4ffda45817bfea42385f540d029c108e77d057678ddc889ad17b6af60c4a",
+          "content": "SYMBOL_ATTR_NAME = r\"\\??([\\w\\d_-]+::?)?[\\w\\d_-]+\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_CONTENT": {
+      "id": "paml.grammar.SYMBOL_CONTENT",
+      "name": "SYMBOL_CONTENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 477,
+          "end": 512,
+          "hash": "4b544fadf7e29956d9b46d85a476e1dec9d2ec9af51513854aa2f527913baeed",
+          "content": "SYMBOL_CONTENT = r\"@\\w[\\w\\d\\-_\\+]*\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_ELEMENT": {
+      "id": "paml.grammar.SYMBOL_ELEMENT",
+      "name": "SYMBOL_ELEMENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 549,
+          "end": 604,
+          "hash": "b100d58f612bface5f9dbf2f4a0b95d05f45bbc6678cb798fb1220e427e7eff7",
+          "content": "SYMBOL_ELEMENT = r\"<(%s(%s)?|%s)(%s)?(%s)?(%s)?\\:?\" % (",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_HINTS": {
+      "id": "paml.grammar.SYMBOL_HINTS",
+      "name": "SYMBOL_HINTS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 513,
+          "end": 548,
+          "hash": "35d05663e3609ade4c0c78e3ca65bcacb9850903ac5b968a0830064b5037f97f",
+          "content": "SYMBOL_HINTS = r\"\\|[a-z](\\+[a-z])*\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_ID_CLS": {
+      "id": "paml.grammar.SYMBOL_ID_CLS",
+      "name": "SYMBOL_ID_CLS",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 230,
+          "end": 290,
+          "hash": "5afe6dc07161a5cb1f9fc9ed9f33f9b0de59baa5a8d4d5b3c281fec401a8c7e6",
+          "content": "SYMBOL_ID_CLS = r\"(\\#%s|\\.%s)+\" % (SYMBOL_NAME, SYMBOL_NAME)",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.SYMBOL_NAME": {
+      "id": "paml.grammar.SYMBOL_NAME",
+      "name": "SYMBOL_NAME",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 186,
+          "end": 229,
+          "hash": "c48a5970986650b94752c894f40e28dd4a89c39c31422d9cbcac4b02e1416a6b",
+          "content": "SYMBOL_NAME = r\"\\??([\\w\\d_-]+::)?[\\w\\d_-]+\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.TAB_WIDTH": {
+      "id": "paml.grammar.TAB_WIDTH",
+      "name": "TAB_WIDTH",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1582,
+          "end": 1595,
+          "hash": "7ec4802062dece7ba01fbac053dcc7c5fa2cb803eb1066836e9761c4f5a684ae",
+          "content": "TAB_WIDTH = 4",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.T_DECLARATION": {
+      "id": "paml.grammar.T_DECLARATION",
+      "name": "T_DECLARATION",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1545,
+          "end": 1565,
+          "hash": "97796ee0bc5ca3779098de4ffcf2440f30576e7defb059754316ab64ae1e534b",
+          "content": "T_DECLARATION = \"DC\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.T_ELEMENT": {
+      "id": "paml.grammar.T_ELEMENT",
+      "name": "T_ELEMENT",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1528,
+          "end": 1544,
+          "hash": "89cb2bec79f9a8a982ca17664c52294189b414101510ffcb003da1374855adc0",
+          "content": "T_ELEMENT = \"EL\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.grammar.T_EMBED": {
+      "id": "paml.grammar.T_EMBED",
+      "name": "T_EMBED",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.grammar",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/grammar.py",
+          "start": 1566,
+          "end": 1580,
+          "hash": "068e08feedccde0abb96057d2605b6cdaf20d7b999d85fa7c661ac9112709ae5",
+          "content": "T_EMBED = \"EM\"",
+          "path": "src/py/paml/grammar.py"
+        }
+      ]
+    },
+    "paml.model.Text": {
+      "id": "paml.model.Text",
+      "name": "Text",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 215,
+          "end": 226,
+          "hash": "5b77d02ef7f76ad5f9e69a67c77312b50bde25e739a0f60937982cf014af6397",
+          "content": "class Text:",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.writer.Writer": {
+      "id": "paml.writer.Writer",
+      "name": "Writer",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 324,
+          "end": 337,
+          "hash": "493e6a90957b33469e5c512c3f6e757abb56d452652877a07399583ccd7231e0",
+          "content": "class Writer:",
+          "path": "src/py/paml/writer.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.writer.Writer.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 587,
+              "end": 607,
+              "hash": "bfe67c3d81d84fd32bf8f27e6d981aacd9b9731fcf7cc5118ae3bf1d91fac510",
+              "content": "\tdef __init__(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer._getBEMName",
+          "name": "_getBEMName",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 3900,
+              "end": 3929,
+              "hash": "c8b7c9930a420a5222e97aa6d8af1d0ff3021aadb85851e6982685cb6d032a6c",
+              "content": "\tdef _getBEMName(self, name):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer._node",
+          "name": "_node",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 4969,
+              "end": 4986,
+              "hash": "c609161c9cea1f995fb3261241a301af2dcf6c8f32b3a5d28268c95982026bad",
+              "content": "\tdef _node(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer._popStack",
+          "name": "_popStack",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 4875,
+              "end": 4896,
+              "hash": "33aa5deb76cd47764bd7e8d44d6d8cc0633e797a8e270180b215d6420de24cc1",
+              "content": "\tdef _popStack(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer._pushStack",
+          "name": "_pushStack",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 4622,
+              "end": 4680,
+              "hash": "8749a41f96aa67ee208c3354756665a92484ec4ac0b2e3d4aa90a73a83dce370",
+              "content": "\tdef _pushStack(self, node, bemPrefixes=None, hints=None):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.mode",
+          "name": "mode",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 5164,
+              "end": 5180,
+              "hash": "d32afc7c239ff39243eec1e3301253d53741c6d2f82f3c31719fbfa4da617520",
+              "content": "\tdef mode(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onComment",
+          "name": "onComment",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 885,
+              "end": 912,
+              "hash": "cc487e51f45d522d98eb393a50197edbda2bfe56d39213dc575a1677fbd58474",
+              "content": "\tdef onComment(self, line):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onDeclarationEnd",
+          "name": "onDeclarationEnd",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 3851,
+              "end": 3879,
+              "hash": "f1f81fc0f0a5ac9f48bd76d82ebda0163e1b1f08f3e9fdbce07b817d8e395536",
+              "content": "\tdef onDeclarationEnd(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onDeclarationStart",
+          "name": "onDeclarationStart",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 3739,
+              "end": 3792,
+              "hash": "2974f19459f62b9fb830c45b474c44bb30b66dff2ed6f39cf454920122e6cd9e",
+              "content": "\tdef onDeclarationStart(self, name, attributes=None):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onDocType",
+          "name": "onDocType",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1234,
+              "end": 1261,
+              "hash": "c5e4d1b0a4c4289bba7453a64332f15dd765b30e3a84b5a40b670044a76da512",
+              "content": "\tdef onDocType(self, text):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onDocumentEnd",
+          "name": "onDocumentEnd",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 834,
+              "end": 859,
+              "hash": "451604d0d56457bbc54739b233686aa2eda8fd62490ff2869db0cb60414d86da",
+              "content": "\tdef onDocumentEnd(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onDocumentStart",
+          "name": "onDocumentStart",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 634,
+              "end": 661,
+              "hash": "8591031a050c28e18844a65caf310e440e8c3776a3c40b203eb6253d13045371",
+              "content": "\tdef onDocumentStart(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onElementEnd",
+          "name": "onElementEnd",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 3694,
+              "end": 3718,
+              "hash": "74f188ec659b5cb051f0b46d2b1da380b6e8441e9532c27f349ddb2cd88665eb",
+              "content": "\tdef onElementEnd(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onElementStart",
+          "name": "onElementStart",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1638,
+              "end": 1715,
+              "hash": "c43e283b6252c87c034b4ffd947ba05ec2c0b97de74fc528e2a8df983ece1afc",
+              "content": "\tdef onElementStart(self, name, attributes=None, isInline=False, hints=None):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onProcessingInstruction",
+          "name": "onProcessingInstruction",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1112,
+              "end": 1153,
+              "hash": "2f94130ab1dd8b35f7facc01a6682e16007114766bbad113d9822e4c5f4086ef",
+              "content": "\tdef onProcessingInstruction(self, text):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onRawTextAdd",
+          "name": "onRawTextAdd",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1480,
+              "end": 1510,
+              "hash": "836cd387e9a1031d8110a43396b16cfe33b4dfb0ac2c1138b7edd7dc2b6c2fba",
+              "content": "\tdef onRawTextAdd(self, text):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onTextAdd",
+          "name": "onTextAdd",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1328,
+              "end": 1355,
+              "hash": "1342d27c46f65ab2faa5cc2fa64f13137a66ed45e09731554836a43c55d1dd2d",
+              "content": "\tdef onTextAdd(self, text):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.onXMLComment",
+          "name": "onXMLComment",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 1012,
+              "end": 1042,
+              "hash": "0b513b94ad9e842a06d46b00459d40d464a2ff8df4d43a0db9924ef36d18ea01",
+              "content": "\tdef onXMLComment(self, text):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.overrideAttributesForNextElement",
+          "name": "overrideAttributesForNextElement",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 3578,
+              "end": 3634,
+              "hash": "c6344b670807323cce235dfc59a62734b4d2a7000d93c1be0bfdb6af56b9598c",
+              "content": "\tdef overrideAttributesForNextElement(self, attributes):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.popMode",
+          "name": "popMode",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 5123,
+              "end": 5142,
+              "hash": "ad0cc4dbc1ded01ed5fce2f5550c043ab90dcb41d13b42695b103f33b0c62be5",
+              "content": "\tdef popMode(self):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.writer.Writer.pushMode",
+          "name": "pushMode",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.writer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/writer.py",
+              "start": 5068,
+              "end": 5094,
+              "hash": "09551cdf619eb1811337a5fcad2bdda4f18eb364d81eee8941afb8bf4c69822c",
+              "content": "\tdef pushMode(self, name):",
+              "path": "src/py/paml/writer.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.writer.Writer.__init__": {
+      "id": "paml.writer.Writer.__init__",
+      "name": "__init__",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 587,
+          "end": 607,
+          "hash": "bfe67c3d81d84fd32bf8f27e6d981aacd9b9731fcf7cc5118ae3bf1d91fac510",
+          "content": "\tdef __init__(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer._getBEMName": {
+      "id": "paml.writer.Writer._getBEMName",
+      "name": "_getBEMName",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 3900,
+          "end": 3929,
+          "hash": "c8b7c9930a420a5222e97aa6d8af1d0ff3021aadb85851e6982685cb6d032a6c",
+          "content": "\tdef _getBEMName(self, name):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer._node": {
+      "id": "paml.writer.Writer._node",
+      "name": "_node",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 4969,
+          "end": 4986,
+          "hash": "c609161c9cea1f995fb3261241a301af2dcf6c8f32b3a5d28268c95982026bad",
+          "content": "\tdef _node(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer._popStack": {
+      "id": "paml.writer.Writer._popStack",
+      "name": "_popStack",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 4875,
+          "end": 4896,
+          "hash": "33aa5deb76cd47764bd7e8d44d6d8cc0633e797a8e270180b215d6420de24cc1",
+          "content": "\tdef _popStack(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer._pushStack": {
+      "id": "paml.writer.Writer._pushStack",
+      "name": "_pushStack",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 4622,
+          "end": 4680,
+          "hash": "8749a41f96aa67ee208c3354756665a92484ec4ac0b2e3d4aa90a73a83dce370",
+          "content": "\tdef _pushStack(self, node, bemPrefixes=None, hints=None):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.mode": {
+      "id": "paml.writer.Writer.mode",
+      "name": "mode",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 5164,
+          "end": 5180,
+          "hash": "d32afc7c239ff39243eec1e3301253d53741c6d2f82f3c31719fbfa4da617520",
+          "content": "\tdef mode(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onComment": {
+      "id": "paml.writer.Writer.onComment",
+      "name": "onComment",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 885,
+          "end": 912,
+          "hash": "cc487e51f45d522d98eb393a50197edbda2bfe56d39213dc575a1677fbd58474",
+          "content": "\tdef onComment(self, line):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onDeclarationEnd": {
+      "id": "paml.writer.Writer.onDeclarationEnd",
+      "name": "onDeclarationEnd",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 3851,
+          "end": 3879,
+          "hash": "f1f81fc0f0a5ac9f48bd76d82ebda0163e1b1f08f3e9fdbce07b817d8e395536",
+          "content": "\tdef onDeclarationEnd(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onDeclarationStart": {
+      "id": "paml.writer.Writer.onDeclarationStart",
+      "name": "onDeclarationStart",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 3739,
+          "end": 3792,
+          "hash": "2974f19459f62b9fb830c45b474c44bb30b66dff2ed6f39cf454920122e6cd9e",
+          "content": "\tdef onDeclarationStart(self, name, attributes=None):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onDocType": {
+      "id": "paml.writer.Writer.onDocType",
+      "name": "onDocType",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1234,
+          "end": 1261,
+          "hash": "c5e4d1b0a4c4289bba7453a64332f15dd765b30e3a84b5a40b670044a76da512",
+          "content": "\tdef onDocType(self, text):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onDocumentEnd": {
+      "id": "paml.writer.Writer.onDocumentEnd",
+      "name": "onDocumentEnd",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 834,
+          "end": 859,
+          "hash": "451604d0d56457bbc54739b233686aa2eda8fd62490ff2869db0cb60414d86da",
+          "content": "\tdef onDocumentEnd(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onDocumentStart": {
+      "id": "paml.writer.Writer.onDocumentStart",
+      "name": "onDocumentStart",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 634,
+          "end": 661,
+          "hash": "8591031a050c28e18844a65caf310e440e8c3776a3c40b203eb6253d13045371",
+          "content": "\tdef onDocumentStart(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onElementEnd": {
+      "id": "paml.writer.Writer.onElementEnd",
+      "name": "onElementEnd",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 3694,
+          "end": 3718,
+          "hash": "74f188ec659b5cb051f0b46d2b1da380b6e8441e9532c27f349ddb2cd88665eb",
+          "content": "\tdef onElementEnd(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onElementStart": {
+      "id": "paml.writer.Writer.onElementStart",
+      "name": "onElementStart",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1638,
+          "end": 1715,
+          "hash": "c43e283b6252c87c034b4ffd947ba05ec2c0b97de74fc528e2a8df983ece1afc",
+          "content": "\tdef onElementStart(self, name, attributes=None, isInline=False, hints=None):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onProcessingInstruction": {
+      "id": "paml.writer.Writer.onProcessingInstruction",
+      "name": "onProcessingInstruction",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1112,
+          "end": 1153,
+          "hash": "2f94130ab1dd8b35f7facc01a6682e16007114766bbad113d9822e4c5f4086ef",
+          "content": "\tdef onProcessingInstruction(self, text):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onRawTextAdd": {
+      "id": "paml.writer.Writer.onRawTextAdd",
+      "name": "onRawTextAdd",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1480,
+          "end": 1510,
+          "hash": "836cd387e9a1031d8110a43396b16cfe33b4dfb0ac2c1138b7edd7dc2b6c2fba",
+          "content": "\tdef onRawTextAdd(self, text):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onTextAdd": {
+      "id": "paml.writer.Writer.onTextAdd",
+      "name": "onTextAdd",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1328,
+          "end": 1355,
+          "hash": "1342d27c46f65ab2faa5cc2fa64f13137a66ed45e09731554836a43c55d1dd2d",
+          "content": "\tdef onTextAdd(self, text):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.onXMLComment": {
+      "id": "paml.writer.Writer.onXMLComment",
+      "name": "onXMLComment",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 1012,
+          "end": 1042,
+          "hash": "0b513b94ad9e842a06d46b00459d40d464a2ff8df4d43a0db9924ef36d18ea01",
+          "content": "\tdef onXMLComment(self, text):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.overrideAttributesForNextElement": {
+      "id": "paml.writer.Writer.overrideAttributesForNextElement",
+      "name": "overrideAttributesForNextElement",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 3578,
+          "end": 3634,
+          "hash": "c6344b670807323cce235dfc59a62734b4d2a7000d93c1be0bfdb6af56b9598c",
+          "content": "\tdef overrideAttributesForNextElement(self, attributes):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.popMode": {
+      "id": "paml.writer.Writer.popMode",
+      "name": "popMode",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 5123,
+          "end": 5142,
+          "hash": "ad0cc4dbc1ded01ed5fce2f5550c043ab90dcb41d13b42695b103f33b0c62be5",
+          "content": "\tdef popMode(self):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.writer.Writer.pushMode": {
+      "id": "paml.writer.Writer.pushMode",
+      "name": "pushMode",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.writer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/writer.py",
+          "start": 5068,
+          "end": 5094,
+          "hash": "09551cdf619eb1811337a5fcad2bdda4f18eb364d81eee8941afb8bf4c69822c",
+          "content": "\tdef pushMode(self, name):",
+          "path": "src/py/paml/writer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml": {
+      "id": "paml.importer.XML2Paml",
+      "name": "XML2Paml",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 691,
+          "end": 706,
+          "hash": "644c215626a9188aea916728705ccc7b67a4bb511a79bb5ebb7369c10b5db339",
+          "content": "class XML2Paml:",
+          "path": "src/py/paml/importer.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.importer.XML2Paml.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 707,
+              "end": 727,
+              "hash": "bfe67c3d81d84fd32bf8f27e6d981aacd9b9731fcf7cc5118ae3bf1d91fac510",
+              "content": "\tdef __init__(self):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml._convertDom",
+          "name": "_convertDom",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 1253,
+              "end": 1298,
+              "hash": "a8dd9f6387feeb1bc73029241daad8ed0207e99522ae7856a515db44c49f3213",
+              "content": "\tdef _convertDom(self, node, bodyOnly=False):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml._convertLxml",
+          "name": "_convertLxml",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 2193,
+              "end": 2239,
+              "hash": "0cb9c8cdf5d78ca8d1a0dea2b27f304e91a915d062309a70e301ef1327dc99a2",
+              "content": "\tdef _convertLxml(self, node, bodyOnly=False):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml._outputElement",
+          "name": "_outputElement",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 2954,
+              "end": 3008,
+              "hash": "4952cee1a5d7d64f7b2c39117bfe844b01cd12774f3c29aa3dc59d54721d0167",
+              "content": "\tdef _outputElement(self, name, attributes, children):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml.convert",
+          "name": "convert",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 896,
+              "end": 937,
+              "hash": "2d5d057e0d7fe9bbdf95fd788d1d78f115b0ffd407355fcb14dfdcce77b90257",
+              "content": "\tdef convert(self, node, bodyOnly=False):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml.extractLines",
+          "name": "extractLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 766,
+              "end": 796,
+              "hash": "b089da16a507211e698649eff7441c0b59572d3cfcc852c3b9de4e31a384786e",
+              "content": "\tdef extractLines(self, text):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.importer.XML2Paml.output",
+          "name": "output",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.importer",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/importer.py",
+              "start": 3488,
+              "end": 3512,
+              "hash": "6024af219c2613d769ddb5e6b627eede18e57c552019be6da10871c16345b040",
+              "content": "\tdef output(self, text):",
+              "path": "src/py/paml/importer.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.importer.XML2Paml.__init__": {
+      "id": "paml.importer.XML2Paml.__init__",
+      "name": "__init__",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 707,
+          "end": 727,
+          "hash": "bfe67c3d81d84fd32bf8f27e6d981aacd9b9731fcf7cc5118ae3bf1d91fac510",
+          "content": "\tdef __init__(self):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml._convertDom": {
+      "id": "paml.importer.XML2Paml._convertDom",
+      "name": "_convertDom",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 1253,
+          "end": 1298,
+          "hash": "a8dd9f6387feeb1bc73029241daad8ed0207e99522ae7856a515db44c49f3213",
+          "content": "\tdef _convertDom(self, node, bodyOnly=False):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml._convertLxml": {
+      "id": "paml.importer.XML2Paml._convertLxml",
+      "name": "_convertLxml",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 2193,
+          "end": 2239,
+          "hash": "0cb9c8cdf5d78ca8d1a0dea2b27f304e91a915d062309a70e301ef1327dc99a2",
+          "content": "\tdef _convertLxml(self, node, bodyOnly=False):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml._outputElement": {
+      "id": "paml.importer.XML2Paml._outputElement",
+      "name": "_outputElement",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 2954,
+          "end": 3008,
+          "hash": "4952cee1a5d7d64f7b2c39117bfe844b01cd12774f3c29aa3dc59d54721d0167",
+          "content": "\tdef _outputElement(self, name, attributes, children):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml.convert": {
+      "id": "paml.importer.XML2Paml.convert",
+      "name": "convert",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 896,
+          "end": 937,
+          "hash": "2d5d057e0d7fe9bbdf95fd788d1d78f115b0ffd407355fcb14dfdcce77b90257",
+          "content": "\tdef convert(self, node, bodyOnly=False):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml.extractLines": {
+      "id": "paml.importer.XML2Paml.extractLines",
+      "name": "extractLines",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 766,
+          "end": 796,
+          "hash": "b089da16a507211e698649eff7441c0b59572d3cfcc852c3b9de4e31a384786e",
+          "content": "\tdef extractLines(self, text):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.XML2Paml.output": {
+      "id": "paml.importer.XML2Paml.output",
+      "name": "output",
+      "type": "Value",
+      "subtype": "member",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 3488,
+          "end": 3512,
+          "hash": "6024af219c2613d769ddb5e6b627eede18e57c552019be6da10871c16345b040",
+          "content": "\tdef output(self, text):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.model.XMLComment": {
+      "id": "paml.model.XMLComment",
+      "name": "XMLComment",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 2400,
+          "end": 2425,
+          "hash": "88fff37144fdd7ae410b39bf3b46cd1363a93c8be303950e3d919aa56c2c85bb",
+          "content": "class XMLComment(object):",
+          "path": "src/py/paml/model.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.model.Element.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 683,
+              "end": 766,
+              "hash": "314ef55e41ca9e9c1accb88a82842193c0246b2552ea1d3f7cb566979d97ec22",
+              "content": "\tdef __init__(self, name, attributes=None, isInline=False, isPI=False, hints=None):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.model.XMLComment.contentAsLines",
+          "name": "contentAsLines",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.model",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/model.py",
+              "start": 345,
+              "end": 371,
+              "hash": "a5cac7ddc66280bd034d933eebbb9bb7e77e39bdcd8a06a4a69a1872f3b4c1f4",
+              "content": "\tdef contentAsLines(self):",
+              "path": "src/py/paml/model.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.formatter.XMLFormatter": {
+      "id": "paml.formatter.XMLFormatter",
+      "name": "XMLFormatter",
+      "type": "Type",
+      "subtype": "class",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 19874,
+          "end": 19908,
+          "hash": "cc2f82c96f31ae59fe70c285f57ffcbfc3bdb32746ec1b2724e845c3eb16ac3d",
+          "content": "class XMLFormatter(HTMLFormatter):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ],
+      "members": [
+        {
+          "id": "paml.formatter.HTMLFormatter.__init__",
+          "name": "__init__",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 1445,
+              "end": 1479,
+              "hash": "7a577fffc81402f3479c01ee00ab1d195089cf8248f3aeb4d4a3b302d12fd97d",
+              "content": "\tdef __init__(self, strict=False):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.XMLFormatter._formatContent",
+          "name": "_formatContent",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 18899,
+              "end": 18932,
+              "hash": "f56b1c8696f54958610af62a56554954baee5c9935e72d6bd8369b92b4596269",
+              "content": "\tdef _formatContent(self, value):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        },
+        {
+          "id": "paml.formatter.XMLFormatter.format",
+          "name": "format",
+          "type": "Value",
+          "subtype": "member",
+          "module": "paml.formatter",
+          "fragments": [
+            {
+              "type": "implementation",
+              "source": "src/py/paml/formatter.py",
+              "start": 4605,
+              "end": 4643,
+              "hash": "2cbfcc6a964b693c15c24372da121cff0f74c65bb8a0b08ed661d4f280ccd30a",
+              "content": "\tdef format(self, document, indent=0):",
+              "path": "src/py/paml/formatter.py"
+            }
+          ]
+        }
+      ]
+    },
+    "paml.version.__version__": {
+      "id": "paml.version.__version__",
+      "name": "__version__",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.version",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/version.py",
+          "start": 0,
+          "end": 21,
+          "hash": "a11eb733479ff5d32b5999cc8d36fdc64ebd716da24baae5baaa72279ff40bce",
+          "content": "__version__ = \"0.8.4\"",
+          "path": "src/py/paml/version.py"
+        }
+      ]
+    },
+    "paml.formatter._ensure_unicode": {
+      "id": "paml.formatter._ensure_unicode",
+      "name": "_ensure_unicode",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 662,
+          "end": 693,
+          "hash": "f11e7d11d1c1f3d98b40200c1ad5a1498c7e90dbbbb7012cac5876c5133becfe",
+          "content": "_ensure_unicode = ensureUnicode",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.utils._guessSourceEncodings": {
+      "id": "paml.utils._guessSourceEncodings",
+      "name": "_guessSourceEncodings",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 552,
+          "end": 584,
+          "hash": "9896139b5bad7a0dc13b4f9440c22b0ddde108d043abf07accf63103a83ffd79",
+          "content": "def _guessSourceEncodings(data):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils._guess_source_encodings": {
+      "id": "paml.utils._guess_source_encodings",
+      "name": "_guess_source_encodings",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2566,
+          "end": 2613,
+          "hash": "ec0342d882d51318ae5cb3807f7bf6f95e6d7df384c7cbaad562c39c61b94068",
+          "content": "_guess_source_encodings = _guessSourceEncodings",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.importer._parse_html": {
+      "id": "paml.importer._parse_html",
+      "name": "_parse_html",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 4355,
+          "end": 4378,
+          "hash": "a337fcec3c2beb87e5572893f8f1dc9633ada6dc3aedb988fe8325b24a4ead9e",
+          "content": "_parse_html = parseHtml",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer._parse_xml": {
+      "id": "paml.importer._parse_xml",
+      "name": "_parse_xml",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 4379,
+          "end": 4400,
+          "hash": "30c4c3bfea9791d3d9af7bc0c53083caa3595091c4bdafe4d5466956c28db5b6",
+          "content": "_parse_xml = parseXml",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.formatter._runEmbeddedCommand": {
+      "id": "paml.formatter._runEmbeddedCommand",
+      "name": "_runEmbeddedCommand",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 694,
+          "end": 735,
+          "hash": "299f251fda2707eee405e6fd60d2c91f67ae231dadc599080d0ceb61abc8f948",
+          "content": "_runEmbeddedCommand = _runEmbeddedCommand",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.utils._runEmbeddedCommand": {
+      "id": "paml.utils._runEmbeddedCommand",
+      "name": "_runEmbeddedCommand",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 1343,
+          "end": 1400,
+          "hash": "50d0ded0bcaf929232f5a63d1fcfffb98bab555c3b2b9b421b17917beab38d23",
+          "content": "def _runEmbeddedCommand(command, source, path_suffix=\"\"):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils._run_embedded_command": {
+      "id": "paml.utils._run_embedded_command",
+      "name": "_run_embedded_command",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2690,
+          "end": 2733,
+          "hash": "5d85eff6c198d5503aea38e2db2d3d1c332cc150d5a1b8a95270c77d8157168b",
+          "content": "_run_embedded_command = _runEmbeddedCommand",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.parser.append_attribute": {
+      "id": "paml.parser.append_attribute",
+      "name": "append_attribute",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 17282,
+          "end": 17345,
+          "hash": "55a346cadd4c2b91ecb8a262e73d94ba027e04c8259f7402b44e3fc981861797",
+          "content": "\t\tdef append_attribute(name, value, attributes, prepend=False):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.utils.decodeSourceBytes": {
+      "id": "paml.utils.decodeSourceBytes",
+      "name": "decodeSourceBytes",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 997,
+          "end": 1043,
+          "hash": "e128de6b63bd549ce815a9fe173fd9bb481a387566ddf0bd02903bc01cd13127",
+          "content": "def decodeSourceBytes(data, fallback=\"utf-8\"):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils.decode_source_bytes": {
+      "id": "paml.utils.decode_source_bytes",
+      "name": "decode_source_bytes",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2614,
+          "end": 2653,
+          "hash": "d65729b15e2b392ae312c5b1fbbc73c1d14ac74b928592c280b95a3a8954e459",
+          "content": "decode_source_bytes = decodeSourceBytes",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.macros.deparse": {
+      "id": "paml.macros.deparse",
+      "name": "deparse",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 185,
+          "end": 200,
+          "hash": "c675d0c022de12bbc1e7d9ee86d24233d00d9213696f2cdb8e04f61b0b40634b",
+          "content": "\tdeparse = None",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.utils.ensureBytes": {
+      "id": "paml.utils.ensureBytes",
+      "name": "ensureBytes",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 420,
+          "end": 456,
+          "hash": "418a5c7f596ec29e72027ebde6f6db96be460daecd638fde1e5bf89f7e1393a9",
+          "content": "def ensureBytes(t, encoding=\"utf8\"):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils.ensureUnicode": {
+      "id": "paml.utils.ensureUnicode",
+      "name": "ensureUnicode",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 150,
+          "end": 188,
+          "hash": "75f9abe487795e812b7868bfcb5fb3eadf2417543ac68d5bfeadf933b85be7e8",
+          "content": "def ensureUnicode(t, encoding=\"utf8\"):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils.ensure_bytes": {
+      "id": "paml.utils.ensure_bytes",
+      "name": "ensure_bytes",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2539,
+          "end": 2565,
+          "hash": "cabc4af9d203e7138ffaa1a1188fd04968f7e6ca6d046a34c7e1901a81d7c531",
+          "content": "ensure_bytes = ensureBytes",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.parser.ensure_unicode": {
+      "id": "paml.parser.ensure_unicode",
+      "name": "ensure_unicode",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 509,
+          "end": 539,
+          "hash": "e1ec6dabf30e55f7557706cc8b43af3e22d3ed5e889459b172c015812986eac4",
+          "content": "ensure_unicode = ensureUnicode",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.utils.ensure_unicode": {
+      "id": "paml.utils.ensure_unicode",
+      "name": "ensure_unicode",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2508,
+          "end": 2538,
+          "hash": "e1ec6dabf30e55f7557706cc8b43af3e22d3ed5e889459b172c015812986eac4",
+          "content": "ensure_unicode = ensureUnicode",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.model.escape": {
+      "id": "paml.model.escape",
+      "name": "escape",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.model",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/model.py",
+          "start": 1832,
+          "end": 1848,
+          "hash": "f1f4b50af59e1f292680911cefff0d2a21c479cd2050fc0ea0fb4fe5cf60913e",
+          "content": "\t\tdef escape(v):",
+          "path": "src/py/paml/model.py"
+        }
+      ]
+    },
+    "paml.utils.flatten": {
+      "id": "paml.utils.flatten",
+      "name": "flatten",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 1958,
+          "end": 1991,
+          "hash": "8c2990b1bab51f35e38139b816754fcf6732343daada6aab6c4165740cbafb71",
+          "content": "def flatten(values, result=None):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.formatter.formatter": {
+      "id": "paml.formatter.formatter",
+      "name": "formatter",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 21605,
+          "end": 21627,
+          "hash": "b8cbf015248ec7fe234040c1e459e22590c287e92397480ba207c80c5204106e",
+          "content": "def formatter(format):",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.parser.has_attribute": {
+      "id": "paml.parser.has_attribute",
+      "name": "has_attribute",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 17010,
+          "end": 17048,
+          "hash": "c0bca5973e892f7dc5ffa3aeb65442d9d340341e58be144039d2bc781275e586",
+          "content": "\t\tdef has_attribute(name, attributes):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.importer.lxml_html": {
+      "id": "paml.importer.lxml_html",
+      "name": "lxml_html",
+      "type": "Value",
+      "subtype": "Y",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 654,
+          "end": 688,
+          "hash": "7541cb9f282d9bd3b5be0f71728172a052128e3ad4f84dce92279b21c47f6260",
+          "content": "from lxml import html as lxml_html",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.minidom": {
+      "id": "paml.importer.minidom",
+      "name": "minidom",
+      "type": "Value",
+      "subtype": "I",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 596,
+          "end": 629,
+          "hash": "eb48173a2d04c576170d3d97212dd2b927ddc6dd0127224c1216fb6afcda1d90",
+          "content": "import xml.dom.minidom as minidom",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.cli.parse": {
+      "id": "paml.cli.parse",
+      "name": "parse",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.cli",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/cli.py",
+          "start": 152,
+          "end": 194,
+          "hash": "cac5442a6aa368619ec38d3b42e6ef8dfc9cf0549f9c9cf0740073cbb4b70967",
+          "content": "def parse(text, path=None, format=\"html\"):",
+          "path": "src/py/paml/cli.py"
+        }
+      ]
+    },
+    "paml.importer.parseFile": {
+      "id": "paml.importer.parseFile",
+      "name": "parseFile",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 5010,
+          "end": 5030,
+          "hash": "a3f0da05e796667f4d35a15fd394ca3539ccba2b73c3f8528588e026637ef00d",
+          "content": "def parseFile(path):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.parseHtml": {
+      "id": "paml.importer.parseHtml",
+      "name": "parseHtml",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 3567,
+          "end": 3586,
+          "hash": "b17f8dfe5af96d0fd80ea70daf541fb4a74e58db7af3c003963128daddb72853",
+          "content": "def parseHtml(doc):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.importer.parseXml": {
+      "id": "paml.importer.parseXml",
+      "name": "parseXml",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 4126,
+          "end": 4144,
+          "hash": "8382a246babf7dfe25f80d3bf30c945fc788f66cbe5a75055d6ec891db6f0f01",
+          "content": "def parseXml(doc):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.macros.prefer_gmodule": {
+      "id": "paml.macros.prefer_gmodule",
+      "name": "prefer_gmodule",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.macros",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/macros.py",
+          "start": 4867,
+          "end": 4894,
+          "hash": "41d0fcf8c20b50d3901ca3e1d7e6e83a74109e33b45361e727a537ba22eded76",
+          "content": "\t\tdef prefer_gmodule(path):",
+          "path": "src/py/paml/macros.py"
+        }
+      ]
+    },
+    "paml.utils.readSourceLines": {
+      "id": "paml.utils.readSourceLines",
+      "name": "readSourceLines",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 1231,
+          "end": 1257,
+          "hash": "9bc9bdf3b0644118b35ed519376421a0ecb3bc5acc5ad7558846ad141225a724",
+          "content": "def readSourceLines(path):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.parser.read_source_lines": {
+      "id": "paml.parser.read_source_lines",
+      "name": "read_source_lines",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 540,
+          "end": 575,
+          "hash": "c6e1f6d7caff0eca2f170954472455a4c577eb51615c7acc4ea16d8ba913f415",
+          "content": "read_source_lines = readSourceLines",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.utils.read_source_lines": {
+      "id": "paml.utils.read_source_lines",
+      "name": "read_source_lines",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2654,
+          "end": 2689,
+          "hash": "c6e1f6d7caff0eca2f170954472455a4c577eb51615c7acc4ea16d8ba913f415",
+          "content": "read_source_lines = readSourceLines",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.cli.run": {
+      "id": "paml.cli.run",
+      "name": "run",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.cli",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/cli.py",
+          "start": 298,
+          "end": 329,
+          "hash": "deed4bb050958af52a80396643d3dfd9adff9ace876065d7554610e3895bde89",
+          "content": "def run(arguments, input=None):",
+          "path": "src/py/paml/cli.py"
+        }
+      ]
+    },
+    "paml.importer.run": {
+      "id": "paml.importer.run",
+      "name": "run",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.importer",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/importer.py",
+          "start": 4403,
+          "end": 4451,
+          "hash": "0245775d3e36e89af8358191ad0bb4b88a448bf04ba559ec456239febc8f1dad",
+          "content": "def run(doc, bodyOnly=False, sourceFormat=None):",
+          "path": "src/py/paml/importer.py"
+        }
+      ]
+    },
+    "paml.parser.set_attribute": {
+      "id": "paml.parser.set_attribute",
+      "name": "set_attribute",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.parser",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/parser.py",
+          "start": 17124,
+          "end": 17169,
+          "hash": "af5f6509f64ff390e20531061fae66952d837cb863e136e5a93bfe7b915d7ae4",
+          "content": "\t\tdef set_attribute(name, value, attribtues):",
+          "path": "src/py/paml/parser.py"
+        }
+      ]
+    },
+    "paml.__init__.toHTML": {
+      "id": "paml.__init__.toHTML",
+      "name": "toHTML",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.__init__",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/__init__.py",
+          "start": 351,
+          "end": 375,
+          "hash": "32c1640c4c330022f7fccf7ca1d785ff12938d7ea5e568678e665d9e8207a1d9",
+          "content": "toHTML = process = parse",
+          "path": "src/py/paml/__init__.py"
+        }
+      ]
+    },
+    "paml.utils.unicode": {
+      "id": "paml.utils.unicode",
+      "name": "unicode",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 133,
+          "end": 147,
+          "hash": "b0dbeb8356284e3ce7828e28ca47162030c5e7d02db01bfc9a4512a75109aeb4",
+          "content": "\tunicode = str",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils.xmlEscape": {
+      "id": "paml.utils.xmlEscape",
+      "name": "xmlEscape",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2350,
+          "end": 2370,
+          "hash": "e14aa7407bc691a4c40b7ffc038b84e262ebde0d46c1e3b31202af6e1fc37bee",
+          "content": "def xmlEscape(text):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.formatter.xml_escape": {
+      "id": "paml.formatter.xml_escape",
+      "name": "xml_escape",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 616,
+          "end": 638,
+          "hash": "4ba7c2b5804a0a68c92d33d021343fed6dcdc88316ad6a48662921b8c0ba80de",
+          "content": "xml_escape = xmlEscape",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.utils.xml_escape": {
+      "id": "paml.utils.xml_escape",
+      "name": "xml_escape",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2757,
+          "end": 2779,
+          "hash": "4ba7c2b5804a0a68c92d33d021343fed6dcdc88316ad6a48662921b8c0ba80de",
+          "content": "xml_escape = xmlEscape",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.utils.xslEscape": {
+      "id": "paml.utils.xslEscape",
+      "name": "xslEscape",
+      "type": "Callable",
+      "subtype": "function",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2168,
+          "end": 2188,
+          "hash": "f506ef671a93aa4ccf039fcc0eb5c17efa1d81f7c5e06955814d61edde2204ee",
+          "content": "def xslEscape(text):",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    },
+    "paml.formatter.xsl_escape": {
+      "id": "paml.formatter.xsl_escape",
+      "name": "xsl_escape",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.formatter",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/formatter.py",
+          "start": 639,
+          "end": 661,
+          "hash": "dc7e1a6714d67a671df697670f5d1d87d8f833c912f1152ea659a66fbffec31c",
+          "content": "xsl_escape = xslEscape",
+          "path": "src/py/paml/formatter.py"
+        }
+      ]
+    },
+    "paml.utils.xsl_escape": {
+      "id": "paml.utils.xsl_escape",
+      "name": "xsl_escape",
+      "type": "Value",
+      "subtype": "variable",
+      "module": "paml.utils",
+      "fragments": [
+        {
+          "type": "implementation",
+          "source": "src/py/paml/utils.py",
+          "start": 2734,
+          "end": 2756,
+          "hash": "dc7e1a6714d67a671df697670f5d1d87d8f833c912f1152ea659a66fbffec31c",
+          "content": "xsl_escape = xslEscape",
+          "path": "src/py/paml/utils.py"
+        }
+      ]
+    }
+  },
+  "github": {
+    "username": "sebastien",
+    "project": "paml",
+    "branch": "HEAD"
+  }
+}

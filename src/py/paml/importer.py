@@ -123,7 +123,7 @@ class XML2Paml:
 		self.result += ("\t" * self.indent) + text + "\n"
 
 
-def _parse_html(doc):
+def parseHtml(doc):
 	full_html = re.compile(br"<\s*(html|body)\b", re.I)
 	markup = None
 	if hasattr(doc, "read"):
@@ -143,7 +143,7 @@ def _parse_html(doc):
 	return doc
 
 
-def _parse_xml(doc):
+def parseXml(doc):
 	if hasattr(doc, "read"):
 		return minidom.parse(doc)
 	if isinstance(doc, str):
@@ -155,20 +155,20 @@ def run(doc, bodyOnly=False, sourceFormat=None):
 	if isinstance(doc, (list, tuple)):
 		doc = doc[0] if doc else sys.stdin
 	if sourceFormat in ("html", "htm", "xhtml"):
-		doc = _parse_html(doc)
+		doc = parseHtml(doc)
 		converter = XML2Paml()
 		return converter.convert(doc, bodyOnly)
 	if sourceFormat == "xml":
-		doc = _parse_xml(doc)
+		doc = parseXml(doc)
 		converter = XML2Paml()
 		return converter.convert(doc, bodyOnly)
 	if hasattr(doc, "read"):
-		doc = _parse_xml(doc)
+		doc = parseXml(doc)
 	elif isinstance(doc, str):
 		if doc.lstrip().startswith("<"):
-			doc = _parse_html(doc)
+			doc = parseHtml(doc)
 		else:
-			doc = _parse_xml(doc)
+			doc = parseXml(doc)
 	converter = XML2Paml()
 	return converter.convert(doc, bodyOnly)
 
