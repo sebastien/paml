@@ -77,6 +77,9 @@ class PamlParser:
 		paml_library_paths = [p for p in env_library.split(":") if p]
 		self._searchPaths = ["."] + paml_library_paths + ["src/py/paml", "lib/paml"]
 		self._defaults = defaults or {}
+		self._source_line = 0
+		self._source_column = 1
+		self._source_indent = 0
 
 	def setDefaults(self, defaults):
 		self._defaults = defaults
@@ -98,17 +101,23 @@ class PamlParser:
 	def parseFile(self, path):
 		"""Parses the file with the given  path, and return the corresponding
 		HTML document."""
-		if path == "--":
-			lines = [ensure_unicode(_) for _ in sys.stdin.readlines()]
-		else:
-			lines = read_source_lines(path)
 		self._paths.append(path)
-		self._writer.onDocumentStart()
-		for line in lines:
-			self._parseLine(ensure_unicode(line))
-		result = self._formatter.format(self._writer.onDocumentEnd())
-		self._paths.pop()
-		return result
+		try:
+			if path == "--":
+				lines = [ensure_unicode(_) for _ in sys.stdin.readlines()]
+			else:
+				lines = read_source_lines(path)
+			self._writer.onDocumentStart()
+			for number, line in enumerate(lines, 1):
+				self._source_line = number
+				self._source_column = 1
+				self._parseLine(ensure_unicode(line))
+			result = self._formatter.format(self._writer.onDocumentEnd())
+			return result
+		except Exception as error:
+			self._raiseWithSourceLocation(error)
+		finally:
+			self._paths.pop()
 
 	def parseString(self, text, path=None):
 		"""Parses the given string and returns an HTML document."""
@@ -119,13 +128,30 @@ class PamlParser:
 		except UnicodeEncodeError:
 			# FIXME: What should we do?
 			pass
-		self._writer.onDocumentStart()
-		for line in text.split("\n"):
-			self._parseLine(line + "\n")
-		res = self._formatter.format(self._writer.onDocumentEnd())
-		if path:
-			self._paths.pop()
-		return res
+		try:
+			self._writer.onDocumentStart()
+			for number, line in enumerate(text.split("\n"), 1):
+				self._source_line = number
+				self._source_column = 1
+				self._parseLine(line + "\n")
+			res = self._formatter.format(self._writer.onDocumentEnd())
+			return res
+		except Exception as error:
+			self._raiseWithSourceLocation(error)
+		finally:
+			if path:
+				self._paths.pop()
+
+	def _raiseWithSourceLocation(self, error):
+		"""Adds the current source location to an exception and re-raises it."""
+		location = "{0}:{1}".format(self._source_line, self._source_column)
+		if self._paths:
+			location = "{0}:{1}".format(self._paths[-1], location)
+		message = str(error)
+		if not getattr(error, "_paml_source_location", False):
+			error.args = ("{0}: {1}".format(location, message),)
+			error._paml_source_location = True
+		raise
 
 	def _isInEmbed(self, indent=None):
 		"""Tells if the current element is an embed element (like
@@ -147,6 +173,8 @@ class PamlParser:
 		# _parse<element>
 		original_line = line
 		indent, line = self._getLineIndent(line)
+		self._source_indent = len(original_line) - len(line)
+		self._source_column = self._source_indent + 1
 		# First, we make sure we close the elements that may be outside of the
 		# scope of this
 		# FIXME: Empty lines may have an indent < than the current element they
@@ -384,18 +412,24 @@ class PamlParser:
 					self._writer.onRawTextAdd(text)
 			else:
 				self._paths.append(path)
-				p = int(indent / 4) * "\t"
-				os.path.relpath(path, os.path.dirname(path))
-				# (parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
-				for line in read_source_lines(path):
-					if RE_PI.match(line):
-						continue
-					# We do the substituion
-					if subs:
-						line = string.Template(line).safe_substitute(**subs)
-					(parseLine or self._parseLine)(p + line)
-				# (parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
-				self._paths.pop()
+				try:
+					p = int(indent / 4) * "\t"
+					os.path.relpath(path, os.path.dirname(path))
+					# (parseLine or self._parseLine)("#START:INCLUDE[{0}]".format(relpath))
+					for number, line in enumerate(read_source_lines(path), 1):
+						self._source_line = number
+						self._source_column = 1
+						if RE_PI.match(line):
+							continue
+						# We do the substituion
+						if subs:
+							line = string.Template(line).safe_substitute(**subs)
+						(parseLine or self._parseLine)(p + line)
+					# (parseLine or self._parseLine)("#END:INCLUDE[{0}]".format(relpath))
+				except Exception as error:
+					self._raiseWithSourceLocation(error)
+				finally:
+					self._paths.pop()
 		return True
 
 	def _findIncludedPath(self, path):
@@ -465,6 +499,7 @@ class PamlParser:
 			closing = line.find(">", element.end())
 			# Elements must have a closing
 			if closing == -1:
+				self._source_column = self._source_indent + element.start() + 1
 				raise Exception("Unclosed inline tag: '%s'" % (line))
 			# We prepend the text from the offset to the eleemnt
 			text = line[offset : element.start()]
