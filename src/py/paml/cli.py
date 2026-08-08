@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
+# Module: cli
+# Command-line entry point and convenience API for processing Paml documents.
 import os
 import sys
 import argparse
 
 import paml.importer
 from paml.parser import PamlParser
-from paml.formatter import formatter
+from paml.formatter import createFormatter
 
 
 def parse(text, path=None, format="html"):
-	fmt = formatter(format)
+	"""Returns rendered output for Paml source `text` in `format`."""
+	fmt = createFormatter(format)
 	parser = PamlParser(formatter=fmt)
 	return parser.parseString(text, path=path)
 
 
 def run(arguments, input=None):
+	"""Runs the Paml command-line interface for `arguments`."""
 	p = argparse.ArgumentParser(description="Processes PAML files")
 	p.add_argument("file", type=str, help="File to process", nargs="?")
 	p.add_argument(
@@ -40,9 +44,11 @@ def run(arguments, input=None):
 	if args.source_format:
 		return paml.importer.run(args.file or sys.stdin, sourceFormat=args.source_format)
 	env = dict(_.split("=", 1) for _ in args.var or ())
-	parser = PamlParser(formatter=formatter(args.format), defaults=env)
+	parser = PamlParser(formatter=createFormatter(args.format), defaults=env)
 	return parser.parseFile(args.file or "--")
 
 
 if __name__ == "__main__":
 	sys.stdout.write(run(sys.argv[1:]))
+
+# EOF

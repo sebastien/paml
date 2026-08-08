@@ -1,3 +1,6 @@
+# Module: parser
+# Indentation-based parser for Paml source, includes, macros, and embedded content.
+
 import os
 import sys
 import string
@@ -270,7 +273,7 @@ class PamlParser:
 				self._pushStack(indent, T_ELEMENT)
 			group = is_element.group()[1:]
 			rest = line[len(is_element.group()) :]
-			name, attributes, embed, hints = self._parsePAMLElement(group)
+			name, attributes, embed, hints = self._parsePamlElement(group)
 			# Element is a single line if it ends with ':'
 			self._writer.onElementStart(name, attributes, isInline=False, hints=hints)
 			if group[-1] == ":" and rest:
@@ -378,7 +381,7 @@ class PamlParser:
 		if plus >= 0:
 			element = "div" + path[plus + 1 :].strip()
 			path = path[:plus].strip()
-			_, attributes, _, _ = self._parsePAMLElement(element)
+			_, attributes, _, _ = self._parsePamlElement(element)
 			if self._writer:
 				self._writer.overrideAttributesForNextElement(attributes)
 		if not path:
@@ -507,7 +510,7 @@ class PamlParser:
 				self._writer.onTextAdd(text)
 			# And we append the element itself
 			group = element.group()[1:]
-			name, attributes, embed, hints = self._parsePAMLElement(group)
+			name, attributes, embed, hints = self._parsePamlElement(group)
 			self._writer.onElementStart(name, attributes, isInline=True, hints=hints)
 			text = line[element.end() : closing]
 			if text:
@@ -524,7 +527,7 @@ class PamlParser:
 			if text:
 				self._writer.onTextAdd(text)
 
-	def _parsePAMLElement(self, element):
+	def _parsePamlElement(self, element):
 		"""Parses the declaration of a PAML element, which is like the
 		following examples:
 
@@ -559,7 +562,7 @@ class PamlParser:
 			attributes_list = element[parens_start + 1 : parens_end]
 			if attributes_list and attributes_list[-1] == ")":
 				attributes_list = attributes_list[:-1]
-			attributes = self._parsePAMLAttributes(attributes_list)
+			attributes = self._parsePamlAttributes(attributes_list)
 			element = element[:parens_start]
 			element[parens_end:]
 		else:
@@ -625,7 +628,7 @@ class PamlParser:
 		element = element.replace("::", ":")
 		return (element, attributes, embed, hints)
 
-	def _parsePAMLAttributes(self, attributes):
+	def _parsePamlAttributes(self, attributes):
 		"""Parses a string representing PAML attributes and returns a list of
 		couples '[name, value]' representing the attributes."""
 		result = []
@@ -678,3 +681,6 @@ class PamlParser:
 			return len(spaces.group()), line[len(spaces.group()) :]
 		else:
 			return 0, line
+
+
+# EOF

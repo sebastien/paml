@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Module: importer
+# Converts HTML and XML documents into Paml source.
 # -----------------------------------------------------------------------------
 # Project           :   PAML
 # -----------------------------------------------------------------------------
@@ -185,4 +187,4 @@ def parseFile(path):
 if __name__ == "__main__":
 	sys.stdout.write(parseFile(sys.argv[1]))
 
-# EOF - vim: tw=80 ts=4 sw=4 noet
+# EOF

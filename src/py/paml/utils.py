@@ -1,3 +1,6 @@
+# Module: utils
+# Encoding, escaping, subprocess, and collection helpers for Paml.
+
 import os
 import sys
 import re

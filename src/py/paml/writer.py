@@ -1,3 +1,6 @@
+# Module: writer
+# Event-driven document-tree builder used by the Paml parser.
+
 from paml.model import PamlElement, PamlText, PamlRawText, PamlComment, XMLComment, DocType, ProcessingInstruction, PamlDeclaration
 
 # -----------------------------------------------------------------------------
@@ -183,3 +186,6 @@ class PamlWriter:
 			return modes[-1]
 		else:
 			return None
+
+
+# EOF

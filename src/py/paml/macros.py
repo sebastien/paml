@@ -1,3 +1,6 @@
+# Module: macros
+# Built-in resource and module macros used during Paml parsing.
+
 import os
 import json
 import glob
@@ -244,3 +247,6 @@ class PamlMacro:
 		# NOTE: This is the new way to do so
 		"import:js": ImportJS,
 	}
+
+
+# EOF

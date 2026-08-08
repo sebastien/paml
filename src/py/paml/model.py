@@ -1,3 +1,6 @@
+# Module: model
+# Node types used to represent parsed Paml documents before rendering.
+
 from paml.utils import xmlEscape
 
 # -----------------------------------------------------------------------------
@@ -38,12 +41,21 @@ class PamlElement:
 		self.isInline = isInline
 		self.mode = None
 		self.isPI = isPI
-		self.isDoctype = False
+		self.isDocType = False
 		self.isComment = False
 		self.formatOptions = hints or []
 		if name[0] == "?":
 			self.isPI = True
 			self.name = name[1:]
+
+	@property
+	def isDoctype(self):
+		"""Compatibility alias for `isDocType`."""
+		return self.isDocType
+
+	@isDoctype.setter
+	def isDoctype(self, value):
+		self.isDocType = value
 
 	def setFormat(self, option):
 		if option not in self.formatOptions:
@@ -144,3 +156,6 @@ class ProcessingInstruction(object):
 class PamlDeclaration(PamlElement):
 	def __init__(self, name, attributes=None):
 		PamlElement.__init__(self, name, attributes)
+
+
+# EOF

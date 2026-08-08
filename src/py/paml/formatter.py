@@ -1,3 +1,6 @@
+# Module: formatter
+# HTML, XML, and JavaScript renderers for the Paml document model.
+
 import os
 import re
 import time
@@ -18,9 +21,6 @@ from paml.grammar import (
 from paml.model import PamlText, PamlElement, PamlComment, PamlRawText, XMLComment, DocType, ProcessingInstruction
 
 RE_SPACES = re.compile(r"\s")
-
-# Backward-compat alias used by engine.py
-_runEmbeddedCommand = _runEmbeddedCommand
 
 # -----------------------------------------------------------------------------
 #
@@ -716,16 +716,26 @@ class XMLFormatter(HTMLFormatter):
 # -----------------------------------------------------------------------------
 
 
-def formatter(format):
-	if format == "js":
+def createFormatter(formatName):
+	"""Creates a formatter for the target `formatName`."""
+	if formatName == "js":
 		return JSFormatter()
-	if format == "jshtml":
+	if formatName == "jshtml":
 		return JSFormatter()
-	elif format == "xml":
+	elif formatName == "xml":
 		return XMLFormatter()
-	elif format == "xhtml":
+	elif formatName == "xhtml":
 		return HTMLFormatter(strict=True)
-	elif format == "html":
+	elif formatName == "html":
 		return HTMLFormatter(strict=False)
 	else:
 		return None
+
+
+# Compatibility wrapper retained for existing callers, including the legacy
+# `format` keyword argument.
+def formatter(format):
+	"""Compatibility wrapper for `createFormatter`."""
+	return createFormatter(format)
+
+# EOF

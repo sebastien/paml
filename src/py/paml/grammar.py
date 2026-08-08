@@ -1,3 +1,6 @@
+# Module: grammar
+# Regular expressions, parser tokens, and formatting defaults for Paml syntax.
+
 import re
 
 # -----------------------------------------------------------------------------
@@ -97,3 +100,5 @@ HTML_EXCEPTIONS = {
 	"td": {"NOT_EMPTY": "&nbsp;"},
 	"th": {"NOT_EMPTY": "&nbsp;"},
 }
+
+# EOF
