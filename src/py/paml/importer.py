@@ -12,11 +12,120 @@
 # -----------------------------------------------------------------------------
 
 import sys
-import re
+from html.parser import HTMLParser
 import xml.dom.minidom as minidom
 
-from lxml import etree
-from lxml import html as lxml_html
+
+HTML_VOID_ELEMENTS = {
+	"area",
+	"base",
+	"br",
+	"col",
+	"embed",
+	"hr",
+	"img",
+	"input",
+	"link",
+	"meta",
+	"param",
+	"source",
+	"track",
+	"wbr",
+}
+
+HTML_IMPLIED_END_TAGS = {
+	"dd": {"dd", "dt"},
+	"dt": {"dd", "dt"},
+	"li": {"li"},
+	"option": {"option", "optgroup"},
+	"p": {
+		"address",
+		"article",
+		"aside",
+		"blockquote",
+		"div",
+		"dl",
+		"fieldset",
+		"footer",
+		"form",
+		"h1",
+		"h2",
+		"h3",
+		"h4",
+		"h5",
+		"h6",
+		"header",
+		"hgroup",
+		"hr",
+		"main",
+		"menu",
+		"nav",
+		"ol",
+		"p",
+		"pre",
+		"section",
+		"table",
+		"ul",
+	},
+	"rt": {"rt", "rp"},
+	"rp": {"rt", "rp"},
+	"thead": {"tbody", "tfoot"},
+	"tbody": {"tbody", "tfoot"},
+	"tr": {"tr"},
+	"th": {"th", "td"},
+	"td": {"th", "td"},
+}
+
+
+class _HtmlNode:
+	def __init__(self, tag=None, attributes=()):
+		self.tag = tag
+		self.attributes = list(attributes)
+		self.children = []
+
+
+class _HtmlParser(HTMLParser):
+	def __init__(self):
+		super().__init__(convert_charrefs=True)
+		self.roots = []
+		self.stack = []
+
+	def _append(self, node):
+		if self.stack:
+			self.stack[-1].children.append(node)
+		else:
+			self.roots.append(node)
+
+	def _close_implied(self, tag):
+		if self.stack and tag in HTML_IMPLIED_END_TAGS.get(self.stack[-1].tag, ()):
+			self.stack.pop()
+
+	def handle_starttag(self, tag, attrs):
+		tag = tag.lower()
+		self._close_implied(tag)
+		node = _HtmlNode(tag, [(name, value or "") for name, value in attrs])
+		self._append(node)
+		if tag not in HTML_VOID_ELEMENTS:
+			self.stack.append(node)
+
+	def handle_startendtag(self, tag, attrs):
+		self._close_implied(tag.lower())
+		self._append(_HtmlNode(tag.lower(), [(name, value or "") for name, value in attrs]))
+
+	def handle_endtag(self, tag):
+		tag = tag.lower()
+		for index in range(len(self.stack) - 1, -1, -1):
+			if self.stack[index].tag == tag:
+				del self.stack[index:]
+				return
+
+	def handle_data(self, data):
+		self._append(data)
+
+	def handle_comment(self, data):
+		node = _HtmlNode()
+		node.comment = data
+		self._append(node)
 
 
 class XML2Paml:
@@ -38,7 +147,7 @@ class XML2Paml:
 		elif hasattr(node, "nodeType"):
 			self._convertDom(node, bodyOnly)
 		else:
-			self._convertLxml(node, bodyOnly)
+			self._convertHtml(node, bodyOnly)
 		return self.result
 
 	def _convertDom(self, node, bodyOnly=False):
@@ -75,28 +184,34 @@ class XML2Paml:
 			self._outputElement(node.nodeName, list(node.attributes.items()), node.childNodes)
 		return self.result
 
-	def _convertLxml(self, node, bodyOnly=False):
-		if hasattr(node, "getroot"):
-			node = node.getroot()
-		if bodyOnly and getattr(node, "tag", "") == "html":
-			body = node.find("body")
-			if body is not None:
-				node = body
-		if isinstance(node, etree._Comment):
-			for line in self.extractLines(node.text or ""):
+	def _convertHtml(self, node, bodyOnly=False):
+		if isinstance(node, (list, tuple)):
+			if bodyOnly:
+				for child in node:
+					if getattr(child, "tag", "") == "html":
+						self._convertHtml(child, True)
+						return self.result
+			for child in node:
+				self._convertHtml(child)
+			return self.result
+		if getattr(node, "comment", None) is not None:
+			for line in self.extractLines(node.comment):
 				self.output("# " + line)
 			return self.result
-		if isinstance(node, etree._ProcessingInstruction):
+		if isinstance(node, str):
+			self.convert(node)
 			return self.result
-		if isinstance(node, etree._Element):
-			self._outputElement(node.tag, list(node.attrib.items()), [])
+		if getattr(node, "tag", None):
+			if bodyOnly and node.tag == "html":
+				for child in node.children:
+					if getattr(child, "tag", "") == "body":
+						for body_child in child.children:
+							self._convertHtml(body_child)
+						return self.result
+			self._outputElement(node.tag, node.attributes, [])
 			self.indent += 1
-			if node.text:
-				self.convert(node.text)
-			for child in node.iterchildren():
-				self.convert(child)
-				if child.tail:
-					self.convert(child.tail)
+			for child in node.children:
+				self._convertHtml(child)
 			self.indent -= 1
 		return self.result
 
@@ -126,22 +241,22 @@ class XML2Paml:
 
 
 def parseHtml(doc):
-	full_html = re.compile(br"<\s*(html|body)\b", re.I)
 	markup = None
 	if hasattr(doc, "read"):
 		markup = doc.read()
 	if isinstance(doc, str):
 		if doc.lstrip().startswith("<"):
-			markup = doc.encode("utf-8")
+			markup = doc
 		else:
 			with open(doc, "rb") as f:
 				markup = f.read()
 	if markup is not None:
-		if full_html.search(markup):
-			if re.search(br"<\s*html\b", markup, re.I):
-				return lxml_html.fromstring(markup)
-			return etree.fromstring(markup, etree.XMLParser(recover=True))
-		return lxml_html.fragments_fromstring(markup)
+		if isinstance(markup, bytes):
+			markup = markup.decode("utf-8", errors="replace")
+		parser = _HtmlParser()
+		parser.feed(markup)
+		parser.close()
+		return parser.roots
 	return doc
 
 

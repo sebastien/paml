@@ -19,9 +19,15 @@ class EmptyElementFormattingTests(unittest.TestCase):
 		)
 
 	def test_empty_non_void_elements_use_explicit_closing_tags(self):
-		for name in ("a", "canvas", "div", "iframe", "li", "ol", "script", "span", "template", "ul"):
+		for name in ("a", "canvas", "div", "iframe", "li", "ol", "script", "span", "strong", "template", "ul"):
 			with self.subTest(name=name):
 				self.assertEqual(self.parse("<%s" % name), "<%s></%s>" % (name, name))
+
+	def test_empty_strong_with_attributes_is_not_self_closing(self):
+		self.assertEqual(
+			self.parse("<strong.serif.b(out=selectedTemplate.name)"),
+			'<strong out="selectedTemplate.name" class="serif b"></strong>',
+		)
 
 	def test_empty_textarea_and_table_cells_keep_required_content(self):
 		self.assertEqual(self.parse("<textarea"), "<textarea> </textarea>")

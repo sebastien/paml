@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, "src/py")
 from distutils.core import setup
-import paml.engine
+import paml.version
 
 SUMMARY = "A Pythonic transpiler for HTML/XML"
 DESCRIPTION = """\
@@ -33,7 +33,7 @@ supports advanced formatting options to get exactly the HTML you want to have.
 
 setup(
 	name="paml",
-	version=paml.engine.__version__,
+	version=paml.version.__version__,
 	author="Sébastien Pierre",
 	author_email="sebastien.pierre@gmail.com",
 	description=SUMMARY,

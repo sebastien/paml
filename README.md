@@ -253,7 +253,7 @@ Paml ships with two command-line tools: `paml` and `html2paml`.
 ### `paml` (Paml -> HTML/XML/JS)
 
 ```bash
-paml [-t html|xhtml|xml|js] [-f html|htm|xhtml|xml] [-d KEY=VALUE] [file]
+paml [-t html|xhtml|xml|js] [-f html|htm|xhtml|xml] [-d KEY=VALUE] [-o PATH] [file]
 ```
 
 - If `file` is omitted, input is read from stdin.
@@ -261,6 +261,7 @@ paml [-t html|xhtml|xml|js] [-f html|htm|xhtml|xml] [-d KEY=VALUE] [file]
 - `-f, --from` converts HTML/XML input back to Paml.
 - When `-f` is omitted, `paml` auto-detects `.html`, `.htm`, `.xhtml`, and `.xml` input files.
 - `-d, --def KEY=VALUE` defines variables used by include substitutions.
+- `-o, --output PATH` writes the result to `PATH` instead of stdout. Use `-` for stdout.
 
 Examples:
 
@@ -270,6 +271,9 @@ paml page.paml
 
 # Convert to XML
 paml -t xml page.paml
+
+# Write the result to a file
+paml -o public/page.html page.paml
 
 # Convert stdin to XHTML
 cat page.paml | paml -t xhtml

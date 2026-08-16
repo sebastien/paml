@@ -6023,24 +6023,6 @@
         }
       ]
     },
-    "paml.importer.lxml_html": {
-      "id": "paml.importer.lxml_html",
-      "name": "lxml_html",
-      "type": "Value",
-      "subtype": "Y",
-      "module": "paml.importer",
-      "fragments": [
-        {
-          "type": "implementation",
-          "source": "src/py/paml/importer.py",
-          "start": 654,
-          "end": 688,
-          "hash": "7541cb9f282d9bd3b5be0f71728172a052128e3ad4f84dce92279b21c47f6260",
-          "content": "from lxml import html as lxml_html",
-          "path": "src/py/paml/importer.py"
-        }
-      ]
-    },
     "paml.importer.minidom": {
       "id": "paml.importer.minidom",
       "name": "minidom",

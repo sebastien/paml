@@ -88,6 +88,7 @@ class HTMLFormatter:
 			"script",
 			"slot",
 			"span",
+			"strong",
 			"template",
 			"ul",
 		)

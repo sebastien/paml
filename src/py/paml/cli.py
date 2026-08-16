@@ -36,16 +36,27 @@ def run(arguments, input=None):
 		choices=("html", "js", "xml", "xhtml"),
 	)
 	p.add_argument("-d", "--def", dest="var", type=str, action="append")
+	p.add_argument(
+		"-o",
+		"--output",
+		help="Writes the result to a file instead of stdout",
+	)
 	args = p.parse_args(arguments)
 	if args.file:
 		_, ext = os.path.splitext(args.file.lower())
 		if not args.source_format and ext in (".html", ".htm", ".xhtml", ".xml"):
 			args.source_format = "html" if ext != ".xml" else "xml"
 	if args.source_format:
-		return paml.importer.run(args.file or sys.stdin, sourceFormat=args.source_format)
-	env = dict(_.split("=", 1) for _ in args.var or ())
-	parser = PamlParser(formatter=createFormatter(args.format), defaults=env)
-	return parser.parseFile(args.file or "--")
+		result = paml.importer.run(args.file or sys.stdin, sourceFormat=args.source_format)
+	else:
+		env = dict(_.split("=", 1) for _ in args.var or ())
+		parser = PamlParser(formatter=createFormatter(args.format), defaults=env)
+		result = parser.parseFile(args.file or "--")
+	if args.output and args.output != "-":
+		with open(args.output, "w", encoding="utf-8") as output:
+			output.write(result)
+		return ""
+	return result
 
 
 if __name__ == "__main__":
