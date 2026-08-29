@@ -1,0 +1,5 @@
+<div
+	# EXPECTED: Both .placeholders should be empty like <span></span>, no
+	# newline, no space.
+	<span.placeholder(slot=cond,data-placeholder=Conditional)
+	<span.placeholder(slot=then,data-placeholder=Then)
